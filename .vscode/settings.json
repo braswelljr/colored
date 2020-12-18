@@ -1,6 +1,7 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": true,
+    "source.fixAll.markdownlint": true
   },
   "eslint.validate": [
     "javascript",
@@ -14,4 +15,9 @@
     "javascript": "javascriptreact",
     "typescript": "typescriptreact"
   },
+  "files.associations": {
+    "install-sh": "bat",
+    "": ""
+  },
+  "diffEditor.wordWrap": "on",
 }
