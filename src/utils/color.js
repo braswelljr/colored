@@ -4,7 +4,9 @@ const arrayify = (array, length) => {
     array.push(`#${RandStr}`);
   }
 
-  return [...new Set(array)];
+  return [...new Set(array)].filter(
+    (color) => color.length === 7 || color.length === 4
+  );
 };
 
 export default arrayify;

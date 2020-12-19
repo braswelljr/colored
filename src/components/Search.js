@@ -1,11 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 
 const Search = () => {
-  const searchInputRef = useRef();
-  const [searchQuery, setSearchQuery] = useState("");
-
   useEffect(() => {
-    setSearchQuery(searchInputRef.current.value);
     function onKeyDown(e) {
       if (
         e.key !== "/" ||
@@ -17,7 +13,6 @@ const Search = () => {
         return;
       }
       e.preventDefault();
-      searchInputRef.current.focus();
     }
     window.addEventListener("keydown", onKeyDown);
     return () => {
@@ -35,7 +30,7 @@ const Search = () => {
   return (
     <div
       id="search"
-      className={`sticky z-40 px-4 bg-white shadow md:px-12 lg:px-20 top-12`}
+      className={`sticky z-40 px-4 bg-white shadow md:px-12 lg:px-20 top-14`}
     >
       <form className="md:px-6" onSubmit={(event) => event.preventDefault()}>
         <div className="flex mx-auto max-w-container">
@@ -63,9 +58,6 @@ const Search = () => {
           <input
             type="text"
             id="search-input"
-            ref={searchInputRef}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search all colors (Press “/” to focus)"
             className="flex-auto py-6 text-base leading-6 text-gray-500 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400"
           />
