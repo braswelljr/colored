@@ -1,11 +1,8 @@
 module.exports = {
   purge: {
     mode: "all",
-    enabled: process.env.NODE_ENV === "production" ? true : false,
-    content: [
-      "./components/**/*.{vue, js, jsx, ts, tsx, html}",
-      "./pages/**/*.{vue, js, jsx, ts, tsx, html}"
-    ],
+    enabled: true,
+    content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
     preserveHtmlElements: true
   },
   darkMode: false, // or 'media' or 'class'
