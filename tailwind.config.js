@@ -36,6 +36,7 @@ module.exports = {
   },
   variants: {
     extend: {
+      display: ["focus-within", "hover", "active", "focus"],
       ringOffsetWidth: ["hover", "active"]
     }
   },

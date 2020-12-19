@@ -4,7 +4,7 @@ import color from "../utils/color";
 import { hexToRGB } from "../utils/covert";
 
 const Pad = () => {
-  const colors = color([], 1000).sort();
+  const colors = color([], 5000);
   console.log(colors.length);
   return (
     <div
