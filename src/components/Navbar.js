@@ -1,31 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import router from "../router";
 import { Link } from "react-router-dom";
 
 const Navbar = ({ appname }) => {
+  const [menubutton] = useState(true);
+
   return (
-    <div className="sticky top-0 z-10 w-full px-3 py-3 text-white bg-green-700 md:px-12 xl:px-28 lg:px-20 md:flex md:items-center md:justify-between">
+    <div className="sticky top-0 z-50 w-full px-3 py-3 text-white bg-green-900 shadow-lg md:px-12 xl:px-28 lg:px-20 md:flex md:items-center md:justify-between">
       <div className="flex items-center justify-between w-full md:w-auto">
         <div className="flex items-center justify-center space-x-2 text-lg font-normal md:text-3xl">
           <svg
-            className="w-auto h-8"
+            className="block w-auto h-8"
             xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+            viewBox="0 0 20 20"
+            fill="currentColor"
           >
             <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+              fillRule="evenodd"
+              d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z"
+              clipRule="evenodd"
             />
           </svg>
           <div className="font-monoton">{appname}</div>
         </div>
-        <button type="button" className="block focus:outline-none md:hidden">
+        <button
+          type="button"
+          className="block focus:outline-none md:hidden"
+          onClick={
+            (e) => e.preventDefault()
+            // menubutton === true ? menubuttonstate(false) : menubuttonstate(true)
+          }
+        >
           <svg
-            className="w-auto h-6"
+            className={`w-auto h-6 ${
+              menubutton === true ? `block` : `hidden`
+            } `}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -38,12 +47,34 @@ const Navbar = ({ appname }) => {
               d="M4 8h16M4 16h16"
             />
           </svg>
+          <svg
+            className={`w-auto h-6 ${
+              menubutton === false ? `block` : `hidden`
+            } `}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
         </button>
       </div>
-      <div className="w-full md:flex md:items-center md:w-auto md:space-x-5">
+      <div
+        className={`w-full ${
+          menubutton === false ? `block` : `hidden`
+        } md:flex md:items-center md:w-auto md:space-x-5 space-y-1 md:space-y-0`}
+      >
         {router.map((route, index) => (
           <Link to={route.path} key={index}>
-            <div className="">{route.name}</div>
+            <div className="py-2 pl-2 font-semibold uppercase rounded-sm hover:bg-green-700 md:px-4">
+              {route.name}
+            </div>
           </Link>
         ))}
       </div>

@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import router from "./router/index";
 import { Switch, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -8,16 +7,6 @@ import ToTopButton from "./components/ToTopButton";
 const App = () => {
   const appname = `colored`;
   const topperText = `Lorem ipsum dolor sit amet consectetur.`;
-
-  useEffect(() => {
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 100) {
-        document.querySelector("#topscroll").style.display = `flex`;
-      } else {
-        document.querySelector("#topscroll").style.display = `none`;
-      }
-    });
-  });
 
   const palette = [];
 
@@ -30,7 +19,7 @@ const App = () => {
     return [...new Set(array)];
   };
 
-  arrayify(palette, 1);
+  arrayify(palette, 10);
   console.log(palette);
 
   return (
@@ -43,7 +32,7 @@ const App = () => {
             path={route.path}
             palette={palette}
             exact
-            component={route.component}
+            render={() => <route.component appname={appname} />}
             key={index}
           />
         ))}

@@ -1,6 +1,15 @@
-import React from "react";
+import { useEffect } from "react";
 
 const ToTopButton = () => {
+  useEffect(() => {
+    document.addEventListener("scroll", () => {
+      if (window.scrollY > 100) {
+        document.querySelector("#topscroll").style.display = `flex`;
+      } else {
+        document.querySelector("#topscroll").style.display = `none`;
+      }
+    });
+  }, []);
   return (
     <button
       type="button"
@@ -13,7 +22,7 @@ const ToTopButton = () => {
         document.documentElement.scrollTop > 70 || document.body.scrollTop > 70
           ? `flex`
           : `hidden`
-      } items-center justify-center p-2 text-white bg-green-700 bg-transparent-50 rounded-full transition-all duration-300 md:p-3 bottom-4 right-4 focus:outline-none`}
+      } items-center justify-center p-2 text-white bg-green-900 bg-transparent-50 rounded-full transition-all duration-300 md:p-3 bottom-4 right-4 focus:outline-none`}
     >
       <svg
         className="w-auto h-6 text-current"

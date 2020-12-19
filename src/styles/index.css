@@ -16,3 +16,6 @@
 .movebgSize{
   background-size: 400% 400%;
 }
+.clip-head{
+  clip-path: polygon(100% 0, 100% 95%, 50% 100%, 0 95%, 0 0);
+}

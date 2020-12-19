@@ -1,7 +1,11 @@
 import React from "react";
 
-const ColorPad = () => {
-  return <div></div>;
+const ColorPad = ({ color }) => {
+  return (
+    <button type="submit">
+      <div className="">{color}</div>
+    </button>
+  );
 };
 
 export default ColorPad;

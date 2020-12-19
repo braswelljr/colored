@@ -1,7 +1,7 @@
 {
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true,
-    "source.fixAll.markdownlint": true
+    "source.fixAll.markdownlint": true,
   },
   "eslint.validate": [
     "javascript",

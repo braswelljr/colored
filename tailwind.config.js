@@ -26,7 +26,7 @@ module.exports = {
       },
       colors: {},
       animation: {
-        moveBackground: "moveBackground 10s ease-in infinite"
+        moveBackground: "moveBackground 10s ease-in alternate infinite"
       },
       keyframes: {
         moveBackground: {
