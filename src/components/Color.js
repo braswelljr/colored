@@ -26,12 +26,12 @@ const Color = ({ color }) => {
       </button>
       <div
         id="board"
-        className="absolute inset-0 grid grid-cols-1 grid-rows-2 gap-2 p-2 transition-opacity duration-300 opacity-0 hover:opacity-100 "
+        className="absolute inset-0 grid grid-cols-1 grid-rows-2 gap-2 p-1 transition-opacity duration-200 opacity-0 hover:opacity-100"
       >
         {types.map((type, i) => (
           <button
             key={i}
-            className="w-full h-full font-semibold text-white capitalize bg-gray-800 border-gray-700 rounded-lg group-hover:opacity-100 opacity-30 hover:opacity-80"
+            className="w-full h-full font-semibold text-white capitalize bg-gray-800 border-gray-700 rounded-lg focus:outline-none group-hover:opacity-100 opacity-30 hover:opacity-80"
             onClick={() => copyColor(color, type)}
           >
             Copy {type}
