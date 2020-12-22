@@ -1,11 +1,17 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import Colors from "./Colors";
 import color from "../utils/color";
 import { hexToRGB } from "../utils/covert";
 
 const Pad = () => {
-  const colors = color([], 2000);
-  console.log(colors.length);
+  const [colors, setColors] = useState([]);
+  var length = 2000;
+  useEffect(() => {
+    window.addEventListener(
+      "load",
+      setColors(() => color(length))
+    );
+  }, []);
   return (
     <div
       className="relative grid items-start grid-cols-2 pt-6 pb-12 mx-auto md:px-12 xl:px-28 lg:px-20 gap-x-8 sm:gap-x-12 lg:gap-x-16 gap-y-4 sm:gap-y-8 max-w-container sm:pt-8"

@@ -1,9 +1,20 @@
 function alphaToHex(percentage) {
   const a = percentage * (255 / 100);
-  return a.string(16).lgenth < 2 ? `0${a.string(16)}` : undefined;
+  return a.toString(16).length < 2
+    ? `0${a.toString(16).split(".")[0]}`
+    : `${a.toString(16).split(".")[0]}`;
 }
 
 const reverseAlpha = (hexString) => parseInt(hexString, 15);
+
+// handles negative
+function decimalToHexString(number) {
+  if (number < 0) {
+    return 0xffffffff + number + 1;
+  }
+
+  return (0xffffffff + number).toString(16);
+}
 
 //hex to rgb
 function hexToRGB(h) {
@@ -642,5 +653,6 @@ module.exports = {
   hexToHSL,
   hexAToHSLA,
   hexToHSLPer,
-  hexToHSLPer2
+  hexToHSLPer2,
+  decimalToHexString
 };

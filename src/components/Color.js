@@ -1,12 +1,21 @@
 import { useEffect } from "react";
+import { alphaToHex } from "../utils/covert";
 
 const Color = ({ color }) => {
   useEffect(() => {});
   const types = ["plane", "alpha"];
+  var percentage = 50;
 
   function copyColor(color, type) {
-    if (type === "plane") {
-      return navigator.clipboard.writeText(color);
+    if (type === "alpha") {
+      if (/(?:#|0x)(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(color)) {
+        return navigator.clipboard.writeText(
+          `${color}${alphaToHex(percentage)}`
+        );
+      }
+      return navigator.clipboard.writeText(
+        color.replace(`)`, `, ${percentage}%)`)
+      );
     }
     return navigator.clipboard.writeText(color);
   }

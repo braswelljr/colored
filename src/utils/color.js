@@ -1,7 +1,7 @@
-const arrayify = (array, length) => {
-  for (let index = 0; index < length; index++) {
-    var RandStr = Math.floor(Math.random() * 16777215).toString(16);
-    array.push(`#${RandStr}`);
+const arrayify = (length) => {
+  let array = [];
+  for (let index = length; index > 0; index--) {
+    array.push(`#${Math.floor(Math.random() * 16777215).toString(16)}`);
   }
 
   return [...new Set(array)].filter(
