@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { alphaToHex } from "../utils/covert";
 
 const Color = ({ color }) => {
-  useEffect(() => {});
+  const [state, setState] = useState("iddle");
   const types = ["plane", "alpha"];
   var percentage = 50;
 
@@ -14,11 +14,20 @@ const Color = ({ color }) => {
         );
       }
       return navigator.clipboard.writeText(
-        color.replace(`)`, `, ${percentage}%)`)
+        color.replace(`)`, `, ${percentage}% )`)
       );
     }
     return navigator.clipboard.writeText(color);
   }
+
+  function copy(type) {
+    if (state === "iddle") {
+      copyColor(color, type).then(() => setState("copied"));
+    }
+  }
+  useEffect(() => {
+    window.setTimeout(() => setState("iddle"), 500);
+  }, [state]);
 
   return (
     <div
@@ -40,12 +49,22 @@ const Color = ({ color }) => {
         {types.map((type, i) => (
           <button
             key={i}
-            className="w-full h-full font-semibold text-white capitalize bg-gray-800 border-gray-700 rounded-lg focus:outline-none group-hover:opacity-100 opacity-30 hover:opacity-80"
-            onClick={() => copyColor(color, type)}
+            className="w-full h-full font-semibold text-white capitalize transition-all duration-200 ease-in bg-gray-800 border-gray-700 rounded-lg focus:outline-none group-hover:opacity-100 opacity-30 hover:opacity-80"
+            onClick={() => copy(type)}
+            tabIndex={-1}
           >
             Copy {type}
           </button>
         ))}
+      </div>
+      <div
+        className={`absolute inset-0 font-semibold text-white p-1 rounded-md capitalize transition-all duration-200 ease-in bg-transparent items-center justify-center ${
+          state === `iddle` ? `hidden` : `flex`
+        }`}
+      >
+        <span className="flex items-center justify-center w-full h-full transition-all duration-200 ease-in bg-gray-800 rounded-lg opacity-50">
+          Copied
+        </span>
       </div>
     </div>
   );
