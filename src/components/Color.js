@@ -44,7 +44,9 @@ const Color = ({ color }) => {
       </button>
       <div
         id="board"
-        className="absolute inset-0 grid grid-cols-1 grid-rows-2 gap-2 p-1 transition-opacity duration-200 opacity-0 hover:opacity-100"
+        className={`absolute inset-0 grid-cols-1 grid-rows-2 gap-2 p-1 transition-opacity duration-200 opacity-0 hover:opacity-100 ${
+          state === `iddle` ? `grid` : `hidden`
+        }`}
       >
         {types.map((type, i) => (
           <button
@@ -62,7 +64,7 @@ const Color = ({ color }) => {
           state === `iddle` ? `hidden` : `flex`
         }`}
       >
-        <span className="flex items-center justify-center w-full h-full transition-all duration-200 ease-in bg-gray-800 rounded-lg opacity-50">
+        <span className="flex items-center justify-center w-full h-full transition-all duration-200 ease-in bg-gray-800 rounded-lg opacity-75">
           Copied
         </span>
       </div>
