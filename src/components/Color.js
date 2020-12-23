@@ -64,7 +64,7 @@ const Color = ({ color }) => {
           state === `iddle` ? `hidden` : `flex`
         }`}
       >
-        <span className="flex items-center justify-center w-full h-full transition-all duration-200 ease-in bg-gray-800 rounded-lg opacity-75">
+        <span className="flex items-center justify-center w-full h-full transition-all duration-200 ease-in bg-gray-800 rounded-lg opacity-90">
           Copied
         </span>
       </div>
