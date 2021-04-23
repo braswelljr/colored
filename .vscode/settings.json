@@ -3,6 +3,10 @@
     "source.fixAll.eslint": true,
     "source.fixAll.markdownlint": true,
   },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "eslint.validate": [
     "javascript",
     "typescript",
@@ -15,9 +19,21 @@
     "javascript": "javascriptreact",
     "typescript": "typescriptreact"
   },
-  "files.associations": {
-    "install-sh": "bat",
-    "": ""
-  },
   "diffEditor.wordWrap": "on",
+  "scss.validate": false,
+  "editor.quickSuggestions": {
+      "strings": true
+  },
+  "editor.autoClosingQuotes": "always",
+  "tailwindCSS.experimental.classRegex": [
+      "tw`([^`]*)", // tw`...`
+      "tw=\"([^\"]*)", // <div tw="..." />
+      "tw={\"([^\"}]*)", // <div tw={"..."} />
+      "tw\\.\\w+`([^`]*)", // tw.xxx`...`
+      "tw\\(.*?\\)`([^`]*)" // tw(Component)`...`
+  ],
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  }
 }

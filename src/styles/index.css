@@ -1,21 +1,8 @@
 @font-face{
-  font-family: 'Langar';
-  src: url('../fonts/langar.ttf') format('truetype');
-}
-@font-face{
-  font-family: 'Monoton';
-  src: url('../fonts/monoton.ttf') format('truetype');
-}
-@font-face{
   font-family: 'Mulish';
   src: url('../fonts/mulish.ttf') format('truetype');
 }
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-.movebgSize{
-  background-size: 400% 400%;
-}
-.clip-head{
-  clip-path: polygon(100% 0, 100% 95%, 50% 100%, 0 95%, 0 0);
-}
+.clip-head{clip-path: polygon(100% 0, 100% 95%, 50% 100%, 0 95%, 0 0)}

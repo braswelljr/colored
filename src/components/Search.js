@@ -1,7 +1,12 @@
-import { useEffect } from "react";
+import React from "react";
+import { SearchIcon } from "@heroicons/react/solid";
+import useStore from "../store";
 
 const Search = () => {
-  useEffect(() => {
+  const searchInputRef = React.useRef();
+  const colors = useStore(state => state.hsl);
+
+  React.useEffect(() => {
     function onKeyDown(e) {
       if (
         e.key !== "/" ||
@@ -13,6 +18,7 @@ const Search = () => {
         return;
       }
       e.preventDefault();
+      searchInputRef.current.focus();
     }
     window.addEventListener("keydown", onKeyDown);
     return () => {
@@ -20,50 +26,29 @@ const Search = () => {
     };
   }, []);
 
-  useEffect(() => {
-    document.addEventListener("keyup", (key) => {
-      if (key.key === "/") {
-        document.querySelector("#search-input").focus();
-      }
-    });
-  }, []);
   return (
-    <div
-      id="search"
-      className={`sticky z-40 px-4 bg-white shadow md:px-12 lg:px-20 top-14`}
+    <form
+      className="sticky top-0 z-20 px-4 bg-white shadow group sm:px-6 lg:px-16"
+      onSubmit={e => e.preventDefault()}
     >
-      <form className="md:px-6" onSubmit={(event) => event.preventDefault()}>
-        <div className="flex mx-auto max-w-container">
-          <label
-            htmlFor="search-input"
-            className="flex items-center flex-none pr-3"
-          >
-            <span className="sr-only">Search all colors</span>
-            <svg
-              width="24"
-              height="24"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="text-gray-400 transition-colors duration-150 group-focus-within:text-gray-500"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              ></path>
-            </svg>
-          </label>
-          <input
-            type="text"
-            id="search-input"
-            placeholder="Search all colors (Press “/” to focus)"
-            className="flex-auto py-6 text-base leading-6 text-gray-500 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400"
-          />
-        </div>
-      </form>
-    </div>
+      <div className="flex mx-auto max-w-container">
+        <label
+          htmlFor="search-input"
+          className="flex items-center flex-none pr-3"
+        >
+          <span className="sr-only">Search all {colors.length} colors</span>
+          <SearchIcon className="w-auto h-5 text-gray-400 transition-colors duration-150 group-focus-within:text-gray-500" />
+        </label>
+        <input
+          type="text"
+          id="search-input"
+          autoComplete="off"
+          ref={searchInputRef}
+          placeholder={`Search all ${colors.length} colors (Press “/” to focus)`}
+          className="flex-auto py-6 text-base leading-6 text-gray-500 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400"
+        />
+      </div>
+    </form>
   );
 };
 

@@ -1,6 +1,11 @@
 {
   "name": "Colored",
   "short_name": "Colored",
+  "orientation": "portrait",
+  "start_url": ".",
+  "theme_color": "#2088ff",
+  "background_color": "#ffffff",
+  "display": "standalone",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,18 +13,14 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "./icons/logo192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "logo512.png",
+      "src": "./icons/logo512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "start_url": ".",
-  "theme_color": "#2088ff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  ]
 }
