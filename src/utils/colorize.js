@@ -96,16 +96,36 @@ let colors = [];
 //   }
 // }
 
+// for (let i = 0; i < hs.length; i++) {
+//   for (let j = 0; j < rg.length; j++) {
+//     for (let k = 0; k < he.length; k++) {
+//       if (i === j && j === k) {
+//         colors.push(
+//           `{ hsl: "hsl(${hs[i].h}, ${hs[i].s * 100}%, ${
+//             hs[i].l * 100
+//           }%)", rgb: "rgb(${rg[j].r}, ${rg[j].g}, ${rg[j].b})", hex: "${
+//             he[k]
+//           }" }`
+//         );
+//       }
+//     }
+//   }
+// }
+
 for (let i = 0; i < hs.length; i++) {
   for (let j = 0; j < rg.length; j++) {
     for (let k = 0; k < he.length; k++) {
       if (i === j && j === k) {
         colors.push(
-          `{ hsl: "hsl(${hs[i].h}, ${hs[i].s * 100}%, ${
+          `{string: { hsl: "hsl(${hs[i].h}, ${hs[i].s * 100}%, ${
             hs[i].l * 100
           }%)", rgb: "rgb(${rg[j].r}, ${rg[j].g}, ${rg[j].b})", hex: "${
             he[k]
-          }" }`
+          }" }, obj: { hsl: {h: ${hs[i].h}, s: ${hs[i].s * 100}, l: ${
+            hs[i].l * 100
+          }}, rgb: {r: ${rg[j].r}, g: ${rg[j].g}, b: ${rg[j].b}}, hex: "${
+            he[k]
+          }" }}`
         );
       }
     }
@@ -113,7 +133,7 @@ for (let i = 0; i < hs.length; i++) {
 }
 
 fs.writeFile(
-  `../assets/two.js`,
+  `../assets/three.js`,
   `export const colored = [${[...colors]}];`,
   error =>
     error
