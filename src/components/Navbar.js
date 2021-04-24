@@ -6,7 +6,7 @@ const Navbar = ({ appName }) => {
   const theme = useStore(state => state.theme);
   const themeLight = useStore(state => state.themeLight);
   const themeDark = useStore(state => state.themeDark);
-  const colors = useStore(state => state.hsl);
+  const colors = useStore(state => state.colors);
 
   return (
     <nav
@@ -65,7 +65,7 @@ const Navbar = ({ appName }) => {
       <section
         className={`w-full px-6 py-5 space-y-5 md:py-8 lg:py-10 lg:flex-row xl:px-28 lg:px-20 lg:space-x-10`}
       >
-        <div className="text-xl font-bold leading-9 tracking-wider uppercase px-auto">
+        <div className="text-xl font-bold leading-9 tracking-wider text-center uppercase px-auto">
           <span className="text-gray-300">{appName}</span>, gets you to chose
           design with your handpicked colors.
         </div>

@@ -1,12 +1,14 @@
-import React from "react";
+import { useState, useEffect, useRef } from "react";
 import { SearchIcon } from "@heroicons/react/solid";
 import useStore from "../store";
 
 const Search = () => {
-  const searchInputRef = React.useRef();
-  const colors = useStore(state => state.hsl);
+  const searchInputRef = useRef();
+  const colors = useStore(state => state.colors);
+  const [searchQuery, setSearchQuery] = useState("");
+  const search = useStore(state => state.search);
 
-  React.useEffect(() => {
+  useEffect(() => {
     function onKeyDown(e) {
       if (
         e.key !== "/" ||
@@ -26,6 +28,15 @@ const Search = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const handler = window.setTimeout(() => {
+      search(colors, searchQuery);
+    }, 100);
+    return () => {
+      window.clearTimeout(handler);
+    };
+  }, [colors, searchQuery]);
+
   return (
     <form
       className="sticky top-0 z-20 px-4 bg-white shadow group sm:px-6 lg:px-16"
@@ -44,6 +55,8 @@ const Search = () => {
           id="search-input"
           autoComplete="off"
           ref={searchInputRef}
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
           placeholder={`Search all ${colors.length} colors (Press “/” to focus)`}
           className="flex-auto py-6 text-base leading-6 text-gray-500 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400"
         />
