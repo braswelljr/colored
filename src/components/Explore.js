@@ -7,6 +7,7 @@ const Explore = () => {
   const colors = useStore(state => state.colors);
   const format = useStore(state => state.format);
   const filterate = useStore(state => state.filter);
+  const query = useStore(state => state.query);
   const [renderAll, setRenderAll] = useState(false);
 
   useEffect(() => {
@@ -15,9 +16,25 @@ const Explore = () => {
 
   const filteredColors = filterate
     ? colors
-        .filter(color => filterate.indexOf(color) !== -1)
-        .sort((a, b) => filterate.indexOf(a) - filterate.indexOf(b))
+      .filter(color => filterate.indexOf(color) !== -1)
+      .sort((a, b) => filterate.indexOf(a) - filterate.indexOf(b))
     : colors;
+
+  if (filterate && filterate.length === 0) {
+    return (
+      <>
+        <div className="px-4 py-20 text-center sm:pt-24 sm:pb-36 lg:pt-40 lg:pb-56">
+          <div className="mb-3 text-lg font-medium leading-6 text-gray-500">
+            <p>
+              Sorry! There are no colors for “{query}” 😥 make sure the code you
+              entered matches the following #abc012, rgb(0, 100, 255) and
+              hsl(360, 100, 50)
+            </p>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -32,21 +49,21 @@ const Explore = () => {
           filteredColors
             .slice(0, renderAll ? undefined : colors.length)
             .map((color, i) => (
-              <ColorPad key={i} color={`${color.string.hsl}`} />
+              <ColorPad key={i} name={`${color.string.hsl}`} color={color} />
             ))}
 
         {format === "rgb" &&
           filteredColors
             .slice(0, renderAll ? undefined : colors.length)
             .map((color, i) => (
-              <ColorPad key={i} color={`${color.string.rgb}`} />
+              <ColorPad key={i} name={`${color.string.rgb}`} color={color} />
             ))}
 
         {format === "hex" &&
           filteredColors
             .slice(0, renderAll ? undefined : colors.length)
             .map((color, i) => (
-              <ColorPad key={i} color={`${color.string.hex}`} />
+              <ColorPad key={i} name={`${color.string.hex}`} color={color} />
             ))}
       </div>
     </>

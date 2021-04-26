@@ -13,8 +13,9 @@ const useStore = create(
         query,
         filter: query
           ? matchSorter(collection, query, {
-              keys: ["string.hsl", "string.rgb", "string.hex"]
-            })
+              threshold: matchSorter.rankings.WORD_STARTS_WITH,
+              keys: ["string.hsl", "string.rgb", "string.hex", "name", "tag.*"]
+          })
           : undefined
       }),
     theme: {
@@ -42,11 +43,19 @@ const useStore = create(
         })
       })),
     format: "hsl",
-    gen: { state: "closed", color: "" },
-    openGen: color =>
-      set(state => ({ gen: (state.gen = { state: "opened", color: color }) })),
+    gen: { state: "closed", name: "", color: {} },
+    openGen: (name, color) =>
+      set(state => ({
+        gen: (state.gen = {
+          state: "opened",
+          name: name,
+          color: color
+        })
+      })),
     closeGen: () =>
-      set(state => ({ gen: (state.gen = { state: "closed", color: "" }) })),
+      set(state => ({
+        gen: (state.gen = { state: "closed", name: "", color: {} })
+      })),
     setRGB: () => set(state => ({ format: (state.format = "rgb") })),
     setHSL: () => set(state => ({ format: (state.format = "hsl") })),
     setHEX: () => set(state => ({ format: (state.format = "hex") }))

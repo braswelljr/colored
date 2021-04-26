@@ -1,9 +1,19 @@
-import React from "react";
+import { useEffect } from "react";
 import useStore from "../store";
 
 const Generator = () => {
   const gen = useStore(state => state.gen);
   const closeGen = useStore(state => state.closeGen);
+
+  useEffect(() => {
+    if (gen.state === "closed") {
+      document.body.style.overflowY = "auto";
+      document.body.style.height = "100%";
+    } else {
+      document.body.style.overflowY = "hidden";
+      document.body.style.height = "100vh";
+    }
+  }, [gen.state]);
 
   return (
     <div
@@ -24,10 +34,16 @@ const Generator = () => {
       >
         <div className="flex items-center space-x-2">
           <div
-            style={{ backgroundColor: gen.color }}
+            style={{ backgroundColor: gen.name }}
             className="w-24 h-16 rounded-xl"
           ></div>
-          <div className="">{gen.color}</div>
+          <div className="font-semibold">
+            {gen.state === "opened"
+              ? gen.color.name.length <= 0
+                ? gen.name
+                : `${gen.color.name} / ${gen.name}`
+              : gen.name}
+          </div>
         </div>
       </div>
     </div>

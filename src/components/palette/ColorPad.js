@@ -3,7 +3,7 @@ import { Transition } from "@tailwindui/react";
 import { Alert } from "@reach/alert";
 import useStore from "../../store";
 
-const ColorPad = ({ color }) => {
+const ColorPad = ({ name, color }) => {
   const [copied, setCopied] = useState(undefined);
   const openGen = useStore(state => state.openGen);
 
@@ -12,16 +12,16 @@ const ColorPad = ({ color }) => {
   }
 
   useEffect(() => {
-    window.setTimeout(() => setCopied(undefined), 500);
+    window.setTimeout(() => setCopied(undefined), 1000);
   }, [copied]);
 
   return (
     <>
       <div
-        style={{ backgroundColor: `${color}` }}
+        style={{ backgroundColor: `${name}` }}
         className={`h-24 relative flex items-center cursor-pointer font-semibold text-gray-800 rounded-lg justify-center`}
       >
-        {color}
+        {name}
         <div className="absolute opacity-0 hover:opacity-100 grid inset-0 transition-all duration-200 ease-in h-full grid-flow-row grid-rows-2 gap-2 p-1.5">
           <button
             type="button"
@@ -29,7 +29,7 @@ const ColorPad = ({ color }) => {
             onClick={event => {
               event.preventDefault();
               copied === undefined ? setCopied("copied") : setCopied(undefined);
-              copyColor(color);
+              copyColor(name);
             }}
             tabIndex={-1}
           >
@@ -39,7 +39,7 @@ const ColorPad = ({ color }) => {
             type="button"
             className={`flex items-center w-full justify-center font-bold rounded-b-lg bg-gray-900 text-white bg-opacity-30 focus:outline-none hover:bg-opacity-60`}
             tabIndex={-1}
-            onClick={() => openGen(color)}
+            onClick={() => openGen(name, color)}
           >
             Split
           </button>
