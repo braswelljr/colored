@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Switch from "../components/Switch";
 import Generator from "../components/Generator";
@@ -8,9 +8,10 @@ import Search from "../components/Search";
 import useStore from "../store";
 
 const Index = () => {
-  const appName = `colored`;
-  const [themeSwitch, setThemeSwitch] = useState("light");
+  const appName = "colored";
   const theme = useStore(state => state.theme);
+  const themeDark = useStore(state => state.themeDark);
+  const themeLight = useStore(state => state.themeLight);
 
   /**
    * Save theme for localStorage
@@ -20,8 +21,9 @@ const Index = () => {
       if (typeof Storage !== "undefined") {
         localStorage.getItem(appName) === null
           ? localStorage.setItem(appName, theme.state)
-          : setThemeSwitch(localStorage.getItem(appName));
+          : localStorage.getItem(appName);
       }
+      localStorage.getItem(appName) === "light" ? themeLight() : themeDark();
     });
   }, [appName]);
 
@@ -36,9 +38,9 @@ const Index = () => {
         className={`w-full px-3 py-4 md:px-12 xl:px-24 lg:px-20`}
         // pt-[17.5rem]
       >
-        <Explore themeSwitch={themeSwitch} />
+        <Explore />
       </section>
-      <Topper themeSwitch={themeSwitch} />
+      <Topper />
       <Generator />
     </main>
   );

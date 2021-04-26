@@ -41,7 +41,7 @@
       "warn",{
         "endOfLine": "auto",
         "trailingComma": "none",
-        "printWidth": 80,
+        "printWidth": 100,
         "tabWidth": 2, 
         "semi": true, 
         "singleQuote": false,

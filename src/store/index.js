@@ -13,11 +13,12 @@ const useStore = create(
         query,
         filter: query
           ? matchSorter(collection, query, {
-              threshold: matchSorter.rankings.WORD_STARTS_WITH,
-              keys: ["string.hsl", "string.rgb", "string.hex", "name", "tag.*"]
-          })
+            threshold: matchSorter.rankings.WORD_STARTS_WITH,
+            keys: ["string.hsl", "string.rgb", "string.hex", "name", "tag.*"]
+            })
           : undefined
       }),
+    // -> work on fetching theme
     theme: {
       state: "light",
       foreground: "#9E2A2B",

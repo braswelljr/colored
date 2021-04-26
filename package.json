@@ -9,11 +9,10 @@
     "lint": "eslint --fix"
   },
   "dependencies": {
-    "@headlessui/react": "^1.0.0",
+    "@headlessui/react": "^1.1.0",
     "@heroicons/react": "^1.0.1",
     "@reach/alert": "^0.15.0",
     "@reduxjs/toolkit": "^1.5.1",
-    "@tailwindui/react": "^0.1.1",
     "closestvector": "^0.6.1",
     "clsx": "^1.1.1",
     "color-name-list": "^7.45.1",
