@@ -103,7 +103,7 @@ const Generator = () => {
                 : gen.name}
             </div>
           </div>
-          <div className="flex justify-end space-x-1 md:hidden">
+          <div className="flex flex-wrap justify-end space-x-1 md:hidden">
             <button
               className={`block px-2 rounded-full ${
                 x !== "sat" ? `bg-gray-100` : `bg-gray-500`

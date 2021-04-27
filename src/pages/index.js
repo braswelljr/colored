@@ -27,6 +27,12 @@ const Index = () => {
     });
   }, [appName]);
 
+  useEffect(() => {
+    const mediaColor = window.matchMedia("(prefers-color-scheme: dark)");
+
+    mediaColor.addEventListener("load", event => (event.matches ? themeDark() : themeLight()));
+  }, []);
+
   return (
     <main style={{ scrollBehavior: `smooth` }} className={``}>
       {/* fixed inset-x-0 top-0 */}
