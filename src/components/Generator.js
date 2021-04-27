@@ -34,10 +34,10 @@ const Generator = () => {
     const color = gen.color.obj.hsl;
     let saturation = [];
     let lightness = [];
-    for (let s = 0; s <= 100; s += 5) {
+    for (let s = 0; s < 100; s += 5) {
       saturation.push({ h: color.h, s: s, l: color.l });
     }
-    for (let l = 0; l <= 100; l += 5) {
+    for (let l = 5; l <= 100; l += 5) {
       lightness.push({ h: color.h, s: color.s, l: l });
     }
     gen.saturation = saturation;
@@ -127,7 +127,7 @@ const Generator = () => {
           {/* saturation */}
           <section className={`${x === "sat" ? `block` : `hidden`} md:block`}>
             <div className="font-semibold">Saturation</div>
-            <div style={{ gridTemplateRows: `auto` }} className="grid grid-cols-2 gap-0">
+            <div style={{ gridTemplateRows: `auto` }} className="grid grid-cols-2 gap-0 pt-6">
               {gen.state === "opened"
                 ? gen.saturation.map((color, i) => {
                   if (format === "hsl") {
@@ -146,7 +146,7 @@ const Generator = () => {
           {/* lightness */}
           <section className={`${x !== "sat" ? `block` : `hidden`} md:block`}>
             <div className="font-semibold">Lightness</div>
-            <div style={{ gridTemplateRows: `auto` }} className="grid grid-cols-2 gap-0">
+            <div style={{ gridTemplateRows: `auto` }} className="grid grid-cols-2 gap-0 pt-6">
               {gen.state === "opened"
                 ? gen.lightness.map((color, i) => {
                   if (format === "hsl") {
