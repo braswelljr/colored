@@ -4,6 +4,8 @@ Colored is a color picker 🎨 website to help designers pick their website colo
 
 Colored was built on [`React`](https://reactjs.org/) using [`Nextjs`](https://nextjs.org/), styled with [`Tailwindcss`](https://tailwindcss.com/) and deployed on [`Vercel`](https://vercel.com/dashboard).
 
+Link to site [`Colored`](https://colored.vercel.app).
+
 ### Libraries
 
 - [Zustand](https://zustand.surge.sh/)
