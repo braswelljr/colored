@@ -44,18 +44,20 @@ const useStore = create(
         })
       })),
     format: "hsl",
-    gen: { state: "closed", name: "", color: {} },
-    openGen: (name, color) =>
+    gen: { state: "closed", name: "", color: {}, saturation: [], lightness: [] },
+    openGen: (name, color, saturation, lightness) =>
       set(state => ({
         gen: (state.gen = {
           state: "opened",
           name: name,
-          color: color
+          color: color,
+          saturation: saturation,
+          lightness: lightness
         })
       })),
     closeGen: () =>
       set(state => ({
-        gen: (state.gen = { state: "closed", name: "", color: {} })
+        gen: (state.gen = { state: "closed", name: "", color: {}, saturation: [], lightness: [] })
       })),
     setRGB: () => set(state => ({ format: (state.format = "rgb") })),
     setHSL: () => set(state => ({ format: (state.format = "hsl") })),

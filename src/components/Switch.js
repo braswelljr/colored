@@ -14,7 +14,7 @@ const Switch = () => {
   return (
     <>
       <div
-        className={`fixed z-20 right-0 w-auto outline-none overflow-hidden space-x-0 top-[50vh] text-current transform transition-all ease-in duration-200 ${
+        className={`fixed z-[22] right-0 w-auto outline-none overflow-hidden space-x-0 top-[50vh] text-current transform transition-all ease-in duration-200 ${
           close === "closed" ? "translate-x-32" : "translate-x-0"
         } flex items-center justify-center`}
       >
@@ -32,11 +32,7 @@ const Switch = () => {
           }}
           tabIndex={-1}
         >
-          {close === "closed" ? (
-            <CodeIcon className="w-5 h-5" />
-          ) : (
-            <XIcon className="w-5 h-5" />
-          )}
+          {close === "closed" ? <CodeIcon className="w-5 h-5" /> : <XIcon className="w-5 h-5" />}
         </button>
         <div
           style={{
@@ -49,9 +45,7 @@ const Switch = () => {
           <button
             style={{
               backgroundImage: circuit,
-              backgroundColor: `${
-                format === `hsl` ? theme.honey : theme.foreground
-              }`,
+              backgroundColor: `${format === `hsl` ? theme.honey : theme.foreground}`,
               color: `${format === `hsl` ? theme.foreground : theme.honey}`
             }}
             className="block px-12 py-2 font-medium leading-relaxed rounded-l-xl focus:outline-none"
@@ -62,9 +56,7 @@ const Switch = () => {
           <button
             style={{
               backgroundImage: circuit,
-              backgroundColor: `${
-                format === `rgb` ? theme.honey : theme.foreground
-              }`,
+              backgroundColor: `${format === `rgb` ? theme.honey : theme.foreground}`,
               color: `${format === `rgb` ? theme.foreground : theme.honey}`
             }}
             className="block px-[2.925rem] py-2 font-medium leading-relaxed rounded-l-xl focus:outline-none"
@@ -75,9 +67,7 @@ const Switch = () => {
           <button
             style={{
               backgroundImage: circuit,
-              backgroundColor: `${
-                format === `hex` ? theme.honey : theme.foreground
-              }`,
+              backgroundColor: `${format === `hex` ? theme.honey : theme.foreground}`,
               color: `${format === `hex` ? theme.foreground : theme.honey}`
             }}
             className="block px-12 py-2 font-medium leading-relaxed rounded-l-xl focus:outline-none"
@@ -87,6 +77,13 @@ const Switch = () => {
           </button>
         </div>
       </div>
+      <button
+        className={`${
+          close === "closed" ? `hidden` : `fixed`
+        } z-[21] inset-0 w-full h-full bg-gray-800 bg-opacity-20`}
+        tabIndex={-1}
+        onClick={() => setClose("closed")}
+      ></button>
     </>
   );
 };

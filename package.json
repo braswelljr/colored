@@ -12,7 +12,6 @@
     "@headlessui/react": "^1.1.0",
     "@heroicons/react": "^1.0.1",
     "@reach/alert": "^0.15.0",
-    "@reduxjs/toolkit": "^1.5.1",
     "closestvector": "^0.6.1",
     "clsx": "^1.1.1",
     "color-name-list": "^7.45.1",
@@ -23,8 +22,6 @@
     "react": "^17.0.2",
     "react-color": "^2.19.3",
     "react-dom": "^17.0.2",
-    "react-redux": "^7.2.3",
-    "redux": "^4.0.5",
     "zustand": "^3.4.1"
   },
   "devDependencies": {

@@ -41,7 +41,7 @@ const ColorPad = ({ name, color }) => {
             tabIndex={-1}
             onClick={() => openGen(name, color)}
           >
-            Split
+            Shades
           </button>
         </div>
         <Transition
