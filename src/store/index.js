@@ -13,9 +13,9 @@ const useStore = create(
         query,
         filter: query
           ? matchSorter(collection, query, {
-            threshold: matchSorter.rankings.WORD_STARTS_WITH,
-            keys: ["string.hsl", "string.rgb", "string.hex", "name", "tag.*"]
-            })
+              threshold: matchSorter.rankings.WORD_STARTS_WITH,
+              keys: ["string.hsl", "string.rgb", "string.hex", "name", "tag.*"]
+          })
           : undefined
       }),
     // -> work on fetching theme
@@ -43,7 +43,7 @@ const useStore = create(
           honey: "#FFE66D"
         })
       })),
-    format: "hsl",
+    format: "hex",
     gen: { state: "closed", name: "", color: {}, saturation: [], lightness: [] },
     openGen: (name, color, saturation, lightness) =>
       set(state => ({

@@ -34,10 +34,10 @@ const Generator = () => {
     const color = gen.color.obj.hsl;
     let saturation = [];
     let lightness = [];
-    for (let s = 0; s < 100; s += 5) {
+    for (let s = 0; s <= 100; s++) {
       saturation.push({ h: color.h, s: s, l: color.l });
     }
-    for (let l = 5; l <= 100; l += 5) {
+    for (let l = 0; l <= 100; l++) {
       lightness.push({ h: color.h, s: color.s, l: l });
     }
     gen.saturation = saturation;
@@ -59,11 +59,11 @@ const Generator = () => {
         onClick={closeGen}
       ></button>
       <div
-        className={`fixed z-30 inset-x-0 bottom-0 bg-white h-[80vh] rounded-t-3xl px-3 py-4 md:px-12 xl:px-24 lg:px-20`}
+        className={`fixed z-30 inset-x-0 bottom-0 overflow-y-auto bg-white h-[90vh] rounded-t-3xl px-3 py-2 md:px-12 xl:px-24 lg:px-20 scrollbars-hidden scrollbars-hidden-f`}
       >
         <div
           style={{ gridTemplateColumns: `minmax(0, 3fr) minmax(0, 2fr)` }}
-          className="grid items-center justify-between"
+          className="fixed inset-x-0 z-[1] -mt-2 grid items-center justify-between px-3 py-2 bg-white rounded-t-3xl md:px-12 xl:px-24 lg:px-20"
         >
           <div className="flex items-center space-x-2">
             <button
@@ -103,7 +103,7 @@ const Generator = () => {
                 : gen.name}
             </div>
           </div>
-          <div className="flex flex-wrap justify-end space-x-1 md:hidden">
+          <div className="flex flex-col justify-end space-x-1 space-y-2 md:hidden">
             <button
               className={`block px-2 rounded-full ${
                 x !== "sat" ? `bg-gray-100` : `bg-gray-500`
@@ -122,23 +122,27 @@ const Generator = () => {
             </button>
           </div>
         </div>
+
         {/* saturation and lightness */}
-        <div className="relative grid items-start grid-cols-1 pt-8 pb-12 mx-auto md:grid-cols-2 gap-x-8 sm:gap-x-12 lg:gap-x-16 gap-y-4 sm:gap-y-8 max-w-container sm:pt-4">
+        <div className="relative grid items-start grid-cols-1 pt-24 pb-12 mx-auto md:grid-cols-2 gap-x-8 sm:gap-x-12 lg:gap-x-16 gap-y-4 sm:gap-y-8 max-w-container">
           {/* saturation */}
           <section className={`${x === "sat" ? `block` : `hidden`} md:block`}>
             <div className="font-semibold">Saturation</div>
-            <div style={{ gridTemplateRows: `auto` }} className="grid grid-cols-2 gap-0 pt-6">
+            <div
+              style={{ gridTemplateColumns: "repeat(auto-fill, minmax(132px, 1fr))" }}
+              className="grid gap-2 pt-4 "
+            >
               {gen.state === "opened"
                 ? gen.saturation.map((color, i) => {
-                  if (format === "hsl") {
-                    return <GenPad key={i} color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`} />;
-                  } else if (format === "rgb") {
-                    color = HSLtoRGB(color);
+                    if (format === "hsl") {
+                      return <GenPad key={i} color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`} />;
+                    } else if (format === "rgb") {
+                      color = HSLtoRGB(color);
                     return <GenPad key={i} color={`rgb(${color.r}, ${color.g}, ${color.b})`} />;
-                  } else if (format === "hex") {
-                    color = RGBtoHEX(HSLtoRGB(color));
-                    return <GenPad key={i} color={`${color}`} />;
-                  }
+                    } else if (format === "hex") {
+                      color = RGBtoHEX(HSLtoRGB(color));
+                      return <GenPad key={i} color={`${color}`} />;
+                    }
                 })
                 : undefined}
             </div>
@@ -146,18 +150,21 @@ const Generator = () => {
           {/* lightness */}
           <section className={`${x !== "sat" ? `block` : `hidden`} md:block`}>
             <div className="font-semibold">Lightness</div>
-            <div style={{ gridTemplateRows: `auto` }} className="grid grid-cols-2 gap-0 pt-6">
+            <div
+              style={{ gridTemplateColumns: "repeat(auto-fill, minmax(132px, 1fr))" }}
+              className="grid gap-2 pt-4"
+            >
               {gen.state === "opened"
                 ? gen.lightness.map((color, i) => {
-                  if (format === "hsl") {
-                    return <GenPad key={i} color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`} />;
-                  } else if (format === "rgb") {
-                    color = HSLtoRGB(color);
+                    if (format === "hsl") {
+                      return <GenPad key={i} color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`} />;
+                    } else if (format === "rgb") {
+                      color = HSLtoRGB(color);
                     return <GenPad key={i} color={`rgb(${color.r}, ${color.g}, ${color.b})`} />;
-                  } else if (format === "hex") {
+                    } else if (format === "hex") {
                     color = RGBtoHEX(HSLtoRGB(color));
-                    return <GenPad key={i} color={`${color}`} />;
-                  }
+                      return <GenPad key={i} color={`${color}`} />;
+                    }
                 })
                 : undefined}
             </div>

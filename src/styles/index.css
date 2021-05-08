@@ -5,4 +5,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-.clip-head{clip-path: polygon(100% 0, 100% 95%, 50% 100%, 0 95%, 0 0)}
+@layer utilities{
+  @responsive{
+    .scrollbars-hidden-f{
+      scrollbar-width: none;
+    }
+    .scrollbars-hidden::-webkit-scrollbar{
+      display: none;
+    }
+    .clip-head{clip-path: polygon(100% 0, 100% 95%, 50% 100%, 0 95%, 0 0)}
+  }
+}
