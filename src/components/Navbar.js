@@ -85,7 +85,7 @@ const Navbar = ({ appName }) => {
             <span
               aria-hidden="true"
               style={{ backgroundImage: circuit, backgroundColor: theme.foreground }}
-              className={`${enabled ? "translate-x-7" : "translate-x-0"}
+              className={`${theme.state === "dark" ? "translate-x-7" : "translate-x-0"}
             pointer-events-none inline-block h-[26px] w-[26px] rounded-full shadow-lg transform ring-0 transition ease-in-out duration-200`}
             />
           </Switch>

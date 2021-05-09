@@ -111,7 +111,6 @@ const Generator = () => {
               <span className="sr-only">Use setting</span>
               <span
                 aria-hidden="true"
-                style={{ color: gen.name }}
                 className={`${enabled ? "translate-x-9" : "translate-x-0"}
             pointer-events-none inline-flex font-semibold h-[34px] w-[34px] rounded-full bg-white shadow-lg transform ring-0 items-center justify-center transition ease-in-out duration-200`}
               >
@@ -132,16 +131,16 @@ const Generator = () => {
             >
               {gen.state === "opened"
                 ? gen.saturation.map((color, i) => {
-                  if (format === "hsl") {
-                    return <GenPad key={i} color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`} />;
-                  } else if (format === "rgb") {
-                    color = HSLtoRGB(color);
-                      return <GenPad key={i} color={`rgb(${color.r}, ${color.g}, ${color.b})`} />;
-                  } else if (format === "hex") {
-                    color = RGBtoHEX(HSLtoRGB(color));
-                    return <GenPad key={i} color={`${color}`} />;
-                  }
-                  })
+                    if (format === "hsl") {
+                      return <GenPad key={i} color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`} />;
+                    } else if (format === "rgb") {
+                      color = HSLtoRGB(color);
+                    return <GenPad key={i} color={`rgb(${color.r}, ${color.g}, ${color.b})`} />;
+                    } else if (format === "hex") {
+                      color = RGBtoHEX(HSLtoRGB(color));
+                      return <GenPad key={i} color={`${color}`} />;
+                    }
+                })
                 : undefined}
             </div>
           </section>
@@ -154,16 +153,16 @@ const Generator = () => {
             >
               {gen.state === "opened"
                 ? gen.lightness.map((color, i) => {
-                  if (format === "hsl") {
-                    return <GenPad key={i} color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`} />;
-                  } else if (format === "rgb") {
-                    color = HSLtoRGB(color);
-                      return <GenPad key={i} color={`rgb(${color.r}, ${color.g}, ${color.b})`} />;
-                  } else if (format === "hex") {
-                      color = RGBtoHEX(HSLtoRGB(color));
-                    return <GenPad key={i} color={`${color}`} />;
-                  }
-                  })
+                    if (format === "hsl") {
+                      return <GenPad key={i} color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`} />;
+                    } else if (format === "rgb") {
+                      color = HSLtoRGB(color);
+                    return <GenPad key={i} color={`rgb(${color.r}, ${color.g}, ${color.b})`} />;
+                    } else if (format === "hex") {
+                    color = RGBtoHEX(HSLtoRGB(color));
+                      return <GenPad key={i} color={`${color}`} />;
+                    }
+                })
                 : undefined}
             </div>
           </section>
