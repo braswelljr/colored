@@ -17,7 +17,7 @@ const GenPad = ({ color }) => {
     <>
       <button
         style={{ backgroundColor: color }}
-        className="relative block w-full h-24 overflow-hidden text-xs border rounded-md cursor-pointer focus:outline-none"
+        className="relative block w-full h-20 overflow-hidden text-xs border rounded-md cursor-pointer focus:outline-none"
         onClick={event => {
           event.preventDefault();
           copied === undefined ? setCopied("copied") : setCopied(undefined);

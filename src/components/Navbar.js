@@ -1,19 +1,21 @@
-import React from "react";
+import { useState } from "react";
 import { circuit } from "../backgrounds/background";
 import useStore from "../store";
+import { Switch } from "@headlessui/react";
 
 const Navbar = ({ appName }) => {
   const theme = useStore(state => state.theme);
   const themeLight = useStore(state => state.themeLight);
   const themeDark = useStore(state => state.themeDark);
   const colors = useStore(state => state.colors);
+  const [enabled, setEnabled] = useState(false);
 
   return (
     <nav
       style={{
         backgroundImage: circuit,
-        backgroundColor: `${theme.foreground}`,
-        color: `${theme.honey}`
+        backgroundColor: theme.foreground,
+        color: theme.honey
       }}
       className={`w-full px-3 py-4 text-white shadow-lg md:px-12 xl:px-28 lg:px-20 clip-head`}
     >
@@ -38,7 +40,7 @@ const Navbar = ({ appName }) => {
           </svg>
           <div className={`uppercase font-semibold`}>{appName}</div>
         </div>
-        <button
+        {/* <button
           type="button"
           className={`w-10 focus:outline-none h-3 transform translate-x-[-0.1rem] bg-yellow-200 rounded-lg relative shadow-inner`}
           onClick={event => {
@@ -60,14 +62,41 @@ const Navbar = ({ appName }) => {
               backgroundColor: `${theme.honey}`
             }}
           ></div>
-        </button>
+        </button> */}
+        <div className="">
+          <Switch
+            checked={enabled}
+            onChange={() => {
+              setEnabled(!enabled);
+              if (theme.state !== "light") {
+                themeLight();
+                localStorage.setItem(appName, "light");
+              } else {
+                themeDark();
+                localStorage.setItem(appName, "dark");
+              }
+            }}
+            style={{
+              backgroundColor: `${theme.honey}`
+            }}
+            className={`relative inline-flex flex-shrink-0 h-[30px] w-[60px] border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+          >
+            <span className="sr-only">Use setting</span>
+            <span
+              aria-hidden="true"
+              style={{ backgroundImage: circuit, backgroundColor: theme.foreground }}
+              className={`${enabled ? "translate-x-7" : "translate-x-0"}
+            pointer-events-none inline-block h-[26px] w-[26px] rounded-full shadow-lg transform ring-0 transition ease-in-out duration-200`}
+            />
+          </Switch>
+        </div>
       </section>
       <section
         className={`w-full px-6 py-5 space-y-5 md:py-8 lg:py-10 lg:flex-row xl:px-28 lg:px-20 lg:space-x-10`}
       >
         <div className="text-xl font-bold leading-9 tracking-wider text-center uppercase px-auto">
-          <span className="text-gray-300">{appName}</span>, gets you to chose
-          design with your handpicked colors.
+          <span className="text-gray-300">{appName}</span>, gets you to chose design with your
+          handpicked colors.
         </div>
         <div className="flex items-center justify-between w-full text-xs font-semibold">
           <div className="flex items-center">
