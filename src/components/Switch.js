@@ -37,7 +37,11 @@ const Switch = () => {
           }}
           tabIndex={-1}
         >
-          {close === 'closed' ? <CodeIcon className="w-5 h-5" /> : <XIcon className="w-5 h-5" />}
+          {close === 'closed' ? (
+            <CodeIcon className="w-5 h-5" />
+          ) : (
+            <XIcon className="w-5 h-5" />
+          )}
         </button>
         <div
           style={{

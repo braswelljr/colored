@@ -1,19 +1,19 @@
-import { useState, useEffect } from "react";
-import { Transition } from "@headlessui/react";
-import { Alert } from "@reach/alert";
-import useStore from "../../store";
+import { useState, useEffect } from 'react'
+import { Transition } from '@headlessui/react'
+import { Alert } from '@reach/alert'
+import useStore from '../../store'
 
 const ColorPad = ({ name, color }) => {
-  const [copied, setCopied] = useState(undefined);
-  const openGen = useStore(state => state.openGen);
+  const [copied, setCopied] = useState(undefined)
+  const openGen = useStore(state => state.openGen)
 
   function copyColor(color) {
-    return navigator.clipboard.writeText(`${color}`);
+    return navigator.clipboard.writeText(`${color}`)
   }
 
   useEffect(() => {
-    window.setTimeout(() => setCopied(undefined), 1000);
-  }, [copied]);
+    window.setTimeout(() => setCopied(undefined), 1000)
+  }, [copied])
 
   return (
     <>
@@ -27,9 +27,9 @@ const ColorPad = ({ name, color }) => {
             type="button"
             className={`flex items-center w-full justify-center font-bold rounded-t-lg bg-gray-900 text-white bg-opacity-30 focus:outline-none hover:bg-opacity-60`}
             onClick={event => {
-              event.preventDefault();
-              copied === undefined ? setCopied("copied") : setCopied(undefined);
-              copyColor(name);
+              event.preventDefault()
+              copied === undefined ? setCopied('copied') : setCopied(undefined)
+              copyColor(name)
             }}
             tabIndex={-1}
           >
@@ -45,7 +45,7 @@ const ColorPad = ({ name, color }) => {
           </button>
         </div>
         <Transition
-          show={copied === "copied"}
+          show={copied === 'copied'}
           enter="transition-opacity duration-300 ease-in"
           enterFrom="opacity-0"
           enterTo="opacity-100"
@@ -64,7 +64,7 @@ const ColorPad = ({ name, color }) => {
         </Transition>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ColorPad;
+export default ColorPad

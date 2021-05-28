@@ -30,7 +30,10 @@ const Topper = () => {
           'bg-[#9E2A2B]': theme !== 'dark'
         }
       )}
-      onClick={() => (document.documentElement.scrollTop = 0) && (document.body.scrollTop = 0)}
+      onClick={() =>
+        (document.documentElement.scrollTop = 0) &&
+        (document.body.scrollTop = 0)
+      }
       tabIndex={-1}
     >
       <HiChevronUp className="w-10 h-10" />

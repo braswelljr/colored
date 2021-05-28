@@ -24,7 +24,11 @@ const App = ({ Component, pageProps }) => {
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png"></link>
         <meta name="theme-color" content="#317EFB" />
       </Head>
-      <main className={clsx('min-h-[calc(100vh)]', { 'bg-gray-900': theme !== 'light' })}>
+      <main
+        className={clsx('min-h-[calc(100vh)]', {
+          'bg-gray-900': theme !== 'light'
+        })}
+      >
         <Component {...pageProps} />
       </main>
     </>

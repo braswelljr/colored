@@ -30,7 +30,9 @@ const Index = () => {
   useEffect(() => {
     const mediaColor = window.matchMedia('(prefers-color-scheme: dark)')
 
-    mediaColor.addEventListener('load', event => (event.matches ? themeDark() : themeLight()))
+    mediaColor.addEventListener('load', event =>
+      event.matches ? themeDark() : themeLight()
+    )
   }, [])
 
   return (

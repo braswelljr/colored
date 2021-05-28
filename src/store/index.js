@@ -13,8 +13,8 @@ const useStore = create(
         query,
         filter: query
           ? matchSorter(collection, query, {
-            threshold: matchSorter.rankings.WORD_STARTS_WITH,
-            keys: ['string.hsl', 'string.rgb', 'string.hex', 'name', 'tag.*']
+              threshold: matchSorter.rankings.WORD_STARTS_WITH,
+              keys: ['string.hsl', 'string.rgb', 'string.hex', 'name', 'tag.*']
             })
           : undefined
       }),
@@ -23,7 +23,13 @@ const useStore = create(
     themeDark: () => set({ theme: 'dark' }),
     themeLight: () => set({ theme: 'light' }),
     format: 'hex',
-    gen: { state: 'closed', name: '', color: {}, saturation: [], lightness: [] },
+    gen: {
+      state: 'closed',
+      name: '',
+      color: {},
+      saturation: [],
+      lightness: []
+    },
     openGen: (name, color, saturation, lightness) =>
       set(state => ({
         gen: (state.gen = {
@@ -36,7 +42,13 @@ const useStore = create(
       })),
     closeGen: () =>
       set(state => ({
-        gen: (state.gen = { state: 'closed', name: '', color: {}, saturation: [], lightness: [] })
+        gen: (state.gen = {
+          state: 'closed',
+          name: '',
+          color: {},
+          saturation: [],
+          lightness: []
+        })
       })),
     setRGB: () => set(state => ({ format: (state.format = 'rgb') })),
     setHSL: () => set(state => ({ format: (state.format = 'hsl') })),

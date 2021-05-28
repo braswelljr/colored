@@ -75,7 +75,10 @@ const Navbar = ({ appName }) => {
             <span className="sr-only">Use setting</span>
             <span
               aria-hidden="true"
-              style={{ backgroundImage: circuit, backgroundColor: theme.foreground }}
+              style={{
+                backgroundImage: circuit,
+                backgroundColor: theme.foreground
+              }}
               className={`${
                 theme === 'dark'
                   ? 'translate-x-7 bg-gray-900 text-white'
@@ -90,8 +93,8 @@ const Navbar = ({ appName }) => {
         className={`w-full px-6 py-5 space-y-5 md:py-8 text-center lg:py-10 lg:flex-row xl:px-28 lg:px-20 lg:space-x-10`}
       >
         <div className="text-xl font-bold leading-9 tracking-wider text-center uppercase px-auto">
-          <span className="text-gray-300">{appName}</span>, gets you to chose design with your
-          handpicked colors.
+          <span className="text-gray-300">{appName}</span>, gets you to chose
+          design with your handpicked colors.
         </div>
         <div className="grid items-center justify-center w-full grid-cols-3 text-xs font-semibold justify-items-center">
           <div className="flex items-center">

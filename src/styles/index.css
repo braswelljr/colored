@@ -2,14 +2,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@layer utilities{
-  @responsive{
-    .scrollbars-hidden-f{
+@layer utilities {
+  @responsive {
+    .scrollbars-hidden-f {
       scrollbar-width: none;
     }
-    .scrollbars-hidden::-webkit-scrollbar{
+    .scrollbars-hidden::-webkit-scrollbar {
       display: none;
     }
-    .clip-head{clip-path: polygon(100% 0, 100% 95%, 50% 100%, 0 95%, 0 0)}
+    .clip-head {
+      clip-path: polygon(100% 0, 100% 95%, 50% 100%, 0 95%, 0 0);
+    }
   }
 }

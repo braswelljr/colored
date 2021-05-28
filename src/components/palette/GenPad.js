@@ -1,33 +1,33 @@
-import { useState, useEffect } from "react";
-import { Transition } from "@headlessui/react";
-import { Alert } from "@reach/alert";
+import { useState, useEffect } from 'react'
+import { Transition } from '@headlessui/react'
+import { Alert } from '@reach/alert'
 
 const GenPad = ({ color }) => {
-  const [copied, setCopied] = useState(undefined);
+  const [copied, setCopied] = useState(undefined)
 
   function copyColor(color) {
-    return navigator.clipboard.writeText(`${color}`);
+    return navigator.clipboard.writeText(`${color}`)
   }
 
   useEffect(() => {
-    window.setTimeout(() => setCopied(undefined), 1000);
-  }, [copied]);
+    window.setTimeout(() => setCopied(undefined), 1000)
+  }, [copied])
 
   return (
     <>
       <button
         style={{ backgroundColor: color }}
-        className="relative block w-full h-20 overflow-hidden text-xs border rounded-md cursor-pointer focus:outline-none"
+        className="relative block w-full h-20 overflow-hidden text-xs border border-none rounded-md cursor-pointer focus:outline-none"
         onClick={event => {
-          event.preventDefault();
-          copied === undefined ? setCopied("copied") : setCopied(undefined);
-          copyColor(color);
+          event.preventDefault()
+          copied === undefined ? setCopied('copied') : setCopied(undefined)
+          copyColor(color)
         }}
         tabIndex={-1}
       >
         {color}
         <Transition
-          show={copied === "copied"}
+          show={copied === 'copied'}
           enter="transition-opacity duration-300 ease-in"
           enterFrom="opacity-0"
           enterTo="opacity-100"
@@ -46,7 +46,7 @@ const GenPad = ({ color }) => {
         </Transition>
       </button>
     </>
-  );
-};
+  )
+}
 
-export default GenPad;
+export default GenPad

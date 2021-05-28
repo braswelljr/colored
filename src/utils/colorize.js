@@ -124,13 +124,15 @@ for (let i = 0; i < hs.length; i++) {
       for (let l = 0; l < names.length; l++) {
         if (i === j && j === k && k === l) {
           colors.push(
-            `{ name: "${names[l]}", tags: [], string: { hsl: "hsl(${hs[i].h}, ${hs[i].s * 100}%, ${
-              hs[i].l * 100
-            }%)", rgb: "rgb(${rg[j].r}, ${rg[j].g}, ${rg[j].b})", hex: "${
-              he[k]
-            }"}, obj: { hsl: {h: ${hs[i].h}, s: ${hs[i].s * 100}, l: ${hs[i].l * 100}}, rgb: {r: ${
-              rg[j].r
-            }, g: ${rg[j].g}, b: ${rg[j].b}}, hex: "${he[k]}" }}`
+            `{ name: "${names[l]}", tags: [], string: { hsl: "hsl(${hs[i].h}, ${
+              hs[i].s * 100
+            }%, ${hs[i].l * 100}%)", rgb: "rgb(${rg[j].r}, ${rg[j].g}, ${
+              rg[j].b
+            })", hex: "${he[k]}"}, obj: { hsl: {h: ${hs[i].h}, s: ${
+              hs[i].s * 100
+            }, l: ${hs[i].l * 100}}, rgb: {r: ${rg[j].r}, g: ${rg[j].g}, b: ${
+              rg[j].b
+            }}, hex: "${he[k]}" }}`
           )
         }
       }
@@ -138,8 +140,11 @@ for (let i = 0; i < hs.length; i++) {
   }
 }
 
-fs.writeFile(`../assets/three.js`, `export const colored = [${[...colors]}];`, error =>
-  error
-    ? console.error(error)
-    : console.log(`Successfully generated hsl with ${colors.length} colors`)
+fs.writeFile(
+  `../assets/three.js`,
+  `export const colored = [${[...colors]}];`,
+  error =>
+    error
+      ? console.error(error)
+      : console.log(`Successfully generated hsl with ${colors.length} colors`)
 )

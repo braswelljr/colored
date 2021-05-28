@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint --fix"
+    "lint": "prettier src/**/*.{css,jsx,tsx,ts,js} --write"
   },
   "dependencies": {
     "@headlessui/react": "^1.1.0",

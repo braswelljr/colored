@@ -48,7 +48,10 @@ const Search = () => {
       onSubmit={e => e.preventDefault()}
     >
       <div className="flex mx-auto max-w-container">
-        <label htmlFor="search-input" className="flex items-center flex-none pr-3">
+        <label
+          htmlFor="search-input"
+          className="flex items-center flex-none pr-3"
+        >
           <span className="sr-only">Search all {colors.length} colors</span>
           <SearchIcon className="w-auto h-5 text-gray-400 transition-colors duration-150 group-focus-within:text-gray-500" />
         </label>
