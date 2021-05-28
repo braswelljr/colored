@@ -1,9 +1,9 @@
-const color = require("tailwindcss/colors");
-const defaultTheme = require("tailwindcss/defaultTheme");
+const color = require('tailwindcss/colors')
+const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
-  mode: "jit",
-  purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
+  mode: 'jit',
+  purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   darkMode: false, // or 'media' or 'class'
   theme: {
     fontFamily: {
@@ -11,7 +11,10 @@ module.exports = {
     },
     extend: {
       colors: {
-        gray: color.trueGray
+        gray: color.trueGray,
+        emerald: color.emerald,
+        cyan: color.cyan,
+        amber: color.amber
       }
     }
   },
@@ -19,4 +22,4 @@ module.exports = {
     extend: {}
   },
   plugins: []
-};
+}

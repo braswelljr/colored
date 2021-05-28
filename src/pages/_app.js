@@ -1,7 +1,10 @@
-import "../styles/index.css";
-import Head from "next/head";
+import '../styles/index.css'
+import Head from 'next/head'
+import useStore from '../store'
+import clsx from 'clsx'
 
 const App = ({ Component, pageProps }) => {
+  const theme = useStore(state => state.theme)
   return (
     <>
       <Head>
@@ -16,14 +19,16 @@ const App = ({ Component, pageProps }) => {
         <title>colored</title>
 
         <link rel="manifest" href="/manifest.json" />
-        <link href="/icons/favicon-16x16.png" rel="icon" type="image/png" />
-        <link href="/icons/favicon-32x32.png" rel="icon" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png"></link>
+        <link href="/icons/log192.png" rel="icon" type="image/png" />
+        <link href="/icons/logo512.png" rel="icon" type="image/png" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png"></link>
         <meta name="theme-color" content="#317EFB" />
       </Head>
-      <Component {...pageProps} />
+      <main className={clsx('min-h-[calc(100vh)]', { 'bg-gray-900': theme !== 'light' })}>
+        <Component {...pageProps} />
+      </main>
     </>
-  );
-};
+  )
+}
 
-export default App;
+export default App

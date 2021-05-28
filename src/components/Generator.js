@@ -1,61 +1,61 @@
-import { useState, useEffect } from "react";
-import useStore from "../store";
-import { Transition } from "@headlessui/react";
-import { Alert } from "@reach/alert";
-import GenPad from "./palette/GenPad";
-import { HSLtoRGB, RGBtoHEX } from "../utils/converts";
-import { Switch } from "@headlessui/react";
+import { useState, useEffect } from 'react'
+import useStore from '../store'
+import { Transition } from '@headlessui/react'
+import { Alert } from '@reach/alert'
+import GenPad from './palette/GenPad'
+import { HSLtoRGB, RGBtoHEX } from '../utils/converts'
+import { Switch } from '@headlessui/react'
 
 const Generator = () => {
-  const gen = useStore(state => state.gen);
-  const closeGen = useStore(state => state.closeGen);
-  const [copied, setCopied] = useState(undefined);
-  const format = useStore(state => state.format);
-  const [enabled, setEnabled] = useState(false);
+  const gen = useStore(state => state.gen)
+  const closeGen = useStore(state => state.closeGen)
+  const [copied, setCopied] = useState(undefined)
+  const format = useStore(state => state.format)
+  const [enabled, setEnabled] = useState(false)
 
   function copyColor(color) {
-    return navigator.clipboard.writeText(`${color}`);
+    return navigator.clipboard.writeText(`${color}`)
   }
 
   useEffect(() => {
-    window.setTimeout(() => setCopied(undefined), 500);
-  }, [copied]);
+    window.setTimeout(() => setCopied(undefined), 500)
+  }, [copied])
 
   useEffect(() => {
-    if (gen.state === "closed") {
-      document.body.style.overflowY = "auto";
-      document.body.style.height = "100%";
+    if (gen.state === 'closed') {
+      document.body.style.overflowY = 'auto'
+      document.body.style.height = '100%'
     } else {
-      document.body.style.overflowY = "hidden";
-      document.body.style.height = "100vh";
+      document.body.style.overflowY = 'hidden'
+      document.body.style.height = '100vh'
     }
-  }, [gen.state]);
+  }, [gen.state])
 
-  if (gen.state === "opened") {
-    const color = gen.color.obj.hsl;
-    let saturation = [];
-    let lightness = [];
+  if (gen.state === 'opened') {
+    const color = gen.color.obj.hsl
+    let saturation = []
+    let lightness = []
     for (let s = 0; s <= 100; s++) {
-      saturation.push({ h: color.h, s: s, l: color.l });
+      saturation.push({ h: color.h, s: s, l: color.l })
     }
     for (let l = 0; l <= 100; l++) {
-      lightness.push({ h: color.h, s: color.s, l: l });
+      lightness.push({ h: color.h, s: color.s, l: l })
     }
-    gen.saturation = saturation;
-    gen.lightness = lightness;
+    gen.saturation = saturation
+    gen.lightness = lightness
   }
 
   return (
     <div
       className={`inset-0 fixed z-30 transform transition-all ease-in duration-300  ${
-        gen.state === "closed" ? `translate-y-full` : `translate-y-0`
+        gen.state === 'closed' ? `translate-y-full` : `translate-y-0`
       }`}
     >
       <button
         type="button"
         tabIndex={-1}
         className={`fixed inset-0 bg-gray-900 bg-opacity-20 z-30 h-full w-full focus:outline-none ${
-          gen.state === "closed" ? `hidden` : `block`
+          gen.state === 'closed' ? `hidden` : `block`
         }`}
         onClick={closeGen}
       ></button>
@@ -68,14 +68,14 @@ const Generator = () => {
               style={{ backgroundColor: gen.name }}
               className="relative block w-24 h-16 overflow-hidden cursor-pointer focus:outline-none rounded-xl"
               onClick={event => {
-                event.preventDefault();
-                copied === undefined ? setCopied("copied") : setCopied(undefined);
-                copyColor(gen.name);
+                event.preventDefault()
+                copied === undefined ? setCopied('copied') : setCopied(undefined)
+                copyColor(gen.name)
               }}
               tabIndex={-1}
             >
               <Transition
-                show={copied === "copied"}
+                show={copied === 'copied'}
                 enter="transition-opacity duration-300 ease-in"
                 enterFrom="opacity-0"
                 enterTo="opacity-100"
@@ -94,7 +94,7 @@ const Generator = () => {
               </Transition>
             </button>
             <div style={{ color: `currentcolor` }} className="font-bold">
-              {gen.state === "opened"
+              {gen.state === 'opened'
                 ? gen.color.name.length <= 0
                   ? gen.name
                   : gen.color.name
@@ -111,7 +111,7 @@ const Generator = () => {
               <span className="sr-only">Use setting</span>
               <span
                 aria-hidden="true"
-                className={`${enabled ? "translate-x-9" : "translate-x-0"}
+                className={`${enabled ? 'translate-x-9' : 'translate-x-0'}
             pointer-events-none inline-flex font-semibold h-[34px] w-[34px] rounded-full bg-white shadow-lg transform ring-0 items-center justify-center transition ease-in-out duration-200`}
               >
                 {enabled ? `L` : `S`}
@@ -125,51 +125,45 @@ const Generator = () => {
           {/* saturation */}
           <section className={`${enabled === false ? `block` : `hidden`} md:block`}>
             <div className="font-semibold">Saturation</div>
-            <div
-              style={{ gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))" }}
-              className="grid gap-2 pt-4 "
-            >
-              {gen.state === "opened"
+            <div className="grid gap-2 pt-4 grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
+              {gen.state === 'opened'
                 ? gen.saturation.map((color, i) => {
-                    if (format === "hsl") {
-                      return <GenPad key={i} color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`} />;
-                    } else if (format === "rgb") {
-                      color = HSLtoRGB(color);
-                    return <GenPad key={i} color={`rgb(${color.r}, ${color.g}, ${color.b})`} />;
-                    } else if (format === "hex") {
-                      color = RGBtoHEX(HSLtoRGB(color));
-                      return <GenPad key={i} color={`${color}`} />;
-                    }
-                })
+                  if (format === 'hsl') {
+                    return <GenPad key={i} color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`} />
+                  } else if (format === 'rgb') {
+                    color = HSLtoRGB(color)
+                      return <GenPad key={i} color={`rgb(${color.r}, ${color.g}, ${color.b})`} />
+                  } else if (format === 'hex') {
+                    color = RGBtoHEX(HSLtoRGB(color))
+                    return <GenPad key={i} color={`${color}`} />
+                  }
+                  })
                 : undefined}
             </div>
           </section>
           {/* lightness */}
           <section className={`${enabled !== false ? `block` : `hidden`} md:block`}>
             <div className="font-semibold">Lightness</div>
-            <div
-              style={{ gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))" }}
-              className="grid gap-2 pt-4"
-            >
-              {gen.state === "opened"
+            <div className="grid gap-2 pt-4 grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
+              {gen.state === 'opened'
                 ? gen.lightness.map((color, i) => {
-                    if (format === "hsl") {
-                      return <GenPad key={i} color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`} />;
-                    } else if (format === "rgb") {
-                      color = HSLtoRGB(color);
-                    return <GenPad key={i} color={`rgb(${color.r}, ${color.g}, ${color.b})`} />;
-                    } else if (format === "hex") {
-                    color = RGBtoHEX(HSLtoRGB(color));
-                      return <GenPad key={i} color={`${color}`} />;
-                    }
-                })
+                  if (format === 'hsl') {
+                    return <GenPad key={i} color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`} />
+                  } else if (format === 'rgb') {
+                    color = HSLtoRGB(color)
+                      return <GenPad key={i} color={`rgb(${color.r}, ${color.g}, ${color.b})`} />
+                  } else if (format === 'hex') {
+                      color = RGBtoHEX(HSLtoRGB(color))
+                    return <GenPad key={i} color={`${color}`} />
+                  }
+                  })
                 : undefined}
             </div>
           </section>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Generator;
+export default Generator

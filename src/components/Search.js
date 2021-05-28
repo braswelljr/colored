@@ -1,52 +1,54 @@
-import { useState, useEffect, useRef } from "react";
-import { SearchIcon } from "@heroicons/react/solid";
-import useStore from "../store";
+import { useState, useEffect, useRef } from 'react'
+import { SearchIcon } from '@heroicons/react/solid'
+import useStore from '../store'
+import clsx from 'clsx'
 
 const Search = () => {
-  const searchInputRef = useRef();
-  const colors = useStore(state => state.colors);
-  const [searchQuery, setSearchQuery] = useState("");
-  const search = useStore(state => state.search);
+  const searchInputRef = useRef()
+  const colors = useStore(state => state.colors)
+  const [searchQuery, setSearchQuery] = useState('')
+  const search = useStore(state => state.search)
+  const theme = useStore(state => state.theme)
 
   useEffect(() => {
     function onKeyDown(e) {
       if (
-        e.key !== "/" ||
-        e.target.tagName === "INPUT" ||
-        e.target.tagName === "SELECT" ||
-        e.target.tagName === "TEXTAREA" ||
+        e.key !== '/' ||
+        e.target.tagName === 'INPUT' ||
+        e.target.tagName === 'SELECT' ||
+        e.target.tagName === 'TEXTAREA' ||
         e.target.isContentEditable
       ) {
-        return;
+        return
       }
-      e.preventDefault();
-      searchInputRef.current.focus();
+      e.preventDefault()
+      searchInputRef.current.focus()
     }
-    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener('keydown', onKeyDown)
     return () => {
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, []);
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [])
 
   useEffect(() => {
     const handler = window.setTimeout(() => {
-      search(colors, searchQuery);
-    }, 100);
+      search(colors, searchQuery)
+    }, 100)
     return () => {
-      window.clearTimeout(handler);
-    };
-  }, [colors, searchQuery]);
+      window.clearTimeout(handler)
+    }
+  }, [colors, searchQuery])
 
   return (
     <form
-      className="sticky top-0 z-20 px-4 bg-white shadow group sm:px-6 lg:px-16"
+      className={clsx('sticky top-0 z-10 px-4 shadow group sm:px-6 lg:px-16', {
+        'bg-gray-800': theme !== 'light',
+        'bg-white': theme === 'light'
+      })}
       onSubmit={e => e.preventDefault()}
     >
       <div className="flex mx-auto max-w-container">
-        <label
-          htmlFor="search-input"
-          className="flex items-center flex-none pr-3"
-        >
+        <label htmlFor="search-input" className="flex items-center flex-none pr-3">
           <span className="sr-only">Search all {colors.length} colors</span>
           <SearchIcon className="w-auto h-5 text-gray-400 transition-colors duration-150 group-focus-within:text-gray-500" />
         </label>
@@ -58,11 +60,17 @@ const Search = () => {
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           placeholder={`Search all ${colors.length} colors (Press “/” to focus)`}
-          className="flex-auto py-6 text-base leading-6 text-gray-500 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400"
+          className={clsx(
+            'flex-auto py-6 text-base leading-6 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400',
+            {
+              'bg-gray-800 text-gray-200': theme !== 'light',
+              'bg-white text-gray-700': theme === 'light'
+            }
+          )}
         />
       </div>
     </form>
-  );
-};
+  )
+}
 
-export default Search;
+export default Search
