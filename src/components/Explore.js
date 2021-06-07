@@ -17,8 +17,8 @@ const Explore = () => {
 
   const filteredColors = filterate
     ? colors
-        .filter(color => filterate.indexOf(color) !== -1)
-        .sort((a, b) => filterate.indexOf(a) - filterate.indexOf(b))
+      .filter(color => filterate.indexOf(color) !== -1)
+      .sort((a, b) => filterate.indexOf(a) - filterate.indexOf(b))
     : colors
 
   if (filterate && filterate.length === 0) {
@@ -67,7 +67,7 @@ const Explore = () => {
           filteredColors
             .slice(0, renderAll ? undefined : colors.length)
             .map((color, i) => (
-              <ColorPad key={i} name={`${color.string.hex}`} color={color} />
+              <ColorPad key={i} name={`${color.hex}`} color={color} />
             ))}
       </div>
     </>

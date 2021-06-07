@@ -36,13 +36,12 @@ const Index = () => {
   }, [])
 
   return (
-    <main style={{ scrollBehavior: `smooth` }} className={``}>
+    <main className={``}>
       {/* fixed inset-x-0 top-0 */}
       <Navbar appName={appName} />
       <Search />
       <Switch />
       <section
-        style={{ scrollBehavior: `smooth` }}
         className={`w-full px-3 py-4 md:px-12 xl:px-24 lg:px-20`}
         // pt-[17.5rem]
       >

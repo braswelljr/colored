@@ -14,7 +14,7 @@ const useStore = create(
         filter: query
           ? matchSorter(collection, query, {
               threshold: matchSorter.rankings.WORD_STARTS_WITH,
-              keys: ['string.hsl', 'string.rgb', 'string.hex', 'name', 'tag.*']
+              keys: ['string.hsl', 'string.rgb', 'hex', 'name']
             })
           : undefined
       }),

@@ -58,25 +58,23 @@ function RGBtoHEX(rgb) {
 }
 
 //for hsl
-function hsl(collection, type) {
+function hsl(collection) {
   const hue = 360 //-> represented in degrees
   const saturation = 100 //-> represented in percentage
   const light = 50 //-> represented in percentage
 
   for (let h = 1; h <= hue; h += 1) {
-    //for (let s = 0; s <= saturation; s += 10) { //=> for splitting colors into color spaces with saturation
-    type !== 'string'
-      ? collection.push({ h: h, s: saturation, l: light })
-      : collection.push(`"${h}, ${saturation}%, ${light}%"`)
+    for (let s = 0; s <= saturation; s += 5) {
+      // for (let l = 0; l <= saturation; l += 10) {
+      collection.push({ h: h, s: s, l: light })
+      // }
+    }
   }
-
-  //hsl: "hsl(${h}, ${saturation}%, ${light}%)"
-  //rgb: "${HSLtoRGB("hsl(${h}, ${saturation}%, ${light}%)")}"
 
   return [...new Set(collection)]
 }
 
-let hs = [...hsl([], 'object')]
+let hs = hsl([])
 let rg = hs.map(color => HSLtoRGB(color))
 let he = rg.map(color => RGBtoHEX(color))
 let names = he.map(color => {
@@ -86,53 +84,19 @@ let names = he.map(color => {
 })
 let colors = []
 
-// for (let i = 0; i < hs.length; i++) {
-//   for (let j = 0; j < rg.length; j++) {
-//     for (let k = 0; k < he.length; k++) {
-//       if (i === j && j === k) {
-//         colors.push(
-//           `{ hsl: {h: ${hs[i].h}, s: ${hs[i].s * 100}, l: ${
-//             hs[i].l * 100
-//           }}, rgb: {r: ${rg[j].r}, g: ${rg[j].g}, b: ${rg[j].b}}, hex: "${
-//             he[k]
-//           }" }`
-//         );
-//       }
-//     }
-//   }
-// }
-
-// for (let i = 0; i < hs.length; i++) {
-//   for (let j = 0; j < rg.length; j++) {
-//     for (let k = 0; k < he.length; k++) {
-//       if (i === j && j === k) {
-//         colors.push(
-//           `{ hsl: "hsl(${hs[i].h}, ${hs[i].s * 100}%, ${
-//             hs[i].l * 100
-//           }%)", rgb: "rgb(${rg[j].r}, ${rg[j].g}, ${rg[j].b})", hex: "${
-//             he[k]
-//           }" }`
-//         );
-//       }
-//     }
-//   }
-// }
-
 for (let i = 0; i < hs.length; i++) {
   for (let j = 0; j < rg.length; j++) {
     for (let k = 0; k < he.length; k++) {
       for (let l = 0; l < names.length; l++) {
         if (i === j && j === k && k === l) {
           colors.push(
-            `{ name: "${names[l]}", tags: [], string: { hsl: "hsl(${hs[i].h}, ${
-              hs[i].s * 100
-            }%, ${hs[i].l * 100}%)", rgb: "rgb(${rg[j].r}, ${rg[j].g}, ${
-              rg[j].b
-            })", hex: "${he[k]}"}, obj: { hsl: {h: ${hs[i].h}, s: ${
-              hs[i].s * 100
-            }, l: ${hs[i].l * 100}}, rgb: {r: ${rg[j].r}, g: ${rg[j].g}, b: ${
-              rg[j].b
-            }}, hex: "${he[k]}" }}`
+            `{ name: "${names[l]}", hex:"${he[k]}",string:{hsl:"hsl(${
+              hs[i].h
+            },${hs[i].s * 100}%,${hs[i].l * 100}%)",rgb:"rgb(${rg[j].r},${
+              rg[j].g
+            },${rg[j].b})"},obj:{hsl:{h:${hs[i].h},s:${hs[i].s * 100},l:${
+              hs[i].l * 100
+            }},rgb:{r:${rg[j].r},g:${rg[j].g},b:${rg[j].b}}}}`
           )
         }
       }
