@@ -5,9 +5,7 @@ import { matchSorter } from 'match-sorter'
 
 const useStore = create(
   devtools(set => ({
-    colors: [...new Map(colours.map(i => [i.hex, i])).values()]
-      .sort(() => Math.random() - 0.5)
-      .sort(() => 0.5 - Math.random()),
+    colors: [...new Map(colours.map(i => [i.hex, i])).values()],
     query: '',
     filter: undefined,
     search: (collection, query) =>
