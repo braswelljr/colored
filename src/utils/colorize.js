@@ -76,11 +76,9 @@ function RGBtoHEX(rgb) {
 
 function HSL(array) {
   for (let h = 1; h <= 360; h++) {
-    for (let s = 0; s <= 100; s = s + 50) {
+    for (let s = 0; s <= 100; s = s + 25) {
       for (let l = 0; l <= 100; l = l + 25) {
-        // if ((l % 25 == 0 && s % 25 == 0) ) {
         array.push({ h: h, s: s, l: l })
-        // }
       }
     }
   }
@@ -139,8 +137,8 @@ fs.writeFile(
     error
       ? console.error(error)
       : console.log(
-        `Successfully generated with ${
-          [...new Map(colors.map(i => [i.hex, i])).values()].length
-        } colors`
-      )
+          `Successfully generated with ${
+            [...new Map(colors.map(i => [i.hex, i])).values()].length
+          } colors`
+        )
 )
