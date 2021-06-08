@@ -1,11 +1,13 @@
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { colored } from '../assets/three'
+import { colours } from '../assets/colors'
 import { matchSorter } from 'match-sorter'
 
 const useStore = create(
   devtools(set => ({
-    colors: colored,
+    colors: [...new Map(colours.map(i => [i.hex, i])).values()]
+      .sort(() => Math.random() - 0.5)
+      .sort(() => 0.5 - Math.random()),
     query: '',
     filter: undefined,
     search: (collection, query) =>
@@ -13,9 +15,14 @@ const useStore = create(
         query,
         filter: query
           ? matchSorter(collection, query, {
-              threshold: matchSorter.rankings.WORD_STARTS_WITH,
-              keys: ['string.hsl', 'string.rgb', 'hex', 'name']
-            })
+            threshold: matchSorter.rankings.WORD_STARTS_WITH,
+            keys: [
+                'hex',
+                'name',
+                item => `rgb(${item.rgb.r},${item.rgb.g}${item.rgb.b})`,
+                item => `hsl(${item.hsl.h},${item.hsl.s}${item.hsl.l})`
+              ]
+          })
           : undefined
       }),
     // -> work on fetching theme

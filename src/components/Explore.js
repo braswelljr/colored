@@ -53,14 +53,22 @@ const Explore = () => {
           filteredColors
             .slice(0, renderAll ? undefined : colors.length)
             .map((color, i) => (
-              <ColorPad key={i} name={`${color.string.hsl}`} color={color} />
+              <ColorPad
+                key={i}
+                name={`hsl(${color.hsl.h},${color.hsl.s}%,${color.hsl.l}%)`}
+                color={color}
+              />
             ))}
 
         {format === 'rgb' &&
           filteredColors
             .slice(0, renderAll ? undefined : colors.length)
             .map((color, i) => (
-              <ColorPad key={i} name={`${color.string.rgb}`} color={color} />
+              <ColorPad
+                key={i}
+                name={`rgb(${color.rgb.r},${color.rgb.b},${color.rgb.b})`}
+                color={color}
+              />
             ))}
 
         {format === 'hex' &&
