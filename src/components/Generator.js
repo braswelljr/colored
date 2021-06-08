@@ -34,7 +34,7 @@ const Generator = () => {
   }, [gen.state])
 
   if (gen.state === 'opened') {
-    const color = gen.color.obj.hsl
+    const color = gen.color.hsl
     let saturation = []
     let lightness = []
     for (let s = 0; s <= 100; s++) {
@@ -135,11 +135,11 @@ const Generator = () => {
                 <span
                   aria-hidden="true"
                   className={clsx(
-                    `${enabled ? 'translate-x-9' : 'translate-x-0'}
-            pointer-events-none inline-flex font-semibold h-[34px] w-[34px] rounded-ful shadow-lg transform ring-0 rounded-full items-center justify-center transition ease-in-out duration-200`,
+                    'pointer-events-none inline-flex font-semibold h-[34px] w-[34px] rounded-ful shadow-lg transform ring-0 rounded-full items-center justify-center transition ease-in-out duration-200',
                     {
                       'bg-gray-800 text-gray-50': theme !== 'light',
-                      'bg-white text-gray-800': theme === 'light'
+                      'bg-white text-gray-800': theme === 'light',
+                      'translate-x-9': enabled
                     }
                   )}
                 >
@@ -163,7 +163,7 @@ const Generator = () => {
                         return (
                           <GenPad
                             key={i}
-                            color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`}
+                            color={`hsl(${color.h},${color.s}%,${color.l}%)`}
                           />
                         )
                       } else if (format === 'rgb') {
@@ -171,7 +171,7 @@ const Generator = () => {
                         return (
                           <GenPad
                             key={i}
-                            color={`rgb(${color.r}, ${color.g}, ${color.b})`}
+                            color={`rgb(${color.r},${color.g},${color.b})`}
                           />
                         )
                       } else if (format === 'hex') {

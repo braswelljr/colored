@@ -57,58 +57,90 @@ function RGBtoHEX(rgb) {
   return '#' + r + g + b
 }
 
-//for hsl
-function hsl(collection) {
-  const hue = 360 //-> represented in degrees
-  const saturation = 100 //-> represented in percentage
-  const light = 50 //-> represented in percentage
+// //for hsl
+// function hsl(collection) {
+//   const hue = 360 //-> represented in degrees
+//   const saturation = 100 //-> represented in percentage
+//   const light = 50 //-> represented in percentage
 
-  for (let h = 1; h <= hue; h += 1) {
-    for (let s = 0; s <= saturation; s += 5) {
-      // for (let l = 0; l <= saturation; l += 10) {
-      collection.push({ h: h, s: s, l: light })
-      // }
+//   for (let h = 1; h <= hue; h += 1) {
+//     for (let s = 0; s <= saturation; s += 5) {
+//       // for (let l = 0; l <= saturation; l += 10) {
+//       collection.push({ h: h, s: s, l: light })
+//       // }
+//     }
+//   }
+
+//   return [...new Set(collection)]
+// }
+
+function HSL(array) {
+  for (let h = 1; h <= 360; h++) {
+    for (let s = 0; s <= 100; s = s + 50) {
+      for (let l = 0; l <= 100; l = l + 25) {
+        // if ((l % 25 == 0 && s % 25 == 0) ) {
+        array.push({ h: h, s: s, l: l })
+        // }
+      }
     }
   }
 
-  return [...new Set(collection)]
+  return [...new Set(array)]
 }
-
-let hs = hsl([])
+let hs = HSL([])
 let rg = hs.map(color => HSLtoRGB(color))
 let he = rg.map(color => RGBtoHEX(color))
 let names = he.map(color => {
   let c = colorName.find(c => c.hex === color)
-  color = typeof c === 'object' ? c.name : ''
+  color = typeof c === 'object' ? (c.name === undefined ? '' : c.name) : ''
   return color
 })
 let colors = []
 
-for (let i = 0; i < hs.length; i++) {
-  for (let j = 0; j < rg.length; j++) {
-    for (let k = 0; k < he.length; k++) {
-      for (let l = 0; l < names.length; l++) {
-        if (i === j && j === k && k === l) {
-          colors.push(
-            `{ name: "${names[l]}", hex:"${he[k]}",string:{hsl:"hsl(${
-              hs[i].h
-            },${hs[i].s * 100}%,${hs[i].l * 100}%)",rgb:"rgb(${rg[j].r},${
-              rg[j].g
-            },${rg[j].b})"},obj:{hsl:{h:${hs[i].h},s:${hs[i].s * 100},l:${
-              hs[i].l * 100
-            }},rgb:{r:${rg[j].r},g:${rg[j].g},b:${rg[j].b}}}}`
-          )
-        }
-      }
+// for (var i = 0; i < hs.length; i++) {
+//   colors.push(
+//     `{name:"${names[i]}",hex:"${he[i]}",rgb:{r:${rg[i].r},g:${rg[i].g},b:${
+//       rg[i].b
+//     }},hsl:{h:${hs[i].h},s:${Math.round(hs[i].s * 100)},l:${Math.round(
+//       hs[i].l * 100
+//     )}}}`
+//   )
+// }
+
+for (var i = 0; i < hs.length; i++) {
+  colors.push({
+    name: names[i],
+    hex: he[i],
+    rgb: { r: rg[i].r, g: rg[i].g, b: rg[i].b },
+    hsl: {
+      h: hs[i].h,
+      s: Math.round(hs[i].s * 100),
+      l: Math.round(hs[i].l * 100)
     }
-  }
+  })
 }
 
+// colors.push(
+//   `{name:"${names[l]}",hex:"${he[k]}",string:{hsl:"hsl(${
+//     hs[i].h
+//   },${hs[i].s * 100}%,${hs[i].l * 100}%)",rgb:"rgb(${rg[j].r},${
+//     rg[j].g
+//   },${rg[j].b})"},obj:{hsl:{h:${hs[i].h},s:${hs[i].s * 100},l:${
+//     hs[i].l * 100
+//   }},rgb:{r:${rg[j].r},g:${rg[j].g},b:${rg[j].b}}}}`
+// )
+
 fs.writeFile(
-  `../assets/three.js`,
-  `export const colored = [${[...colors]}];`,
+  `../assets/colors.json`,
+  // `module.exports = [${[...colors]}]`,
+  JSON.stringify([...new Map(colors.map(i => [i.hex, i])).values()]),
+  'utf-8',
   error =>
     error
       ? console.error(error)
-      : console.log(`Successfully generated hsl with ${colors.length} colors`)
+      : console.log(
+        `Successfully generated with ${
+          [...new Map(colors.map(i => [i.hex, i])).values()].length
+        } colors`
+      )
 )
