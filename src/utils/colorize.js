@@ -76,8 +76,8 @@ function RGBtoHEX(rgb) {
 
 function HSL(array) {
   for (let h = 1; h <= 360; h++) {
-    for (let s = 0; s <= 100; s = s + 25) {
-      for (let l = 0; l <= 100; l = l + 25) {
+    for (let s = 0; s <= 100; s = s + 50) {
+      for (let l = 0; l <= 100; l = l + 50) {
         array.push({ h: h, s: s, l: l })
       }
     }
