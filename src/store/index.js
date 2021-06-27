@@ -5,9 +5,7 @@ import { matchSorter } from 'match-sorter'
 
 const useStore = create(
   devtools(set => ({
-    colors: [...new Map(colours.map(i => [i.hex, i])).values()].sort(
-      () => Math.random() - 0.5
-    ),
+    colors: colours,
     query: '',
     filter: undefined,
     search: (collection, query) =>
@@ -17,11 +15,11 @@ const useStore = create(
           ? matchSorter(collection, query, {
               threshold: matchSorter.rankings.WORD_STARTS_WITH,
               keys: [
-              'hex',
-              'name',
-              item => `rgb(${item.rgb.r},${item.rgb.g}${item.rgb.b})`,
-              item => `hsl(${item.hsl.h},${item.hsl.s}${item.hsl.l})`
-            ]
+                'hex',
+                'name',
+                item => `rgb(${item.rgb.r},${item.rgb.g}${item.rgb.b})`,
+                item => `hsl(${item.hsl.h},${item.hsl.s}${item.hsl.l})`
+              ]
             })
           : undefined
       }),

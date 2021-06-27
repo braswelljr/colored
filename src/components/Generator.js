@@ -159,26 +159,26 @@ const Generator = () => {
               <div className="grid gap-2 pt-4 grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
                 {gen.state === 'opened'
                   ? gen.saturation.map((color, i) => {
-                      if (format === 'hsl') {
-                        return (
-                          <GenPad
-                            key={i}
-                            color={`hsl(${color.h},${color.s}%,${color.l}%)`}
-                          />
-                        )
-                      } else if (format === 'rgb') {
-                        color = HSLtoRGB(color)
-                        return (
-                          <GenPad
-                            key={i}
-                            color={`rgb(${color.r},${color.g},${color.b})`}
-                          />
-                        )
-                      } else if (format === 'hex') {
-                        color = RGBtoHEX(HSLtoRGB(color))
-                        return <GenPad key={i} color={`${color}`} />
-                      }
-                    })
+                    if (format === 'hsl') {
+                      return (
+                        <GenPad
+                          key={i}
+                          color={`hsl(${color.h},${color.s}%,${color.l}%)`}
+                        />
+                      )
+                    } else if (format === 'rgb') {
+                      color = HSLtoRGB(color)
+                      return (
+                        <GenPad
+                          key={i}
+                          color={`rgb(${color.r},${color.g},${color.b})`}
+                        />
+                      )
+                    } else if (format === 'hex') {
+                      color = RGBtoHEX(HSLtoRGB(color))
+                      return <GenPad key={i} color={`${color}`} />
+                    }
+                  })
                   : undefined}
               </div>
             </section>
@@ -190,26 +190,26 @@ const Generator = () => {
               <div className="grid gap-2 pt-4 grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
                 {gen.state === 'opened'
                   ? gen.lightness.map((color, i) => {
-                      if (format === 'hsl') {
-                        return (
-                          <GenPad
-                            key={i}
-                            color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`}
-                          />
-                        )
-                      } else if (format === 'rgb') {
-                        color = HSLtoRGB(color)
-                        return (
-                          <GenPad
-                            key={i}
-                            color={`rgb(${color.r}, ${color.g}, ${color.b})`}
-                          />
-                        )
-                      } else if (format === 'hex') {
-                        color = RGBtoHEX(HSLtoRGB(color))
-                        return <GenPad key={i} color={`${color}`} />
-                      }
-                    })
+                    if (format === 'hsl') {
+                      return (
+                        <GenPad
+                          key={i}
+                          color={`hsl(${color.h}, ${color.s}%, ${color.l}%)`}
+                        />
+                      )
+                    } else if (format === 'rgb') {
+                      color = HSLtoRGB(color)
+                      return (
+                        <GenPad
+                          key={i}
+                          color={`rgb(${color.r}, ${color.g}, ${color.b})`}
+                        />
+                      )
+                    } else if (format === 'hex') {
+                      color = RGBtoHEX(HSLtoRGB(color))
+                      return <GenPad key={i} color={`${color}`} />
+                    }
+                  })
                   : undefined}
               </div>
             </section>

@@ -25,7 +25,7 @@ const App = ({ Component, pageProps }) => {
         <meta name="theme-color" content="#317EFB" />
       </Head>
       <main
-        className={clsx('min-h-[calc(100vh)]', {
+        className={clsx('min-h-screen', {
           'bg-gray-900': theme !== 'light'
         })}
       >

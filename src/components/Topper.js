@@ -24,10 +24,10 @@ const Topper = () => {
         backgroundImage: circuit
       }}
       className={clsx(
-        'rounded-full fixed bottom-4 right-4 p-2 transition-all focus:outline-none transform duration-500 text-yellow-300 translate-y-20',
+        'rounded-full fixed bottom-4 right-4 p-2 transition-all focus:outline-none transform duration-500 translate-y-20',
         {
-          'bg-gray-900': theme === 'dark',
-          'bg-[#9E2A2B]': theme !== 'dark'
+          'text-gray-900 bg-yellow-300': theme === 'dark',
+          'bg-[#9E2A2B]  text-yellow-300': theme !== 'dark'
         }
       )}
       onClick={() =>

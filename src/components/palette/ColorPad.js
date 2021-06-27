@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Transition } from '@headlessui/react'
 import { Alert } from '@reach/alert'
 import useStore from '../../store'
+import clsx from 'clsx'
 
 const ColorPad = ({ name, color }) => {
   const [copied, setCopied] = useState(undefined)
@@ -19,9 +20,11 @@ const ColorPad = ({ name, color }) => {
     <>
       <div
         style={{ backgroundColor: `${name}` }}
-        className={`h-24 relative flex items-center cursor-pointer font-semibold text-gray-800 rounded-lg justify-center`}
+        className={`h-24 relative flex items-center font-semibold text-gray-800 cursor-pointer rounded-lg justify-center`}
       >
-        {name}
+        {typeof color.name !== 'string' || color.name.trim() === ''
+          ? name
+          : color.name}
         <div className="absolute opacity-0 hover:opacity-100 grid inset-0 transition-all duration-200 ease-in h-full grid-flow-row grid-rows-2 gap-2 p-1.5">
           <button
             type="button"
