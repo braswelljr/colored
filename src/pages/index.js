@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import Navbar from '../components/Navbar'
-import Switch from '../components/Switch'
 import Generator from '../components/Generator'
 import Explore from '../components/Explore'
 import Topper from '../components/Topper'
@@ -40,7 +39,6 @@ const Index = () => {
       {/* fixed inset-x-0 top-0 */}
       <Navbar appName={appName} />
       <Search />
-      <Switch />
       <section
         className={`w-full px-3 py-4 md:px-12 xl:px-24 lg:px-20`}
         // pt-[17.5rem]

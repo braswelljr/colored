@@ -17,8 +17,8 @@ const Explore = () => {
 
   const filteredColors = filterate
     ? colors
-      .filter(color => filterate.indexOf(color) !== -1)
-      .sort((a, b) => filterate.indexOf(a) - filterate.indexOf(b))
+        .filter(color => filterate.indexOf(color) !== -1)
+        .sort((a, b) => filterate.indexOf(a) - filterate.indexOf(b))
     : colors
 
   if (filterate && filterate.length === 0) {

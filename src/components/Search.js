@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { SearchIcon } from '@heroicons/react/solid'
 import useStore from '../store'
 import clsx from 'clsx'
+import Switch from './Switch'
 
 const Search = () => {
   const searchInputRef = useRef()
@@ -41,13 +42,21 @@ const Search = () => {
 
   return (
     <form
-      className={clsx('sticky top-0 z-10 px-4 shadow group sm:px-6 lg:px-16', {
-        'bg-gray-800': theme !== 'light',
+      className={clsx('sticky top-0 inset-x-0 z-10 space-y-2 shadow group', {
+        'bg-gray-900 text-yellow-300': theme !== 'light',
         'bg-white': theme === 'light'
       })}
       onSubmit={e => e.preventDefault()}
     >
-      <div className="flex mx-auto max-w-container">
+      <div
+        className={clsx(
+          'flex mx-auto max-w-container shadow-sm sm:px-6 lg:px-16 px-4',
+          {
+            'bg-gray-800': theme !== 'light',
+            'bg-white': theme === 'light'
+          }
+        )}
+      >
         <label
           htmlFor="search-input"
           className="flex items-center flex-none pr-3"
@@ -72,6 +81,7 @@ const Search = () => {
           )}
         />
       </div>
+      <Switch />
     </form>
   )
 }

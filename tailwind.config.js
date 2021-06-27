@@ -7,7 +7,7 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     fontFamily: {
-      sans: ["'Mulish'", ...defaultTheme.fontFamily.sans]
+      sans: ["'Montserrat Alternative'", ...defaultTheme.fontFamily.sans]
     },
     extend: {
       colors: {
