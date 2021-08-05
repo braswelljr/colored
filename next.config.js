@@ -1,19 +1,19 @@
 const path = require('path')
-const withPWA = require('next-pwa')
-const runtimeCaching = require('next-pwa/cache')
+// const withPWA = require('next-pwa')
+// const runtimeCaching = require('next-pwa/cache')
 const withPlugins = require('next-compose-plugins')
 
 module.exports = withPlugins(
   [
-    [
-      withPWA,
-      {
-        pwa: {
-          dest: 'public',
-          runtimeCaching
-        }
-      }
-    ]
+    // [
+    //   withPWA,
+    //   {
+    //     pwa: {
+    //       dest: 'public',
+    //       runtimeCaching
+    //     }
+    //   }
+    // ]
   ],
   {
     wepack: (config, options) => {
@@ -27,7 +27,7 @@ module.exports = withPlugins(
           {
             loader: 'file-loader',
             options: {
-              publicPath: '/_next',
+              publicPath: '/.next',
               name: 'static/media/[name].[hash].[ext]'
             }
           }

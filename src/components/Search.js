@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { SearchIcon } from '@heroicons/react/solid'
+import { HiSearch } from 'react-icons/hi'
 import useStore from '../store'
 import clsx from 'clsx'
 import Switch from './Switch'
@@ -62,7 +62,7 @@ const Search = () => {
           className="flex items-center flex-none pr-3"
         >
           <span className="sr-only">Search all {colors.length} colors</span>
-          <SearchIcon className="w-auto h-5 text-gray-400 transition-colors duration-150 group-focus-within:text-gray-500" />
+          <HiSearch className="w-auto h-5 text-gray-400 transition-colors duration-150 group-focus-within:text-gray-500" />
         </label>
         <input
           type="text"
