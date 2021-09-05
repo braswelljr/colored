@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/backgrounds/*": ["src/backgrounds/*"],
+      "@/components/*": ["src/components/*"],
+      "@/pages/*": ["src/pages/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/img/*": ["src/img/*"],
+      "@/store/*": ["src/store/*"],
+      "@/workers/*": ["src/workers/*"]
+    }
+  }
+}

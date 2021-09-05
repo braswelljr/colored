@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
-import useStore from '../store'
-import { circuit } from '../backgrounds/background'
 import clsx from 'clsx'
 import { HiChevronUp } from 'react-icons/hi'
+import useStore from '@/store/index'
+import { circuit } from '@/backgrounds/background'
 
 const Topper = () => {
   const theme = useStore(state => state.theme)

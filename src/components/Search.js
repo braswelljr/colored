@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { HiSearch } from 'react-icons/hi'
-import useStore from '../store'
 import clsx from 'clsx'
-import Switch from './Switch'
+import useStore from '@/store/index'
+import Switch from '@/components/Switch'
 
 const Search = () => {
   const searchInputRef = useRef()

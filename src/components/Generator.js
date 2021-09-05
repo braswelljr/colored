@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import useStore from '../store'
-import { Transition } from '@headlessui/react'
 import { Alert } from '@reach/alert'
-import GenPad from './palette/GenPad'
-import { HSLtoRGB, RGBtoHEX } from '../utils/converts'
-import { Switch } from '@headlessui/react'
+import { Transition } from '@headlessui/react'
 import clsx from 'clsx'
+import { Switch } from '@headlessui/react'
+import useStore from '@/store/index'
+import GenPad from '@/components/palette/GenPad'
+import { HSLtoRGB, RGBtoHEX } from '@/utils/converts'
 
 const Generator = () => {
   const gen = useStore(state => state.gen)

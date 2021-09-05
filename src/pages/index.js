@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
-import Navbar from '../components/Navbar'
-import Generator from '../components/Generator'
-import Explore from '../components/Explore'
-import Topper from '../components/Topper'
-import Search from '../components/Search'
-import useStore from '../store'
+import Navbar from '@/components/Navbar'
+import Generator from '@/components/Generator'
+import Explore from '@/components/Explore'
+import Topper from '@/components/Topper'
+import Search from '@/components/Search'
+import useStore from '@/store/index'
 
 const Index = () => {
   const appName = 'colored'
@@ -27,11 +27,11 @@ const Index = () => {
   }, [appName])
 
   useEffect(() => {
-    const mediaColor = window.matchMedia('(prefers-color-scheme: dark)')
-
-    mediaColor.addEventListener('load', event =>
-      event.matches ? themeDark() : themeLight()
-    )
+    window
+      .matchMedia('(prefers-color-scheme: dark)')
+      .addEventListener('load', event =>
+        event.matches ? themeDark() : themeLight()
+      )
   }, [])
 
   return (

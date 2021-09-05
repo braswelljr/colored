@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import clsx from 'clsx'
-import useStore from '../store'
-import ColorPad from './palette/ColorPad'
+import useStore from '@/store/index'
+import ColorPad from '@/components/palette/ColorPad'
 
 // Alt + 127752 /-> rainbow
 const Explore = () => {
@@ -59,7 +59,12 @@ const Explore = () => {
                 color={color}
               />
             ))}
-
+        {format === 'hex' &&
+          filteredColors
+            .slice(0, renderAll ? undefined : colors.length)
+            .map((color, i) => (
+              <ColorPad key={i} name={`${color.hex}`} color={color} />
+            ))}
         {format === 'rgb' &&
           filteredColors
             .slice(0, renderAll ? undefined : colors.length)
@@ -69,13 +74,6 @@ const Explore = () => {
                 name={`rgb(${color.rgb.r},${color.rgb.b},${color.rgb.b})`}
                 color={color}
               />
-            ))}
-
-        {format === 'hex' &&
-          filteredColors
-            .slice(0, renderAll ? undefined : colors.length)
-            .map((color, i) => (
-              <ColorPad key={i} name={`${color.hex}`} color={color} />
             ))}
       </div>
     </>

@@ -1,7 +1,7 @@
-import '../styles/index.css'
+import '../styles/globals.css'
 import Head from 'next/head'
-import useStore from '../store'
 import clsx from 'clsx'
+import useStore from '@/store/index'
 
 const App = ({ Component, pageProps }) => {
   const theme = useStore(state => state.theme)

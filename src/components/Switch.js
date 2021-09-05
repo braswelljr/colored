@@ -1,5 +1,5 @@
-import useStore from '../store'
 import clsx from 'clsx'
+import useStore from '@/store/index'
 
 const Switch = () => {
   const format = useStore(state => state.format)
