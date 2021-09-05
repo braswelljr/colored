@@ -1,5 +1,5 @@
-import useStore from '../store'
 import clsx from 'clsx'
+import useStore from '@/store/index'
 
 const Switch = () => {
   const format = useStore(state => state.format)
@@ -35,7 +35,7 @@ const Switch = () => {
             'bg-yellow-300 text-gray-900': format === 'rgb'
           })}
         >
-          RGB
+          rgb
         </button>
         <button
           type="button"

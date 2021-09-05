@@ -10,24 +10,41 @@ module.exports = withPlugins(
       {
         pwa: {
           dest: 'public',
-          runtimeCaching
+          runtimeCaching,
+          disable: process.env.NODE_ENV === 'development'
         }
       }
     ]
   ],
   {
-    wepack: (config, options) => {
+    reactStrictMode: true,
+    webpack5: true,
+    webpack: (config, options) => {
       if (!options.dev) {
         options.defaultLoaders.babel.options.cache = false
       }
 
       config.module.rules.push({
-        test: /\.(png|jpe?g|gif|webp)$/i,
+        test: /\.worker\.js$/,
+        use: [
+          {
+            loader: 'worker-loader',
+            options: {
+              publicPath: '/_next/',
+              name: 'static/[name].[hash].worker.[ext]'
+            }
+          }
+        ]
+      })
+
+      config.module.rules.push({
+        test: /\.(jpe?g|png|svg|gif|ico|eot|ttf|woff|woff2|mp4|pdf|webp|txt)$/i,
         use: [
           {
             loader: 'file-loader',
             options: {
-              publicPath: '/.next',
+              esModule: false,
+              publicPath: '/_next',
               name: 'static/media/[name].[hash].[ext]'
             }
           }
@@ -37,9 +54,6 @@ module.exports = withPlugins(
       config.resolve.modules.push(path.resolve(`./`))
 
       return config
-    },
-    future: {
-      webpack5: true
     }
   }
 )

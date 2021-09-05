@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { circuit } from '../backgrounds/background'
-import useStore from '../store'
 import { Switch } from '@headlessui/react'
 import { HiCode, HiColorSwatch, HiHashtag } from 'react-icons/hi'
 import { FaGithub } from 'react-icons/fa'
 import clsx from 'clsx'
+import { circuit } from '@/backgrounds/background'
+import useStore from '@/store/index'
 
 const Navbar = ({ appName }) => {
   const theme = useStore(state => state.theme)
