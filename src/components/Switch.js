@@ -35,7 +35,7 @@ const Switch = () => {
             'bg-yellow-300 text-gray-900': format === 'rgb'
           })}
         >
-          RGB
+          rgb
         </button>
         <button
           type="button"
