@@ -1,15 +1,18 @@
 import './globals.css'
 import LocalFont from 'next/font/local'
 import clsx from 'clsx'
+import Footer from '~/components/Footer'
+import Navbar from '~/components/Navbar'
+import ThemeProvider from '~/context/useTheme'
 
 export const metadata = {
-  title: 'Create Next App',
-  description: 'Color Pallette',
+  title: 'colored',
+  description: 'Color palette 🎨',
   keywords: ['color'],
   authors: [
     {
       name: 'braswelljr',
-      url: 'https://braswelljr.engineer'
+      url: 'https://braswelljr.vercel.app'
     }
   ],
   creator: 'braswelljr',
@@ -55,7 +58,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       )}
     >
       <body className={clsx('bg-white text-neutral-950 dark:bg-neutral-950 dark:text-white')}>
-        {children}
+        <ThemeProvider>
+          <Navbar className="" />
+          {children}
+          <Footer className="" />
+        </ThemeProvider>
       </body>
     </html>
   )
