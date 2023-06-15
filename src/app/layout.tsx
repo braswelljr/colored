@@ -1,13 +1,14 @@
 import './globals.css'
 import LocalFont from 'next/font/local'
 import clsx from 'clsx'
+import { siteConfig } from '~/config/site'
 import Footer from '~/components/Footer'
 import Navbar from '~/components/Navbar'
 import ThemeProvider from '~/context/useTheme'
 
 export const metadata = {
   title: 'colored',
-  description: 'Color palette 🎨',
+  description: siteConfig.description,
   keywords: ['color'],
   authors: [
     {
@@ -33,9 +34,9 @@ const SpaceGrotesk = LocalFont({
   variable: '--font-space-grotesk'
 })
 
-const Lobster = LocalFont({
-  src: [{ path: './lobster.ttf', style: 'normal' }],
-  variable: '--font-lobster'
+const Kablammo = LocalFont({
+  src: [{ path: './Kablammo.ttf', style: 'normal' }],
+  variable: '--font-kablammo'
 })
 
 const JetbrainsMono = LocalFont({
@@ -53,15 +54,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       className={clsx(
         'bg-white text-neutral-950 dark:bg-neutral-950 dark:text-white',
         SpaceGrotesk.variable,
-        Lobster.variable,
+        Kablammo.variable,
         JetbrainsMono.variable
       )}
     >
-      <body className={clsx('bg-white text-neutral-950 dark:bg-neutral-950 dark:text-white')}>
+      <body
+        className={clsx(
+          'min-h-screen bg-white text-neutral-950 dark:bg-neutral-950 dark:text-white'
+        )}
+      >
         <ThemeProvider>
-          <Navbar className="" />
-          {children}
-          <Footer className="" />
+          <Navbar className="h-[7.5vh]" />
+          <div className="min-h-[82.5vh]">{children}</div>
+          <Footer className="min-h-[10vh]" />
         </ThemeProvider>
       </body>
     </html>

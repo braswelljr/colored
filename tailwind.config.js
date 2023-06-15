@@ -28,7 +28,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['var(--font-space-grotesk)', ...defaultTheme.fontFamily.sans],
-        serif: ['var(--font-lobster)', ...defaultTheme.fontFamily.serif],
+        serif: ['var(--font-kablammo)', ...defaultTheme.fontFamily.serif],
         mono: ['var(--font-mono)', ...defaultTheme.fontFamily.mono]
       },
       fontSize: {

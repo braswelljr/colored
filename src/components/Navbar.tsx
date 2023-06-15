@@ -14,7 +14,7 @@ export default function Navbar({ className }: { className?: string }) {
   return (
     <nav
       className={classNames(
-        'w-full bg-violet-600 px-3 py-4 dark:bg-zinc-950 md:px-12 lg:px-20 xl:px-28',
+        'w-full bg-yellow-500 px-3 py-4 dark:bg-zinc-950 md:px-12 lg:px-20 xl:px-28',
         className
       )}
       style={{ backgroundImage: circuit }}
@@ -23,7 +23,7 @@ export default function Navbar({ className }: { className?: string }) {
         {/* home link */}
         <Link
           href={'/'}
-          className="inline-flex items-center space-x-2 text-xl font-extrabold uppercase"
+          className="inline-flex items-center space-x-2 font-serif text-2xl font-extrabold uppercase dark:text-yellow-500"
         >
           <HiColorSwatch className="block h-6 w-auto" />
           <span className="uppercase">Colored</span>
@@ -47,7 +47,7 @@ export default function Navbar({ className }: { className?: string }) {
                       layoutId="themeIdPointer"
                       initial={false}
                       className={clsx(
-                        'absolute inset-0 bg-neutral-800 dark:bg-violet-600',
+                        'absolute inset-0 bg-neutral-800 dark:bg-yellow-500',
                         i === 0 && 'rounded-l-sm',
                         i === self.length - 1 && 'rounded-r-sm'
                       )}
@@ -56,7 +56,8 @@ export default function Navbar({ className }: { className?: string }) {
                 </AnimatePresence>
                 <span
                   className={clsx('relative z-[1] block h-full w-full', {
-                    'text-violet-600 dark:text-white': key === theme
+                    'text-yellow-500 dark:text-zinc-950': key === theme,
+                    'dark:text-yellow-500': key !== theme
                   })}
                 >
                   {value}

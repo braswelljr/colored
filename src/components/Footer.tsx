@@ -1,14 +1,23 @@
-import Link from 'next/link'
 import { FaGithub } from 'react-icons/fa'
 import { classNames } from '~/utils/className'
 
 export default function Footer({ className }: { className?: string }) {
   return (
-    <nav className={classNames('', className)}>
+    <nav
+      className={classNames(
+        'flex items-center justify-between px-3 py-4 md:px-12 lg:px-20 xl:px-28',
+        className
+      )}
+    >
       {/* home link */}
-      <Link href={'/'} className="uppercase">
-        <span>&copy; Colored</span>
-      </Link>
+      <a
+        href="https://github.com/braswelljr"
+        target="_blank"
+        rel="noopener noreferer"
+        className="font-serif text-xl font-extrabold dark:text-yellow-500"
+      >
+        <span>&copy;braswelljr</span>
+      </a>
       {/* github */}
       <div className="">
         <a
