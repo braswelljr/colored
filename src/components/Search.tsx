@@ -15,13 +15,13 @@ import { classNames } from '~/utils/className'
  */
 export default function Search({
   className,
-  Handler = () => {},
+  handler = () => {},
   searchQuery,
   setSearchQuery,
   placeholder = 'Search'
 }: {
   className?: string
-  Handler?: () => void
+  handler?: () => void
   searchQuery: string
   setSearchQuery: Dispatch<SetStateAction<string>>
   placeholder?: string
@@ -52,13 +52,13 @@ export default function Search({
 
   // Search Handler
   useEffect(() => {
-    const handler = window.setTimeout(() => {
-      Handler()
+    const h = window.setTimeout(() => {
+      handler()
     }, 100)
     return () => {
-      window.clearTimeout(handler)
+      window.clearTimeout(h)
     }
-  }, [Handler, searchQuery])
+  }, [handler, searchQuery])
 
   // set loading with debounce
   useEffect(() => {
