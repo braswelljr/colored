@@ -14,6 +14,7 @@ const withALL = (nextConfig = {}) => withBundleAnalyzer(withPWA({ ...nextConfig 
 
 /** @type {import('next').NextConfig} */
 module.exports = withALL({
+  experimental: {},
   swcMinify: true,
   reactStrictMode: true,
   webpack: (config, { defaultLoaders }) => {

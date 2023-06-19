@@ -2,9 +2,10 @@ import './globals.css'
 import LocalFont from 'next/font/local'
 import clsx from 'clsx'
 import { siteConfig } from '~/config/site'
-import Footer from '~/components/Footer'
 import Navbar from '~/components/Navbar'
+import { PalleteProvider } from '~/context/usePallete'
 import ThemeProvider from '~/context/useTheme'
+import { Toaster } from '~/context/useToast'
 
 export const metadata = {
   title: 'colored',
@@ -64,9 +65,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         )}
       >
         <ThemeProvider>
-          <Navbar className="h-[7.5vh]" />
-          <div className="min-h-[82.5vh]">{children}</div>
-          <Footer className="min-h-[10vh]" />
+          <PalleteProvider>
+            <Navbar className="h-[7.5vh]" />
+            <div className="min-h-[82.5vh]">{children}</div>
+            <Toaster />
+          </PalleteProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -8,8 +8,10 @@ export default function useMounted(): boolean {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    // Set mounted to true after useEffect is called
     setMounted(true)
 
+    // cleanup
     return () => setMounted(false)
   }, [])
 
