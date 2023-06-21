@@ -1,4 +1,6 @@
 import { RGB } from '~/types/color'
+import cnl from 'color-name-list'
+import nc from 'nearest-color'
 import seedrandom from 'seedrandom'
 
 /**
@@ -110,4 +112,19 @@ export function convertHexToRGB(hex: string): RGB {
     G: parseInt(result[2], 16),
     B: parseInt(result[3], 16)
   }
+}
+
+/**
+ * getColorName - get color names
+ *
+ * @param {string} color -
+ * @returns {string}
+ */
+export function getColorName(color: string): string {
+  const cn = cnl.find(c => c.hex === color)
+  const colors = cnl.reduce((o, { name, hex }) => Object.assign(o, { [name]: hex }), {}) // map the colors to their names
+  const nearest = nc.from(colors) // get the nearest color
+
+  // get the name of the color or the nearest color or return the hex value
+  return cn ? cn.name : nearest(color) || color
 }

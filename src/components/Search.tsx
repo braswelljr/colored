@@ -22,8 +22,8 @@ export default function Search({
 }: {
   className?: string
   handler?: () => void
-  searchQuery: string
-  setSearchQuery: Dispatch<SetStateAction<string>>
+  searchQuery?: string
+  setSearchQuery: Dispatch<SetStateAction<string | undefined>>
   placeholder?: string
 }): JSX.Element {
   const searchInputRef = useRef<HTMLInputElement>(null)

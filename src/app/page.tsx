@@ -1,18 +1,13 @@
 'use client'
 
-import { useState } from 'react'
 import { FaGithub } from 'react-icons/fa'
 import { HiCode, HiColorSwatch, HiHashtag } from 'react-icons/hi'
-import useColorStore from '~/store/colors'
-import { shallow } from 'zustand/shallow'
 import Search from '~/components/Search'
-import usePallete from '~/context/usePallete'
+import useSwatch from '~/context/useSwatch'
 import { circuit } from '~/utils/backgrounds'
 
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState('')
-  const { colors: COLORS } = usePallete()
-  const [colors, searchColors] = useColorStore(state => [state.colors, state.searchColors], shallow)
+  const { colors, palletes, searchQuery, setSearchQuery } = useSwatch()
 
   return (
     <main className="">

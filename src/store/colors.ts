@@ -1,7 +1,7 @@
-import { COLOR } from '~/types/color'
-import { matchSorter } from 'match-sorter'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { matchSorter } from 'match-sorter'
+import { COLOR } from '~/types/color'
 
 type ColorState = {
   colors?: Array<COLOR>

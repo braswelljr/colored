@@ -3,7 +3,7 @@ import LocalFont from 'next/font/local'
 import clsx from 'clsx'
 import { siteConfig } from '~/config/site'
 import Navbar from '~/components/Navbar'
-import { PalleteProvider } from '~/context/usePallete'
+import { SwatchProvider } from '~/context/useSwatch'
 import ThemeProvider from '~/context/useTheme'
 import { Toaster } from '~/context/useToast'
 
@@ -65,11 +65,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         )}
       >
         <ThemeProvider>
-          <PalleteProvider>
+          <SwatchProvider>
             <Navbar className="h-[7.5vh]" />
             <div className="min-h-[82.5vh]">{children}</div>
             <Toaster />
-          </PalleteProvider>
+          </SwatchProvider>
         </ThemeProvider>
       </body>
     </html>

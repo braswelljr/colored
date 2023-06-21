@@ -15,6 +15,7 @@
     "^(next/(.*)$)|^(next$)",
     "^(react-icons/(.*)$)|^(react-icons$)",
     "^(zustand/(.*)$)|^(zustand$)",
+    "^(match-sorter/(.*)$)|^(match-sorter$)",
     "<THIRD_PARTY_MODULES>",
     "^types$",
     "^~local/(.*)$",
