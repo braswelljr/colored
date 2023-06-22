@@ -2,14 +2,22 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { COLOR, SwatchContextI, SwatchProviderI, SwatchType } from '~/types/color'
-import { generateRandomHexColorArray, getColorName } from '~/utils/color'
+import useSWR from 'swr'
 
 /**
  * PalleteContext - Context for color pallete
  */
 export const SwatchContext = createContext<SwatchContextI>({
-  colors: [],
-  palletes: [],
+  colors: {
+    data: [],
+    loading: false,
+    error: undefined
+  },
+  palletes: {
+    data: [],
+    loading: false,
+    error: undefined
+  },
   swatchType: 'color',
   setSwatchType: () => {},
   searchQuery: undefined,
@@ -23,60 +31,58 @@ export const SwatchContext = createContext<SwatchContextI>({
  * @returns {JSX.Element} PalleteProvider
  */
 export function SwatchProvider({ children }: SwatchProviderI): JSX.Element {
-  const len = 150
+  const total = 720
   const palleteLen = 3
   const [colors, setColors] = useState<COLOR[]>([])
   const [palletes, setPalletes] = useState<COLOR[][]>([])
   const [swatchType, setSwatchType] = useState<SwatchType>('color')
   const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined)
 
-  // generate random colors
-  // const c = useMemo(() => {
-  //   const hexs = generateRandomHexColorArray(len)
-  //   const withNames = hexs.map(hex => {
-  //     const name = getColorName(hex)
-  //     return {
-  //       name,
-  //       hex
-  //     }
-  //   })
+  interface COLORS_RES {
+    colors?: COLOR[]
+  }
+  const {
+    data: cd,
+    error: ce,
+    isLoading: cl
+  } = useSWR<COLORS_RES>(
+    `/generate/colors/api?total=${total}`,
+    (url: URL) => fetch(url).then(res => res.json()),
+    { revalidateOnFocus: false }
+  )
 
-  //   return withNames
-  // }, [])
-  // generate random palletes
-  // const p = useMemo(() => {
-  //   const plts: Array<Array<COLOR>> = []
+  interface PALLETES_RES {
+    palletes?: COLOR[][]
+  }
+  const {
+    data: pd,
+    error: pe,
+    isLoading: pl
+  } = useSWR<PALLETES_RES>(
+    `/generate/palletes/api?total=${50}&palleteLen=${palleteLen}`,
+    (url: URL) => fetch(url).then(res => res.json()),
+    { revalidateOnFocus: false }
+  )
 
-  //   for (let i = 0; i < len / 3; i++) {
-  //     // get random colors
-  //     const hexs = generateRandomHexColorArray(palleteLen)
-  //     // map the colors to their names
-  //     const withNames = hexs.map(hex => {
-  //       const name = getColorName(hex)
+  useEffect(() => {
+    if (cd && cd.colors) setColors(cd.colors)
+  }, [cd])
 
-  //       return {
-  //         name,
-  //         hex
-  //       }
-  //     })
-  //     // get random colors
-  //     plts.push(withNames)
-  //   }
-
-  //   return plts
-  // }, [])
+  useEffect(() => {
+    if (pd && pd.palletes) setPalletes(pd.palletes)
+  }, [pd])
 
   // memoized value
   const memoedValue = useMemo(
     () => ({
-      colors,
-      palletes,
+      colors: { data: colors, loading: cl, error: ce },
+      palletes: { data: palletes, loading: pl, error: pe },
       swatchType,
       setSwatchType,
       searchQuery,
       setSearchQuery
     }),
-    [colors, palletes, swatchType, searchQuery]
+    [colors, cl, ce, palletes, pl, pe, swatchType, searchQuery]
   )
 
   return <SwatchContext.Provider value={memoedValue}>{children}</SwatchContext.Provider>

@@ -1,13 +1,20 @@
 'use client'
 
 import { FaGithub } from 'react-icons/fa'
-import { HiCode, HiColorSwatch, HiHashtag } from 'react-icons/hi'
+import { HiArrowUp, HiCode, HiColorSwatch, HiHashtag } from 'react-icons/hi'
+import { SwatchType } from '~/types/color'
+import { AnimatePresence, motion } from 'framer-motion'
+import useTop from '~/hooks/useTop'
 import Search from '~/components/Search'
+import Spinner from '~/components/Spinner'
 import useSwatch from '~/context/useSwatch'
 import { circuit } from '~/utils/backgrounds'
+import { classNames } from '~/utils/className'
+import { invertHex } from '~/utils/color'
 
 export default function Home() {
-  const { colors, palletes, searchQuery, setSearchQuery } = useSwatch()
+  const top = useTop()
+  const { colors, searchQuery, setSearchQuery, swatchType, setSwatchType } = useSwatch()
 
   return (
     <main className="">
@@ -46,7 +53,7 @@ export default function Home() {
                 icon: HiHashtag
               },
               {
-                description: 'Different Formats',
+                description: 'Convert Formats',
                 icon: HiCode
               },
               {
@@ -63,13 +70,91 @@ export default function Home() {
         </div>
       </section>
       {/* search area */}
-      <div className="">
+      <section className="sticky inset-x-0 top-0 z-10">
+        {/* search area */}
         <Search
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          className="bg-yellow-100  px-3 py-4 dark:bg-zinc-900 md:px-12 lg:px-20 xl:px-28"
+          className="bg-yellow-100 px-3 py-4 dark:bg-zinc-800 md:px-12 lg:px-20 xl:px-28"
         />
-      </div>
+        {/* swatch switch */}
+        <div className="flex min-h-[7vh] justify-between bg-yellow-200 px-3 py-2 dark:bg-zinc-900 md:px-12 lg:px-20 xl:px-28">
+          <div className="flex items-center justify-center space-x-4">
+            {['color', 'palette'].map((type, i, self) => (
+              <button
+                key={i}
+                type="button"
+                className={classNames(
+                  'relative px-2 py-1 text-xs font-bold uppercase focus:outline-none sm:text-sm',
+                  swatchType === type && 'dark:text-zinc-950'
+                )}
+                onClick={() => setSwatchType(type as SwatchType)}
+              >
+                <AnimatePresence>
+                  {swatchType === type && (
+                    <motion.span
+                      layoutId="--swatch-switch-indicator--"
+                      className={classNames('absolute inset-0 bg-yellow-500', {
+                        'rounded-l-md': i === 0,
+                        'rounded-r-md': i === self.length - 1
+                      })}
+                    />
+                  )}
+                </AnimatePresence>
+                <span className="relative z-[1]">{type}</span>
+              </button>
+            ))}
+          </div>
+          {/* top */}
+          <div className="flex flex-col justify-center">
+            <button
+              type="button"
+              className={classNames(
+                'group/top relative cursor-pointer px-1 py-0.5 focus:outline-none',
+                top <= 10 && 'opacity-100'
+              )}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+              <div className="relative inline-flex items-center space-x-2">
+                <HiArrowUp className="h-3 w-auto" />
+                <span>Scroll to top</span>
+              </div>
+              <span className="absolute inset-x-0 bottom-0 block h-[3px] w-0 rounded-md transition-width group-hover/top:w-full dark:bg-white" />
+            </button>
+          </div>
+        </div>
+      </section>
+      {/* colors */}
+      <section className="w-full px-3 py-4 pb-12 md:px-12 lg:px-20 xl:px-24">
+        <div
+          className={classNames('grid gap-8 text-center text-xs leading-4', {
+            ' grid-cols-[repeat(auto-fill,minmax(132px,1fr))]':
+              swatchType === 'color' && colors.data.length > 0
+          })}
+        >
+          {swatchType === 'color' && colors.data.length > 0 ? (
+            colors.data.map((color, i) => (
+              <div
+                key={i}
+                style={{ backgroundColor: color.hex, color: invertHex(color.hex) }}
+                className="relative flex h-24 cursor-pointer items-center justify-center rounded-lg font-semibold"
+              >
+                <span className="text-xs font-black sm:text-xsm">{color.name}</span>
+              </div>
+            ))
+          ) : (
+            <div className="">
+              {colors.loading ? (
+                <div className="flex min-h-[50vh] w-full items-center justify-center">
+                  <Spinner className="h-8 w-auto dark:text-yellow-200" />
+                </div>
+              ) : (
+                <div className=""></div>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
     </main>
   )
 }

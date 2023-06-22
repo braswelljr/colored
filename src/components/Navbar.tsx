@@ -48,8 +48,8 @@ export default function Navbar({ className }: { className?: string }) {
                       initial={false}
                       className={clsx(
                         'absolute inset-0 bg-neutral-800 dark:bg-yellow-500',
-                        i === 0 && 'rounded-l-sm',
-                        i === self.length - 1 && 'rounded-r-sm'
+                        i === 0 && 'rounded-l-md',
+                        i === self.length - 1 && 'rounded-r-md'
                       )}
                     />
                   )}

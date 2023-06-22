@@ -1,4 +1,4 @@
-import { RGB } from '~/types/color'
+import { NearestName, RGB } from '~/types/color'
 import cnl from 'color-name-list'
 import nc from 'nearest-color'
 import seedrandom from 'seedrandom'
@@ -9,7 +9,7 @@ import seedrandom from 'seedrandom'
  * @return {Array<string>}
  */
 export function generateRandomHexColorArray(length = 5): Array<string> {
-  return new Array(length).fill('').map(() => generateRandomHexColor())
+  return Array.from({ length }, generateRandomHexColor)
 }
 
 /**
@@ -120,11 +120,86 @@ export function convertHexToRGB(hex: string): RGB {
  * @param {string} color -
  * @returns {string}
  */
-export function getColorName(color: string): string {
+export function getColorName(color: string): { name: string; color: string } {
   const cn = cnl.find(c => c.hex === color)
   const colors = cnl.reduce((o, { name, hex }) => Object.assign(o, { [name]: hex }), {}) // map the colors to their names
   const nearest = nc.from(colors) // get the nearest color
+  // get the name of the color or the nearest color or return the hex value
+  const nearestname: NearestName = nearest(color)
 
   // get the name of the color or the nearest color or return the hex value
-  return cn ? cn.name : nearest(color) || color
+  return {
+    name: cn ? cn.name : nearestname ? nearestname.name : undefined || color,
+    color: cn ? cn.hex : nearestname ? nearestname.value : undefined || color
+  }
+}
+
+/**
+ * splitHexIntoShades - split hex into shades
+ * @param {string} color - hex color
+ * @param {number} step - number of shades
+ * @return {Array<string>}
+ * @example const shades = splitHexIntoShades('#000000', 5)
+console.log(shades)
+// ['#000000', '#1a1a1a', '#333333', '#4d4d4d', '#666666']
+ */
+export function splitHexIntoShade(color: string, step: number): string[] {
+  const hex = color.replace('#', '')
+
+  // Check if the hex color is valid
+  if (!/^(?:[0-9A-Fa-f]{3}){1,2}$/.test(hex)) return []
+
+  // Determine the number of digits for each RGB component based on the hex length
+  const numDigits = hex.length / 3
+  const stepSize = Math.floor(255 / step)
+
+  // Trim any alpha values from the hex color
+  const trimmedHex = hex.substring(0, numDigits * 3)
+
+  const shades: string[] = []
+
+  for (let i = 0; i < step; i++) {
+    const r = Math.max(
+      0,
+      Math.min(255, Math.floor(parseInt(trimmedHex.substring(0, numDigits), 16) - i * stepSize))
+    )
+    const g = Math.max(
+      0,
+      Math.min(
+        255,
+        Math.floor(parseInt(trimmedHex.substring(numDigits, numDigits), 16) - i * stepSize)
+      )
+    )
+    const b = Math.max(
+      0,
+      Math.min(
+        255,
+        Math.floor(parseInt(trimmedHex.substring(numDigits * 2, numDigits), 16) - i * stepSize)
+      )
+    )
+
+    shades.push(
+      `#${r.toString(16).padStart(numDigits, '0')}${g.toString(16).padStart(numDigits, '0')}${b
+        .toString(16)
+        .padStart(numDigits, '0')}`
+    )
+  }
+
+  return shades
+}
+
+/**
+ * invertHex - invert hex color
+ * @param {string} color - hex color
+ * @return {string}
+ * @example const inverted = invertHex('#000000')
+console.log(inverted)
+// #ffffff
+ */
+export function invertHex(color: string): string {
+  const hex = color.replace('#', '')
+  // Check if the hex color is valid
+  if (!/^(?:[0-9A-Fa-f]{3}){1,2}$/.test(hex)) return ''
+
+  return `#${(Number(`0x1${hex.replace('#', '')}`) ^ 0xffffff).toString(16).substring(1)}`
 }
