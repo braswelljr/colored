@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { COLOR } from '~/types/color'
-import { generateRandomHexColorArray, getColorName } from '~/utils/color'
+import { generateRandomHexColorArray, getColorName } from 'lib/color'
 
 export async function GET(request: NextRequest) {
   // get query string parameters

@@ -31,3 +31,6 @@ if [ $? -eq 0 ]; then
     echo "Oops! Build failed 😢."
     exit 130
 fi
+
+# stage again to add new built assets
+git add .

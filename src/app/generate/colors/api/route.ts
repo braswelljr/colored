@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { generateRandomHexColor, getColorName } from '~/utils/color'
+import { generateRandomHexColor, getColorName } from 'lib/color'
 
 export async function GET(request: NextRequest) {
   // get total number of palettes to generate from the query string

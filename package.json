@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Color palette 🎨",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "pnpm run write:asset && next dev",
+    "build": "pnpm run write:asset && next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "npx eslint ./**/*.{js,ts,jsx,tsx} --quiet --fix",
@@ -13,7 +13,8 @@
     "prepare": "husky install",
     "typecheck": "tsc --noEmit",
     "format:write": "prettier --write \"**/*.{js,ts,jsx,tsx,css}\" --cache",
-    "format:check": "prettier --check \"**/*.{js,ts,jsx,tsx,css}\" --cache"
+    "format:check": "prettier --check \"**/*.{js,ts,jsx,tsx,css}\" --cache",
+    "write:asset": "node ./lib/generator.color.js && node ./lib/generator.pallete.js"
   },
   "keywords": [
     "color",
@@ -29,6 +30,7 @@
     "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
     "color-name-list": "^10.10.0",
+    "concurrently": "^8.2.0",
     "cssnano": "^6.0.1",
     "framer-motion": "^10.12.16",
     "match-sorter": "^6.3.1",

@@ -4,17 +4,17 @@ import { FaGithub } from 'react-icons/fa'
 import { HiArrowUp, HiCode, HiColorSwatch, HiHashtag } from 'react-icons/hi'
 import { SwatchType } from '~/types/color'
 import { AnimatePresence, motion } from 'framer-motion'
+import { invertHex } from 'lib/color'
 import useTop from '~/hooks/useTop'
 import Search from '~/components/Search'
 import Spinner from '~/components/Spinner'
 import useSwatch from '~/context/useSwatch'
 import { circuit } from '~/utils/backgrounds'
 import { classNames } from '~/utils/className'
-import { invertHex } from '~/utils/color'
 
 export default function Home() {
   const top = useTop()
-  const { colors, searchQuery, setSearchQuery, swatchType, setSwatchType } = useSwatch()
+  const { colors, palletes, searchQuery, setSearchQuery, swatchType, setSwatchType } = useSwatch()
 
   return (
     <main className="">
@@ -49,16 +49,16 @@ export default function Home() {
           <div className="grid w-full grid-cols-2 items-center justify-center justify-items-center gap-4 pb-4 text-xs font-semibold md:grid-cols-3">
             {[
               {
-                description: 'Generate a Colors',
+                description: `${colors.length} Colors`,
                 icon: HiHashtag
+              },
+              {
+                description: `${palletes.length} Curated Swatches`,
+                icon: HiColorSwatch
               },
               {
                 description: 'Convert Formats',
                 icon: HiCode
-              },
-              {
-                description: 'Curated Swatch',
-                icon: HiColorSwatch
               }
             ].map((desc, i) => (
               <div key={i} className="flex items-start space-x-1 tracking-tight">
@@ -80,7 +80,7 @@ export default function Home() {
         {/* swatch switch */}
         <div className="flex min-h-[7vh] justify-between bg-yellow-200 px-3 py-2 dark:bg-zinc-900 md:px-12 lg:px-20 xl:px-28">
           <div className="flex items-center justify-center space-x-4">
-            {['color', 'palette'].map((type, i, self) => (
+            {['color', 'pallete'].map((type, i, self) => (
               <button
                 key={i}
                 type="button"
@@ -127,30 +127,42 @@ export default function Home() {
       {/* colors */}
       <section className="w-full px-3 py-4 pb-12 md:px-12 lg:px-20 xl:px-24">
         <div
-          className={classNames('grid gap-8 text-center text-xs leading-4', {
-            ' grid-cols-[repeat(auto-fill,minmax(132px,1fr))]':
-              swatchType === 'color' && colors.data.length > 0
+          className={classNames('grid gap-8 text-xs leading-4', {
+            'grid-cols-[repeat(auto-fill,minmax(132px,1fr))]':
+              swatchType === 'color' && colors.length > 0,
+            'grid-cols-[repeat(auto-fill,minmax(275px,1fr))]':
+              swatchType === 'pallete' && palletes.length > 0
           })}
         >
-          {swatchType === 'color' && colors.data.length > 0 ? (
-            colors.data.map((color, i) => (
+          {swatchType === 'color' && colors.length > 0 ? (
+            colors.map((color, i) => (
               <div
                 key={i}
                 style={{ backgroundColor: color.hex, color: invertHex(color.hex) }}
-                className="relative flex h-24 cursor-pointer items-center justify-center rounded-lg font-semibold"
+                className="relative flex h-24 cursor-pointer items-center justify-center rounded-md text-center font-semibold"
               >
-                <span className="text-xs font-black sm:text-xsm">{color.name}</span>
+                <span className="w-4/5 text-xs font-black uppercase sm:text-xsm">{color.name}</span>
+              </div>
+            ))
+          ) : swatchType === 'pallete' && palletes.length > 0 ? (
+            palletes.map((pallete, i) => (
+              <div key={i} className="group/color grid h-64 cursor-pointer grid-rows-5 rounded-lg">
+                {pallete.map((color, x) => (
+                  <div
+                    key={x}
+                    style={{ backgroundColor: color.hex, color: invertHex(color.hex) }}
+                    className={classNames('hover:h-16')}
+                  >
+                    <span className="w-4/5 text-xs font-black uppercase sm:text-xsm">
+                      {color.name}
+                    </span>
+                  </div>
+                ))}
               </div>
             ))
           ) : (
-            <div className="">
-              {colors.loading ? (
-                <div className="flex min-h-[50vh] w-full items-center justify-center">
-                  <Spinner className="h-8 w-auto dark:text-yellow-200" />
-                </div>
-              ) : (
-                <div className=""></div>
-              )}
+            <div className="flex min-h-[50vh] w-full items-center justify-center">
+              <Spinner className="h-6 w-auto dark:text-yellow-200" />
             </div>
           )}
         </div>

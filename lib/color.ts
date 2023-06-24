@@ -1,7 +1,6 @@
 import { NearestName, RGB } from '~/types/color'
 import cnl from 'color-name-list'
 import nc from 'nearest-color'
-import seedrandom from 'seedrandom'
 
 /**
  * generateRandomHexColorArray - generates random array of colors using time as a seed
@@ -9,7 +8,13 @@ import seedrandom from 'seedrandom'
  * @return {Array<string>}
  */
 export function generateRandomHexColorArray(length = 5): Array<string> {
-  return Array.from({ length }, generateRandomHexColor)
+  return Array.from<string>({ length })
+    .map((color, _, self) => {
+      color = generateRandomHexColor()
+      if (!color || !self.includes(color)) return ''
+      return color
+    })
+    .filter(color => !!color && color.length > 0 && color)
 }
 
 /**
@@ -17,10 +22,9 @@ export function generateRandomHexColorArray(length = 5): Array<string> {
  * @return {string}
  */
 export function generateRandomHexColor(): string {
-  const seed = seedrandom()
   return (
     '#' +
-    Math.floor(seed() * 16777215)
+    Math.floor(Math.random() * 16777215)
       .toString(16)
       .padStart(6, '0')
   )
@@ -31,9 +35,9 @@ export function generateRandomHexColor(): string {
  * @return {RGB}
  */
 export function generateRandomRGBColor(): RGB {
-  const seed = seedrandom()
+  const seed = Math.random()
 
-  return { R: Math.floor(seed() * 256), G: Math.floor(seed() * 256), B: Math.floor(seed() * 256) }
+  return { R: Math.floor(seed * 256), G: Math.floor(seed * 256), B: Math.floor(seed * 256) }
 }
 
 /**
@@ -193,8 +197,8 @@ export function splitHexIntoShade(color: string, step: number): string[] {
  * @param {string} color - hex color
  * @return {string}
  * @example const inverted = invertHex('#000000')
-console.log(inverted)
-// #ffffff
+ * console.log(inverted)
+ * // #ffffff
  */
 export function invertHex(color: string): string {
   const hex = color.replace('#', '')

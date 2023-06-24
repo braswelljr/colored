@@ -9,16 +9,8 @@ export type COLOR = {
 }
 
 export interface SwatchContextI {
-  colors: {
-    data: Array<COLOR>
-    loading: boolean
-    error?: string
-  }
-  palletes: {
-    data: Array<Array<COLOR>>
-    loading: boolean
-    error?: string
-  }
+  colors: Array<COLOR>
+  palletes: Array<Array<COLOR>>
   swatchType: SwatchType
   setSwatchType: (type: SwatchType) => void
   searchQuery?: string
