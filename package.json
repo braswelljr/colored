@@ -34,6 +34,7 @@
     "cssnano": "^6.0.1",
     "framer-motion": "^10.12.16",
     "match-sorter": "^6.3.1",
+    "million": "^2.4.8",
     "nearest-color": "^0.4.4",
     "next": "^13.4.7",
     "next-pwa": "^5.6.0",

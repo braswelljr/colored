@@ -8,7 +8,7 @@ type ColorState = {
   searchColors: (colors: Array<COLOR>, search?: string) => void
 }
 
-const useColorStore = create<ColorState>()(
+const useColors = create<ColorState>()(
   devtools(set => ({
     colors: undefined,
     searchColors: (colors: Array<COLOR>, search?: string) => {
@@ -25,4 +25,4 @@ const useColorStore = create<ColorState>()(
   }))
 )
 
-export default useColorStore
+export default useColors
