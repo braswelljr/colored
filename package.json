@@ -36,7 +36,7 @@
     "match-sorter": "^6.3.1",
     "million": "^2.4.8",
     "nearest-color": "^0.4.4",
-    "next": "^13.4.7",
+    "next": "^14.0.2",
     "next-pwa": "^5.6.0",
     "next-themes": "^0.2.1",
     "postcss": "^8.4.24",
