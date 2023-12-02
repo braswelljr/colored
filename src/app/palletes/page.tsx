@@ -2,24 +2,24 @@
 
 import { useSearchParams } from 'next/navigation'
 import { matchSorter } from 'match-sorter'
-import Color from '~/components/Color'
+import Pallete from '~/components/Pallete'
 import useSwatch from '~/context/useSwatch'
 
 export default function Home() {
   const searchParams = useSearchParams()
   const q = searchParams.get('q') || ''
-  const { colors } = useSwatch()
+  const { palletes } = useSwatch()
 
-  const filteredColors = matchSorter(colors, q, {
+  const filteredPalletes = matchSorter(palletes, q, {
     keys: ['name', 'hex', 'rgb']
   })
 
   return (
     <main className="px-3 py-4 md:px-12 lg:px-20 xl:px-28">
-      {filteredColors && filteredColors.length ? (
+      {filteredPalletes && filteredPalletes.length ? (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] gap-8 text-xs leading-4">
-          {filteredColors.map((color, i) => (
-            <Color key={i} color={color} />
+          {filteredPalletes.map((pallete, i) => (
+            <Pallete key={i} pallete={pallete} />
           ))}
         </div>
       ) : (
