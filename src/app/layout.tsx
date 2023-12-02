@@ -18,10 +18,6 @@ export const metadata = {
     }
   ],
   creator: 'braswelljr',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' }
-  ],
   icons: {
     icon: '/favicon.ico',
     shortcut: '/icons/logo192.png',
@@ -66,8 +62,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       >
         <ThemeProvider>
           <SwatchProvider>
-            <Navbar className="h-[7.5vh]" />
-            <div className="min-h-[82.5vh]">{children}</div>
+            <Navbar className="" />
+            <div className="">{children}</div>
             <Toaster />
           </SwatchProvider>
         </ThemeProvider>
