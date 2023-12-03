@@ -34,107 +34,108 @@ export default function Navbar({ className }: { className?: string }) {
   const [searchQuery, setSearchQuery] = useState<string | undefined>(q || '')
 
   return (
-    <nav
-      className={classNames('w-full bg-yellow-500 dark:bg-zinc-950', className)}
-      style={{ backgroundImage: circuit }}
-    >
-      {/* header */}
-      <section className="px-3 py-4 md:px-12 lg:px-20 xl:px-28">
-        <div className="flex items-center justify-between">
-          {/* home link */}
-          <Link
-            href={'/'}
-            className="inline-flex items-center space-x-2 font-serif text-2xl font-extrabold uppercase dark:text-yellow-500"
-          >
-            <HiColorSwatch className="block h-6 w-auto" />
-            <span className="uppercase">Colored</span>
-          </Link>
-          {/* github */}
-          <LayoutGroup>
-            <ul className={clsx('flex items-center justify-center space-x-2 max-lg:order-1')}>
-              {Object.entries({
-                system: <HiDesktopComputer className={clsx('h-5 w-auto')} />,
-                dark: <HiMoon className={clsx('h-5 w-auto')} />,
-                light: <HiSun className={clsx('h-5 w-auto')} />
-              }).map(([key, value], i, self) => (
-                <li
-                  key={key}
-                  className={clsx('relative block cursor-pointer p-1.5')}
-                  onClick={() => setTheme(key)}
-                >
-                  <AnimatePresence>
-                    {key === theme && (
-                      <motion.div
-                        layoutId="themeIdPointer"
-                        initial={false}
-                        className={clsx(
-                          'absolute inset-0 bg-neutral-800 dark:bg-yellow-500',
-                          i === 0 && 'rounded-l-md',
-                          i === self.length - 1 && 'rounded-r-md'
-                        )}
-                      />
-                    )}
-                  </AnimatePresence>
-                  <span
-                    className={clsx('relative z-[1] block h-full w-full', {
-                      'text-yellow-500 dark:text-zinc-950': key === theme,
-                      'dark:text-yellow-500': key !== theme
-                    })}
+    <>
+      <nav
+        className={classNames('w-full bg-yellow-500 dark:bg-zinc-950', className)}
+        style={{ backgroundImage: circuit }}
+      >
+        {/* header */}
+        <section className="px-3 py-4 md:px-12 lg:px-20 xl:px-28">
+          <div className="flex items-center justify-between">
+            {/* home link */}
+            <Link
+              href={'/'}
+              className="inline-flex items-center space-x-2 font-serif text-2xl font-extrabold uppercase dark:text-yellow-500"
+            >
+              <HiColorSwatch className="block h-6 w-auto" />
+              <span className="uppercase">Colored</span>
+            </Link>
+            {/* github */}
+            <LayoutGroup>
+              <ul className={clsx('flex items-center justify-center space-x-2 max-lg:order-1')}>
+                {Object.entries({
+                  system: <HiDesktopComputer className={clsx('h-5 w-auto')} />,
+                  dark: <HiMoon className={clsx('h-5 w-auto')} />,
+                  light: <HiSun className={clsx('h-5 w-auto')} />
+                }).map(([key, value], i, self) => (
+                  <li
+                    key={key}
+                    className={clsx('relative block cursor-pointer p-1.5')}
+                    onClick={() => setTheme(key)}
                   >
-                    {value}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </LayoutGroup>
-        </div>
-        <div className="mx-auto mt-5 space-y-10">
-          {/* heading */}
-          <div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
-            <div className="">
-              <p className="text-xl font-medium uppercase xsm:text-2xl">
-                Experience a world of personalized design with an array of handpicked colors at your
-                disposal.
-              </p>
-            </div>
-            <div className="">
-              {/* github */}
-              <Link
-                href="https://github.com/braswelljr/colored"
-                target="_blank"
-                rel="noopener noreferer"
-                className="inline-flex w-full items-center justify-center space-x-4 rounded border border-zinc-950 bg-zinc-950/10 py-1.5 font-black transition-transform hover:translate-y-0.5 focus:translate-y-0.5 dark:border-yellow-500 dark:bg-yellow-500/10 dark:text-yellow-500"
-              >
-                <FaGithub className="h-5 w-auto" />
-                <span className="text-lg">GitHub</span>
-              </Link>
-            </div>
+                    <AnimatePresence>
+                      {key === theme && (
+                        <motion.div
+                          layoutId="themeIdPointer"
+                          initial={false}
+                          className={clsx(
+                            'absolute inset-0 bg-neutral-800 dark:bg-yellow-500',
+                            i === 0 && 'rounded-l-md',
+                            i === self.length - 1 && 'rounded-r-md'
+                          )}
+                        />
+                      )}
+                    </AnimatePresence>
+                    <span
+                      className={clsx('relative z-[1] block h-full w-full', {
+                        'text-yellow-500 dark:text-zinc-950': key === theme,
+                        'dark:text-yellow-500': key !== theme
+                      })}
+                    >
+                      {value}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </LayoutGroup>
           </div>
-          {/* options */}
-          <div className="grid w-full grid-cols-2 items-center justify-center justify-items-center gap-4 pb-4 text-xs font-semibold md:grid-cols-3">
-            {[
-              {
-                description: `${colors.length} Colors`,
-                icon: HiHashtag
-              },
-              {
-                description: `${palletes.length} Curated Swatches`,
-                icon: HiColorSwatch
-              },
-              {
-                description: 'Convert Formats',
-                icon: HiCode
-              }
-            ].map((desc, i) => (
-              <div key={i} className="flex items-start space-x-1 tracking-tight">
-                <desc.icon className="h-5 w-auto" />
-                <span className="text-xs uppercase xsm:text-sm">{desc.description}</span>
+          <div className="mx-auto mt-5 space-y-10">
+            {/* heading */}
+            <div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
+              <div className="">
+                <p className="text-xl font-medium uppercase xsm:text-2xl">
+                  Experience a world of personalized design with an array of handpicked colors at
+                  your disposal.
+                </p>
               </div>
-            ))}
+              <div className="">
+                {/* github */}
+                <Link
+                  href="https://github.com/braswelljr/colored"
+                  target="_blank"
+                  rel="noopener noreferer"
+                  className="inline-flex w-full items-center justify-center space-x-4 rounded border border-zinc-950 bg-zinc-950/10 py-1.5 font-black transition-transform hover:translate-y-0.5 focus:translate-y-0.5 dark:border-yellow-500 dark:bg-yellow-500/10 dark:text-yellow-500"
+                >
+                  <FaGithub className="h-5 w-auto" />
+                  <span className="text-lg">GitHub</span>
+                </Link>
+              </div>
+            </div>
+            {/* options */}
+            <div className="grid w-full grid-cols-2 items-center justify-center justify-items-center gap-4 pb-4 text-xs font-semibold md:grid-cols-3">
+              {[
+                {
+                  description: `${colors.length} Colors`,
+                  icon: HiHashtag
+                },
+                {
+                  description: `${palletes.length} Curated Swatches`,
+                  icon: HiColorSwatch
+                },
+                {
+                  description: 'Convert Formats',
+                  icon: HiCode
+                }
+              ].map((desc, i) => (
+                <div key={i} className="flex items-start space-x-1 tracking-tight">
+                  <desc.icon className="h-5 w-auto" />
+                  <span className="text-xs uppercase xsm:text-sm">{desc.description}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-
+        </section>
+      </nav>
       {/* search area */}
       <section className="sticky inset-x-0 top-0 z-10">
         {/* search area */}
@@ -148,7 +149,7 @@ export default function Navbar({ className }: { className?: string }) {
           }
         />
         {/* swatch switch */}
-        <div className="flex min-h-[7vh] justify-between bg-yellow-200 px-3 py-2 dark:bg-zinc-900 md:px-12 lg:px-20 xl:px-28">
+        <div className="-mt-1 flex min-h-[7vh] justify-between bg-yellow-200 px-3 py-2 dark:bg-zinc-900 md:px-12 lg:px-20 xl:px-28">
           <div className="flex items-center justify-center space-x-4">
             {[
               { page: 'Colors', path: '/' },
@@ -193,6 +194,6 @@ export default function Navbar({ className }: { className?: string }) {
           </div>
         </div>
       </section>
-    </nav>
+    </>
   )
 }
