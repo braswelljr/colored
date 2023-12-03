@@ -10,14 +10,16 @@ export default function Home() {
   const q = searchParams.get('q') || ''
   const { palletes } = useSwatch()
 
-  const filteredPalletes = matchSorter(palletes, q, {
-    keys: ['name', 'hex', 'rgb']
-  })
+  // Use matchSorter to filter the inner array based on the query
+  // Return the pallete if there are any matching colors
+  const filteredPalletes = palletes.filter(
+    pallete => matchSorter(pallete, q, { keys: ['name', 'hex', 'rgb'] }).length
+  )
 
   return (
     <main className="px-3 py-4 md:px-12 lg:px-20 xl:px-28">
       {filteredPalletes && filteredPalletes.length ? (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] gap-8 text-xs leading-4">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-6 text-xs leading-4">
           {filteredPalletes.map((pallete, i) => (
             <Pallete key={i} pallete={pallete} />
           ))}

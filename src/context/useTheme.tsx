@@ -9,7 +9,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   if (!mounted) return null
 
   return (
-    <Theme attribute="class" enableSystem={false} defaultTheme="system">
+    <Theme attribute="class" enableSystem={true} defaultTheme="system">
       {children}
     </Theme>
   )
