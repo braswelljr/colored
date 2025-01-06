@@ -30,7 +30,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "color-name-list": "^10.16.0",
-    "concurrently": "^8.2.2",
+    "concurrently": "^9.1.2",
     "cssnano": "^7.0.1",
     "framer-motion": "^11.0.3",
     "match-sorter": "^6.3.1",
