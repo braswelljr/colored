@@ -33,7 +33,7 @@
     "concurrently": "^8.2.2",
     "cssnano": "^7.0.1",
     "framer-motion": "^11.0.3",
-    "match-sorter": "^6.3.1",
+    "match-sorter": "^8.0.2",
     "million": "^3.0.2",
     "nearest-color": "^0.4.4",
     "next": "^15.1.5",
