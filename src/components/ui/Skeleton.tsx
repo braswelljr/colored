@@ -1,18 +1,19 @@
-import { classNames } from '~/utils/className'
+import { cn } from '~/utils/cn';
 
 interface SkeletonProps {
-  className: string
+  className: string;
 }
 
 /**
  * Skeleton - for loading
  * @typedef {SkeletonProps}
- * @property {string} className - classNames
- * @returns {JSX.Element} Skeleton Componet
+ * @property {string} className - cn
  */
-export default function Skeleton({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement & SkeletonProps>): JSX.Element {
-  return <div className={classNames('animate-pulse rounded-md', className)} {...props} />
+export function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement & SkeletonProps>) {
+  return (
+    <div
+      className={cn('animate-pulse rounded-md bg-neutral-300 dark:bg-neutral-800', className)}
+      {...props}
+    />
+  );
 }

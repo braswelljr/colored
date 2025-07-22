@@ -35,13 +35,14 @@ yarn-error.log*
 .vercel
 
 # locks
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
 
 # editor configs
 .idea
-.vscode
+# .vscode
+# !.vscode/settings.json
 .sublime
 
 # registered workers

@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react';
 
 /**
  * useWorkers - A hook to manage web workers
@@ -14,12 +14,12 @@ import { useEffect, useMemo } from 'react'
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Worker
  */
 export default function useWorkers(workerPath: string): Worker {
-  const workerPathUrl = new URL(workerPath, import.meta.url)
-  const worker = useMemo(() => new Worker(workerPathUrl.href), [workerPathUrl.href])
+  const workerPathUrl = new URL(workerPath, import.meta.url);
+  const worker = useMemo(() => new Worker(workerPathUrl.href), [workerPathUrl.href]);
 
   useEffect(() => {
-    return () => worker.terminate()
-  }, [worker])
+    return () => worker.terminate();
+  }, [worker]);
 
-  return worker
+  return worker;
 }

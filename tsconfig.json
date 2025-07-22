@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -9,7 +9,7 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -22,10 +22,19 @@
     "baseUrl": "./",
     "paths": {
       "~/*": ["./src/*"],
+      "@/*": ["./src/*"],
       "lib": ["./lib/*"],
+      "scripts": ["./scripts/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "index.d.ts", "lib"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "index.d.ts", "scripts/generate-colors.mts", "scripts/generate-colors.ts"],
   "exclude": ["node_modules"],
-  "files": ["index.d.ts"]
+  "files": ["index.d.ts"],
+  "ts-node": {
+    "compilerOptions": {
+      // "module": "commonjs",
+      // "moduleResolution": "nodenext",
+    },
+  //   "include": ["scripts"]
+  }
 }

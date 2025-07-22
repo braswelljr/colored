@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
 // https://github.com/streamich/react-use/blob/master/src/useMedia.ts
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 /**
  * useMedia - hook to detect media queries
@@ -10,31 +10,31 @@ import { useEffect, useState } from 'react'
  * @returns {boolean}
  */
 export default function useMedia(query: string, defaultState = false): boolean {
-  const [state, setState] = useState(defaultState)
+  const [state, setState] = useState(defaultState);
 
   useEffect(() => {
-    let mounted = true // set it to true to make sure the component is mounted
-    const mql = window.matchMedia(query) // create a media query list
+    let mounted = true; // set it to true to make sure the component is mounted
+    const mql = window.matchMedia(query); // create a media query list
     function onChange() {
       // check if the component is mounted
-      if (!mounted) return
+      if (!mounted) return;
 
       // set the state to the media query list
-      setState(mql.matches)
+      setState(mql.matches);
     }
 
     // Add event listener
-    mql.addEventListener('change', onChange)
+    mql.addEventListener('change', onChange);
 
     // Set the state to the media query list
-    setState(mql.matches)
+    setState(mql.matches);
 
     // cleanup
     return () => {
-      mounted = false // set it to false to unmount the component
-      mql.removeEventListener('change', onChange) // remove the listener
-    }
-  }, [query])
+      mounted = false; // set it to false to unmount the component
+      mql.removeEventListener('change', onChange); // remove the listener
+    };
+  }, [query]);
 
-  return state
+  return state;
 }

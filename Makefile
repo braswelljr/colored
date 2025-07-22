@@ -27,28 +27,35 @@ else
 endif
 
 
+# List of files and directories to be removed
+TEMP_FILES = .next/ out/ .turbo/ dist/ public/sw.js public/sw.js.map \
+              public/workbox-*.js public/workbox-*.js.map yarn-error.log \
+              .swc/ .eslintcache .prettiercache .contentlayercache \
+              .stylelintignorecache .stylelintignorecache.lock .stylelintcache \
+
+.PHONY: clean
+clean: # Clean web workspaces
+	@rm -rf $(TEMP_FILES)
+
+.PHONY: cleanup
+cleanup: # Clean web workspaces
+	@rm -rf $(TEMP_FILES) node_modules
+
 .PHONY: dev
-dev: # clean previous build files
+dev:
 	@make clean
 	pnpm run dev
 
 .PHONY: build
 build:
+	@make clean
 	pnpm run build
-
-.PHONY:lint
-lint:
-	pnpm run lint
+	@make clean
 
 .PHONY: format
 format:
 	pnpm run format
 
-.PHONY: clean
-clean:
-	rm -rf .next/ dist/ public/sw.js public/sw.js.map public/workbox-*.js public/workbox-*.js.map yarn-error.log .swc/ .eslintcache .prettiercache .contentlayercache .contentlayercache.lock .contentlayer
-
-.PHONY: verbose-clean
-verbose-clean:
-	@make clean
-	rm -rf node_modules/
+.PHONY: colors
+colors:
+	pnpm run gen:colors

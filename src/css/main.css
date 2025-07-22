@@ -1,0 +1,275 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+/*---break--- */
+@custom-variant dark (&:is(.dark *));
+
+/*! purgecss start ignore */
+/* custom css files here to prevent purging needed classes */
+/* @import './utils.css'; */
+/*! purgecss end ignore */
+
+@plugin "tailwindcss-hocus";
+@plugin "tailwindcss-animate";
+
+@layer base {
+  * {
+    @apply border-neutral-900;
+  }
+
+  * {
+    -webkit-tap-highlight-color: rgba(0 0 0 / 0);
+  }
+
+  html {
+    height: 100%;
+    /* for animating sizes */
+    interpolate-size: allow-keywords;
+  }
+
+  body {
+    min-height: 100%;
+  }
+
+  abbr[title] {
+    text-decoration: none;
+  }
+
+  /* Hide the spin buttons in WebKit browsers */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Hide spin buttons in Firefox */
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  button,
+  a,
+  [role='button'],
+  [type='button'] {
+    cursor: pointer;
+  }
+}
+
+@theme {
+  --breakpoint-xxs: 320px;
+  --breakpoint-xs: 375px;
+  --breakpoint-xsm: 425px;
+  --breakpoint-3xl: 1920px;
+  --breakpoint-4xl: 2560px;
+  --breakpoint-5xl: 3840px;
+
+  --font-sans: var(--font-cascadia);
+  --font-kablammo: var(--font-kablammo);
+  --font-mono: var(--font-mono);
+
+  --text-xs: 0.65rem;
+  --text-xs--line-height: 0.75rem;
+  --text-xsm: 0.75rem;
+  --text-xsm--line-height: 1rem;
+
+  --max-width-8xl: 88rem;
+  --max-width-9xl: 96rem;
+  --max-width-10xl: 104rem;
+  --max-width-11xl: 112rem;
+  --max-width-12xl: 120rem;
+  --max-width-container: 78.125rem; /* 1250px */
+
+  /* animation */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-collapsible-down: collapsible-down 0.2s ease-out;
+  --animate-collapsible-up: collapsible-up 0.2s ease-out;
+  --animate-caret-blink: caret-blink 1.25s ease-out infinite;
+  --animate-border-spin: border-spin 7s linear infinite;
+  --animate-spin: spin 1s linear infinite;
+  --animate-wiggle: wiggle 200ms ease-in-out infinite;
+  --animate-slide-up-fade: slide-up-fade 100ms ease-in forwards;
+  --animation-gradient: gradient 15s ease infinite;
+  --animate-slide-down-fade: slide-down-fade 100ms ease-in forwards;
+  --animate-marquee-x: marquee-x 20s linear infinite;
+  --animate-marquee-y: marquee-y 20s linear infinite;
+  --animate-gradient-shift: gradient-shift 8s ease infinite;
+
+  /* Define keyframes */
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+
+  @keyframes collapsible-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-collapsible-content-height);
+    }
+  }
+
+  @keyframes collapsible-up {
+    from {
+      height: var(--radix-collapsible-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+
+  @keyframes caret-blink {
+    0%,
+    70%,
+    100% {
+      opacity: 1;
+    }
+
+    20%,
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes border-spin {
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes wiggle {
+    0%,
+    100% {
+      transform: rotate(-15deg);
+    }
+    50% {
+      transform: rotate(15deg);
+    }
+  }
+
+  @keyframes slide-up-fade {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-down-fade {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }
+
+  @keyframes marquee-x {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes marquee-y {
+    0% {
+      transform: translateY(0%);
+    }
+    100% {
+      transform: translateY(-100%);
+    }
+  }
+
+  @keyframes gradient {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @keyframes gradient-shift {
+    0% {
+      background-position: 100% 0%;
+    }
+    25% {
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 0% 100%;
+    }
+    75% {
+      background-position: 100% 100%;
+    }
+    100% {
+      background-position: 100% 0%;
+    }
+  }
+}
+
+/*---break--- */
+
+:root {
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+/*---break--- */
+
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+/*---break--- */
+
+@theme inline {
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
