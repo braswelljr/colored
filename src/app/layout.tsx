@@ -1,5 +1,4 @@
 import LocalFont from 'next/font/local';
-import Navbar from '~/components/layout/navbar';
 import BaseProvider from '~/components/providers/base';
 import { siteConfig } from '~/config/site';
 import '~/css/main.css';
@@ -54,12 +53,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       )}
     >
       <body className={cn('min-h-dvh bg-white text-neutral-950 dark:bg-neutral-950 dark:text-white')}>
-        <BaseProvider>
-          <main className="min-h-dvh w-full">
-            <Navbar className="" />
-            <div className="h-full">{children}</div>
-          </main>
-        </BaseProvider>
+        <BaseProvider>{children}</BaseProvider>
       </body>
     </html>
   );

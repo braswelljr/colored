@@ -19,7 +19,7 @@ export default function Page() {
           {filteredColors.map((color, i) => (
             <Color
               key={i}
-              color={color}
+              colour={color}
             />
           ))}
         </div>

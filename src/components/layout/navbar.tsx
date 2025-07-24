@@ -8,16 +8,16 @@ import { usePathname } from 'next/navigation';
 import { parseAsString, useQueryState } from 'nuqs';
 import { FaGithub } from 'react-icons/fa';
 import { HiArrowUp, HiCode, HiColorSwatch, HiDesktopComputer, HiHashtag, HiMoon, HiSun } from 'react-icons/hi';
+import { useWindowScroll } from 'react-use';
 import { Search } from '~/components/layout/search';
 import { colors, palettes } from '~/data/colors';
-import useTop from '~/hooks/use-top';
 import { circuit } from '~/utils/backgrounds';
 import { cn } from '~/utils/cn';
 
 export default function Navbar({ className }: { className?: string }) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
-  const top = useTop();
+  const { y } = useWindowScroll();
   const [searchQuery, setSearchQuery] = useQueryState('q', parseAsString.withDefault(''));
 
   return (
@@ -127,7 +127,6 @@ export default function Navbar({ className }: { className?: string }) {
           className="bg-yellow-100 px-3 py-4 md:px-12 lg:px-20 xl:px-28 dark:bg-zinc-800"
           placeholder={`Search ${searchQuery && `"${searchQuery}"`}`}
         />
-        {/* swatch switch */}
         <div className="-mt-1 flex min-h-[7vh] justify-between bg-yellow-200 px-3 py-2 md:px-12 lg:px-20 xl:px-28 dark:bg-zinc-900">
           <div className="flex items-center justify-center space-x-4">
             {[
@@ -158,11 +157,11 @@ export default function Navbar({ className }: { className?: string }) {
           <div className="flex flex-col justify-center">
             <button
               type="button"
-              className={cn('group/top relative cursor-pointer px-1 py-0.5 focus:outline-none', top <= 10 && 'opacity-100')}
+              className={cn('group/top relative cursor-pointer px-1 py-0.5 focus:outline-none', y < 50 && 'opacity-0')}
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               <div className="relative inline-flex items-center space-x-2">
-                <HiArrowUp className="h-3 w-auto" />
+                <HiArrowUp className="h-3 w-auto text-neutral-950 dark:!text-white" />
                 <span>Scroll to top</span>
               </div>
               <span className="absolute inset-x-0 bottom-0 block h-[3px] w-0 rounded-md bg-neutral-900 transition-[width] group-hocus/top:w-full dark:bg-white" />

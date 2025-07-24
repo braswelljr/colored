@@ -14,7 +14,7 @@ const compat = new FlatCompat({
 /** @type {import('eslint').Linter.Config[]} */
 module.exports = typescript.config(
   js.configs.recommended,
-  ...typescript.configs.recommended,
+  typescript.configs.recommended,
   ...compat.extends('next/core-web-vitals'),
   {
     ...react.configs.flat.recommended,
