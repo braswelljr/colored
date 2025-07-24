@@ -1,11 +1,8 @@
-import './globals.css'
-import LocalFont from 'next/font/local'
-import clsx from 'clsx'
-import { siteConfig } from '~/config/site'
-import Navbar from '~/components/Navbar'
-import { SwatchProvider } from '~/context/useSwatch'
-import ThemeProvider from '~/context/useTheme'
-import { Toaster } from '~/context/useToast'
+import LocalFont from 'next/font/local';
+import BaseProvider from '~/components/providers/base';
+import { siteConfig } from '~/config/site';
+import '~/css/main.css';
+import { cn } from '~/utils/cn';
 
 export const metadata = {
   title: 'colored',
@@ -24,50 +21,40 @@ export const metadata = {
     apple: '/icons/apple-touch-icon.png'
   },
   manifest: `/manifest.json`
-}
+};
 
-const SpaceGrotesk = LocalFont({
-  src: [{ path: './SpaceGrotesk.ttf', style: 'normal' }],
-  variable: '--font-space-grotesk'
-})
+const Cascadia = LocalFont({
+  src: [{ path: './_fonts/Cascadia.ttf', style: 'normal' }],
+  variable: '--font-cascadia'
+});
 
 const Kablammo = LocalFont({
-  src: [{ path: './Kablammo.ttf', style: 'normal' }],
+  src: [{ path: './_fonts/Kablammo.ttf', style: 'normal' }],
   variable: '--font-kablammo'
-})
+});
 
 const JetbrainsMono = LocalFont({
   src: [
-    { path: './jetbrainsmono.ttf', style: 'normal' },
-    { path: './jetbrainsmono-italic.ttf', style: 'italic' }
+    { path: './_fonts/jetbrainsmono.ttf', style: 'normal' },
+    { path: './_fonts/jetbrainsmono-italic.ttf', style: 'italic' }
   ],
   variable: '--font-mono'
-})
+});
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className={clsx(
-        'bg-white text-neutral-950 dark:bg-neutral-950 dark:text-white',
-        SpaceGrotesk.variable,
+      className={cn(
+        'font-cascadia bg-white text-neutral-950 dark:bg-neutral-950 dark:text-white',
+        Cascadia.variable,
         Kablammo.variable,
         JetbrainsMono.variable
       )}
     >
-      <body
-        className={clsx(
-          'min-h-screen bg-white text-neutral-950 dark:bg-neutral-950 dark:text-white'
-        )}
-      >
-        <ThemeProvider>
-          <SwatchProvider>
-            <Navbar className="" />
-            <div className="">{children}</div>
-            <Toaster />
-          </SwatchProvider>
-        </ThemeProvider>
+      <body className={cn('min-h-dvh bg-white text-neutral-950 dark:bg-neutral-950 dark:text-white')}>
+        <BaseProvider>{children}</BaseProvider>
       </body>
     </html>
-  )
+  );
 }
