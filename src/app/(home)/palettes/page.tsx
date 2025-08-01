@@ -3,7 +3,7 @@
 import { matchSorter } from 'match-sorter';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import Palette from '~/components/colors/pallete';
+import { Palette } from '~/components/colors/pallete';
 import { palettes } from '~/data/colors';
 
 export default function Home() {

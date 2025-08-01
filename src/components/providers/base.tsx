@@ -17,6 +17,7 @@ export default function BaseProvider({ children }: BaseProviderProps) {
           position="top-right"
           richColors
           closeButton
+          visibleToasts={5}
         />
       </ThemeProvider>
     </NuqsAdapter>

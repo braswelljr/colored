@@ -44,8 +44,6 @@ export function Search({
       } else {
         _setQuery(openState);
       }
-
-      // This sets the cookie to keep the sidebar state.
     },
     [setQueryProp, query]
   );

@@ -2,9 +2,10 @@
 
 import { colord as cord } from 'colord';
 import { HTMLMotionProps, motion, MotionStyle } from 'motion/react';
-import { useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { Card } from '~/components/ui/card';
 import { ColorType, PaletteType } from '~/data/colors';
+import { useColorsStore } from '~/store/use-colors';
 import { cn } from '~/utils/cn';
 
 const MotionCard = motion.create(Card);
@@ -14,7 +15,7 @@ type PaletteProps = HTMLMotionProps<'div'> & {
   className?: string;
 };
 
-export default function Pallete({ palette, className, ...props }: PaletteProps) {
+export const Palette = memo(({ palette, className, ...props }: PaletteProps) => {
   const [active, setActive] = useState<string | undefined>(undefined);
   const gridTemplate = useMemo(() => {
     const activeIndex = palette.findIndex((c) => c.hex === active);
@@ -30,7 +31,7 @@ export default function Pallete({ palette, className, ...props }: PaletteProps) 
     <MotionCard
       data-slot="palette"
       {...props}
-      className={cn('group/palette grid h-80 grid-cols-1 gap-0 overflow-hidden rounded-lg !p-0 transition-[grid-template-rows]', className)}
+      className={cn('group/palette grid h-80 grid-cols-1 gap-0 overflow-hidden rounded-lg !p-0 transition-[grid-template-rows,height]', className)}
       style={{ gridTemplateRows: gridTemplate, ...props.style } as MotionStyle}
     >
       {palette.map((color, i) => (
@@ -42,10 +43,10 @@ export default function Pallete({ palette, className, ...props }: PaletteProps) 
           className={cn('h-full transition-[height]')}
         />
       ))}
-      {/* <CardFooter></CardFooter> */}
     </MotionCard>
   );
-}
+});
+Palette.displayName = 'PalletePad';
 
 type ColorPadProps = HTMLMotionProps<'div'> & {
   colour: ColorType;
@@ -54,23 +55,27 @@ type ColorPadProps = HTMLMotionProps<'div'> & {
 
 function ColorPad({ colour, className, ...props }: ColorPadProps) {
   const { name, hex } = colour;
-  const inverted = useMemo(() => cord(hex).invert().toHex(), [hex]);
-  const dark = useMemo(() => cord(hex).isDark(), [hex]);
+  const { format, convertFormat } = useColorsStore();
+  const color = convertFormat(hex, { format });
+
+  const inverted = useMemo(() => cord(color).invert().toHex(), [color]);
+  const dark = useMemo(() => cord(color).isDark(), [color]);
 
   return (
     <MotionCard
       data-slot="color-pad"
       {...props}
-      style={{ '--colored-main-color': hex, '--colored-inverted-color': inverted, ...props.style } as MotionStyle}
+      style={{ '--colored-main-color': color, '--colored-inverted-color': inverted, ...props.style } as MotionStyle}
       className={cn(
-        'group/color relative flex h-15 cursor-pointer items-center justify-center rounded-none border-0 !p-0 text-center font-semibold',
+        'group/color relative flex h-auto cursor-pointer items-center justify-center rounded-none border-0 !p-0 text-center font-semibold',
         '!bg-(--colored-main-color)', // !text-(--colored-inverted-color)
         dark ? '!text-white' : '!text-neutral-950',
         className
       )}
     >
-      <span className="w-4/5 text-xs font-black uppercase sm:text-xsm">
-        {name} - {hex}
+      <span className="flex w-4/5 flex-col gap-1 text-xs font-black uppercase sm:text-xsm">
+        <span className="">{name}</span>
+        <span>{color}</span>
       </span>
     </MotionCard>
   );
