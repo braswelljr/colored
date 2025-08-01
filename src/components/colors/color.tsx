@@ -4,12 +4,15 @@ import { colord as cord } from 'colord';
 import { HTMLMotionProps, motion } from 'motion/react';
 import Link from 'next/link';
 import { parseAsString, useQueryState } from 'nuqs';
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { HiClipboard, HiExternalLink } from 'react-icons/hi';
 import { MdFavorite } from 'react-icons/md';
 import { toast } from 'sonner';
+import { useShallow } from 'zustand/react/shallow';
 import { Card } from '~/components/ui/card';
 import { ColorType } from '~/data/colors';
+import { useColorsStore } from '~/store/use-colors';
+import { useFavoriteStore } from '~/store/use-favorite';
 import { cn } from '~/utils/cn';
 import copy from '~/utils/copy';
 
@@ -20,14 +23,17 @@ type ColorProps = HTMLMotionProps<'div'> & {
   className?: string;
 };
 
-export default function Color({ colour, className, ...props }: ColorProps) {
+export const Color = memo(({ colour, className, ...props }: ColorProps) => {
   const { name, hex } = colour;
   const [copied, setCopied] = useState<'favorite' | 'copied'>();
   const [mouse, setMouse] = useState(false);
   const [_, _setColorQuery] = useQueryState('color', parseAsString.withDefault(''));
+  const { isFavorite, toggleFavorite } = useFavoriteStore(useShallow((s) => s));
+  const { format, convertFormat } = useColorsStore();
+  const color = convertFormat(hex, { format });
 
-  const inverted = useMemo(() => cord(hex).invert().toHex(), [hex]);
-  const dark = useMemo(() => cord(hex).isDark(), [hex]);
+  const inverted = useMemo(() => cord(color).invert().toHex(), [color]);
+  const dark = useMemo(() => cord(color).isDark(), [color]);
 
   useEffect(() => {
     if (!copied) return;
@@ -39,28 +45,32 @@ export default function Color({ colour, className, ...props }: ColorProps) {
     toast.promise(
       new Promise<void>((resolve, reject) => {
         setTimeout(() => {
-          copy(hex).then(resolve).catch(reject);
+          copy(color).then(resolve).catch(reject);
         }, 500);
       }),
       {
         loading: (
           <span
-            style={{ '--colored-main-color': hex } as React.CSSProperties}
+            style={{ '--colored-main-color': color } as React.CSSProperties}
             className="text-sm"
           >
-            Copying <span className="font-semibold !text-(--colored-main-color)">{hex}</span>...
+            Copying <span className="font-semibold !text-(--colored-main-color)">{color}</span>...
           </span>
         ),
         success: () => {
           setCopied('copied');
-          return (
-            <span
-              style={{ '--colored-main-color': hex } as React.CSSProperties}
-              className="text-sm"
-            >
-              <span className="font-semibold !text-(--colored-main-color)">{hex}</span> copied successfully!
-            </span>
-          );
+          return {
+            type: 'info',
+            message: '',
+            description: (
+              <span
+                style={{ '--colored-main-color': color } as React.CSSProperties}
+                className="text-sm"
+              >
+                <span className="font-semibold !text-(--colored-main-color)">{color}</span> copied successfully!
+              </span>
+            )
+          };
         },
         error: <span className="text-sm text-red-500">Failed to copy. Please try again.</span>
       }
@@ -72,7 +82,7 @@ export default function Color({ colour, className, ...props }: ColorProps) {
       {...props}
       style={
         {
-          '--colored-main-color': hex,
+          '--colored-main-color': color,
           '--colored-inverted-color': inverted
         } as React.CSSProperties
       }
@@ -91,8 +101,10 @@ export default function Color({ colour, className, ...props }: ColorProps) {
         setMouse(false);
       }}
     >
-      <span className="w-4/5 text-xs font-black uppercase sm:text-xsm">{name}</span>
-      <span className="absolute bottom-2 left-2">{hex}</span>
+      <div className="flex w-4/5 flex-col gap-2">
+        <span className="text-xs font-black uppercase sm:text-xsm">{name}</span>
+        <span className="">{color}</span>
+      </div>
 
       <motion.div
         className={cn(
@@ -103,7 +115,7 @@ export default function Color({ colour, className, ...props }: ColorProps) {
         {copied ? (
           <motion.span layoutId={copied === 'favorite' ? `favorite-${hex}` : hex}>
             {copied === 'favorite' ? (
-              <MdFavorite className="size-12 text-red-500" />
+              <MdFavorite className={cn('size-12', isFavorite(hex) && 'text-red-500')} />
             ) : (
               <span className="font-kablammo text-xl font-black uppercase">{copied}</span>
             )}
@@ -115,9 +127,12 @@ export default function Color({ colour, className, ...props }: ColorProps) {
                 layoutId={`favorite-${hex}`}
                 type="button"
                 className="inline-flex size-6 items-center justify-center"
-                onClick={() => setCopied('favorite')}
+                onClick={() => {
+                  toggleFavorite(colour);
+                  setCopied('favorite');
+                }}
               >
-                <MdFavorite className="size-5" />
+                <MdFavorite className={cn('size-5', isFavorite(hex) && 'text-red-500')} />
               </motion.button>
             </div>
             <div className="flex items-end justify-between">
@@ -137,7 +152,7 @@ export default function Color({ colour, className, ...props }: ColorProps) {
                 )}
                 onClick={handleCopy}
               >
-                <HiClipboard className="h-3 w-full" />
+                <HiClipboard className="size-3" />
                 <span className="text-sm font-bold uppercase">Copy</span>
               </motion.button>
             </div>
@@ -146,4 +161,6 @@ export default function Color({ colour, className, ...props }: ColorProps) {
       </motion.div>
     </MotionCard>
   );
-}
+});
+
+Color.displayName = 'ColorPad';

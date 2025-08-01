@@ -27,7 +27,7 @@
       "scripts": ["./scripts/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "index.d.ts", "scripts/generate-colors.mts", "scripts/generate-colors.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "index.d.ts", "scripts/generate-colors.mts",],
   "exclude": ["node_modules"],
   "files": ["index.d.ts"],
   "ts-node": {

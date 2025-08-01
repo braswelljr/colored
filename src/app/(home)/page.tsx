@@ -3,14 +3,24 @@
 import { matchSorter } from 'match-sorter';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import Color from '~/components/colors/color';
+import { useShallow } from 'zustand/react/shallow';
+import { Color } from '~/components/colors/color';
 import { colors } from '~/data/colors';
+import { useFavoriteStore } from '~/store/use-favorite';
 
 export default function Page() {
   const searchParams = useSearchParams();
   const q = searchParams.get('q') || '';
+  const { isFavorite, state } = useFavoriteStore(useShallow((s) => s));
+  const filteredColors = useMemo(() => {
+    let result = colors;
 
-  const filteredColors = useMemo(() => matchSorter(colors, q, { keys: ['name', 'hex', 'rgb'] }), [q, colors]);
+    if (state) {
+      result = result.filter((v) => isFavorite(v.hex));
+    }
+
+    return matchSorter(result, q, { keys: ['name', 'hex'] });
+  }, [q, colors, state, isFavorite]);
 
   return (
     <main className="px-3 py-4 md:px-12 lg:px-20 xl:px-28">
