@@ -13,7 +13,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
         <Header />
       </header>
       <Segment />
-      <div className="h-full">{children}</div>
+      <div className="h-full pt-2 pb-5">{children}</div>
     </main>
   );
 }
