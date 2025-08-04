@@ -9,7 +9,7 @@ export type ColorType = {
   hex: string;
 };
 
-export type Palette = ColorType[];
+export type PaletteType = ColorType[];
 
 // Configuration constants
 export const CONFIG = {
@@ -138,7 +138,7 @@ export function generatePalettesFromColorList(
   total: number,
   minLen: number = CONFIG.MIN_COLORS_PER_PALETTE,
   maxLen: number = CONFIG.MAX_COLORS_PER_PALETTE
-): Palette[] {
+): PaletteType[] {
   if (!colorList || colorList.length === 0) {
     throw new Error('Color list cannot be empty');
   }
@@ -149,7 +149,7 @@ export function generatePalettesFromColorList(
     throw new Error('Invalid palette length constraints');
   }
 
-  const palettes: Palette[] = [];
+  const palettes: PaletteType[] = [];
 
   for (let i = 0; i < total; i++) {
     const length = Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen;
@@ -226,11 +226,11 @@ export async function generateColorsFile({
   hex: string;
 };
 
-export type Palette = ColorType[];
+export type PaletteType = ColorType[];
 
 export const colors: ColorType[] = ${toTsObject(colors)};
 
-export const palettes: Palette[] = ${toTsObject(palettes)};
+export const palettes: PaletteType[] = ${toTsObject(palettes)};
 `;
 
   writeFileSync(outputPath, tsContent, 'utf-8');
