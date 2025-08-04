@@ -4,12 +4,12 @@ import nc from 'nearest-color';
 import path from 'path';
 // import { minify } from 'terser';
 
-export type NamedColorType = {
+export type ColorType = {
   name: string;
   hex: string;
 };
 
-export type Palette = NamedColorType[];
+export type Palette = ColorType[];
 
 // Configuration constants
 export const CONFIG = {
@@ -28,12 +28,12 @@ const nearest = nc.from(
 );
 
 // Cache for color lookups
-const colorCache = new Map<string, NamedColorType>();
+const colorCache = new Map<string, ColorType>();
 
 // Optimized: Use Set for faster hex lookups
 const colorHexSet = new Set(colornames.map((c) => c.hex.toLowerCase()));
 
-export function getColorName(hex: string): NamedColorType {
+export function getColorName(hex: string): ColorType {
   if (!hex || typeof hex !== 'string') {
     throw new Error('Invalid hex color provided');
   }
@@ -56,7 +56,7 @@ export function getColorName(hex: string): NamedColorType {
 
   const resolved = exact?.name ?? nearest(fullHex)?.name ?? 'Unknown';
 
-  const result: NamedColorType = {
+  const result: ColorType = {
     name: resolved,
     hex: fullHex
   };
@@ -74,13 +74,13 @@ export function generateRandomHexColor(): string {
   );
 }
 
-export function generateColorList(count: number = CONFIG.TOTAL_COLORS): NamedColorType[] {
+export function generateColorList(count: number = CONFIG.TOTAL_COLORS): ColorType[] {
   if (count <= 0) {
     throw new Error('Count must be positive');
   }
 
   const seen = new Set<string>();
-  const list: NamedColorType[] = [];
+  const list: ColorType[] = [];
   let attempts = 0;
   const maxAttempts = count * 10; // Prevent infinite loops
 
@@ -134,7 +134,7 @@ function toTsObject(data: unknown, indent: number = 2): string {
 }
 
 export function generatePalettesFromColorList(
-  colorList: NamedColorType[],
+  colorList: ColorType[],
   total: number,
   minLen: number = CONFIG.MIN_COLORS_PER_PALETTE,
   maxLen: number = CONFIG.MAX_COLORS_PER_PALETTE
@@ -153,7 +153,7 @@ export function generatePalettesFromColorList(
 
   for (let i = 0; i < total; i++) {
     const length = Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen;
-    const palette = new Set<NamedColorType>();
+    const palette = new Set<ColorType>();
     let attempts = 0;
     const maxAttempts = length * 10;
 
@@ -170,9 +170,9 @@ export function generatePalettesFromColorList(
 }
 
 // Improved error handling and parsing
-function parseColorsFromFile(content: string): NamedColorType[] {
+function parseColorsFromFile(content: string): ColorType[] {
   try {
-    const colorsMatch = content.match(/export const colors: NamedColorType\[\] = (\[[\s\S]*?\]);/);
+    const colorsMatch = content.match(/export const colors: ColorType\[\] = (\[[\s\S]*?\]);/);
     if (!colorsMatch) return [];
 
     // Use safer parsing method
@@ -195,7 +195,7 @@ export async function generateColorsFile({
   createMinifiedCopy?: boolean;
 } = {}): Promise<void> {
   const outputPath = path.join(process.cwd(), relativeOutputPath);
-  let colors: NamedColorType[] = [];
+  let colors: ColorType[] = [];
 
   // Try to reuse existing colors
   if (reuseExisting && existsSync(outputPath)) {
@@ -221,14 +221,14 @@ export async function generateColorsFile({
   console.log(`🎨 Generating ${CONFIG.TOTAL_PALETTES} new palettes...`);
   const palettes = generatePalettesFromColorList(colors, CONFIG.TOTAL_PALETTES, CONFIG.MIN_COLORS_PER_PALETTE, CONFIG.MAX_COLORS_PER_PALETTE);
 
-  const tsContent = `export type NamedColorType = {
+  const tsContent = `export type ColorType = {
   name: string;
   hex: string;
 };
 
-export type Palette = NamedColorType[];
+export type Palette = ColorType[];
 
-export const colors: NamedColorType[] = ${toTsObject(colors)};
+export const colors: ColorType[] = ${toTsObject(colors)};
 
 export const palettes: Palette[] = ${toTsObject(palettes)};
 `;

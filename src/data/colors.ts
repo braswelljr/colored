@@ -1,11 +1,11 @@
-export type NamedColorType = {
+export type ColorType = {
   name: string;
   hex: string;
 };
 
-export type Palette = NamedColorType[];
+export type Palette = ColorType[];
 
-export const colors: NamedColorType[] = [
+export const colors: ColorType[] = [
   { name: 'Orion', hex: '#db4eb6' },
   { name: 'Forest Frolic', hex: '#89bd96' },
   { name: 'Korean Mint', hex: '#597a5f' },
