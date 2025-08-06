@@ -105,7 +105,7 @@ function toTsObject(data: unknown, indent: number = 2): string {
   if (data === null || data === undefined) return 'null';
 
   if (typeof data === 'string') {
-    return `'${data.replace(/'/g, "\\'").replace(/\n/g, '\\n')}'`;
+    return `'${data.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n')}'`;
   }
 
   if (typeof data === 'number' || typeof data === 'boolean') {
