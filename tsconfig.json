@@ -27,14 +27,14 @@
       "scripts": ["./scripts/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "index.d.ts", "scripts/generate-colors.mts",],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "index.d.ts", "scripts/**/*.ts", "scripts/**/*.mts",],
   "exclude": ["node_modules"],
   "files": ["index.d.ts"],
   "ts-node": {
     "compilerOptions": {
-      // "module": "commonjs",
-      // "moduleResolution": "nodenext",
+      "module": "esnext",
+      "moduleResolution": "nodenext",
     },
-  //   "include": ["scripts"]
+    "include": ["scripts/**/*.ts"]
   }
 }

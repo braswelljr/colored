@@ -11,7 +11,7 @@
     "lint:style": "stylelint \"**/*.{css,scss,sass,html,vue}\" --ignore-path .gitignore",
     "format": "prettier --write ./**/*.{js,ts,jsx,tsx,css}",
     "prepare": "husky",
-    "gen:colors": "node ./scripts/generator.color.js"
+    "gen:colors": "npx tsx ./scripts/generate-colors.mts"
   },
   "keywords": [
     "color",
@@ -101,8 +101,11 @@
     "prettier-plugin-organize-imports": "^4.2.0",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "tailwindcss": "^4",
+    "terser": "^5.43.1",
+    "tsx": "^4.20.3",
     "typescript": "^5",
-    "typescript-eslint": "^8"
+    "typescript-eslint": "^8",
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=20"

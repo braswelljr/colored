@@ -43,7 +43,10 @@ export function Swatch({
             <SelectItem
               key={value}
               value={value}
-              className="gap-2 rounded-lg [&>span]:flex [&>span]:items-center [&>span]:gap-2"
+              className={cn(
+                'gap-2 rounded-lg [&>span]:flex [&>span]:items-center [&>span]:gap-2',
+                value === format && 'bg-yellow-100 dark:bg-yellow-100/20 hocus:bg-yellow-100 dark:hocus:bg-yellow-100/20'
+              )}
             >
               <span className="font-medium uppercase">{value}</span>
               <span className="font-mono text-xs">{convertFormat({ color, format: value })}</span>

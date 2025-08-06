@@ -8,3 +8,5 @@
 build
 coverage
 
+# any file with .min.ext should be ignored
+**/*.min.*
