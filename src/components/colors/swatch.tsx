@@ -1,9 +1,9 @@
 'use client';
 
+import { Suspense } from 'react';
 import { extend } from 'colord';
 import cmykPlugin from 'colord/plugins/cmyk';
 import lchPlugin from 'colord/plugins/lch';
-import { Suspense } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '~/components/ui/select';
 import { Skeleton } from '~/components/ui/skeleton';
@@ -29,7 +29,10 @@ export function Swatch({
         onValueChange={(val) => onChangeFormat(val as ColorFormatType)}
       >
         <SelectTrigger
-          className={cn('h-7 w-auto gap-1.5 rounded border-neutral-900 pr-2 text-sm font-medium dark:border-neutral-500', className)}
+          className={cn(
+            'h-7 w-auto gap-1.5 rounded border-neutral-900 pr-2 text-sm font-medium dark:border-neutral-500',
+            className
+          )}
           {...props}
         >
           <span className="">Format: </span>
@@ -45,7 +48,8 @@ export function Swatch({
               value={value}
               className={cn(
                 'gap-2 rounded-lg [&>span]:flex [&>span]:items-center [&>span]:gap-2',
-                value === format && 'bg-yellow-100 dark:bg-yellow-100/20 hocus:bg-yellow-100 dark:hocus:bg-yellow-100/20'
+                value === format &&
+                  'hocus:bg-yellow-100 dark:hocus:bg-yellow-100/20 bg-yellow-100 dark:bg-yellow-100/20'
               )}
             >
               <span className="font-medium uppercase">{value}</span>

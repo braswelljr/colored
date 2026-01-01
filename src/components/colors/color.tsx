@@ -1,18 +1,18 @@
 'use client';
 
+import { memo, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { colord as cord } from 'colord';
 import { HTMLMotionProps, motion } from 'motion/react';
-import Link from 'next/link';
 import { parseAsString, useQueryState } from 'nuqs';
-import { memo, useEffect, useMemo, useState } from 'react';
 import { HiClipboard, HiExternalLink } from 'react-icons/hi';
 import { MdFavorite } from 'react-icons/md';
 import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import { Card } from '~/components/ui/card';
-import { ColorType } from '~/data/colors';
 import { useColorsStore } from '~/store/use-colors';
 import { useFavoriteStore } from '~/store/use-favorite';
+import { ColorType } from '~/types/types';
 import { cn } from '~/utils/cn';
 import copy from '~/utils/copy';
 
@@ -102,7 +102,7 @@ export const Color = memo(({ colour, className, ...props }: ColorProps) => {
       }}
     >
       <div className="flex w-4/5 flex-col gap-2">
-        <span className="text-xs font-black uppercase sm:text-xsm">{name}</span>
+        <span className="sm:text-xsm text-xs font-black uppercase">{name}</span>
         <span className="">{color}</span>
       </div>
 

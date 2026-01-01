@@ -1,8 +1,8 @@
 'use client';
 
-import { motion } from 'motion/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { motion } from 'motion/react';
 import { parseAsString, useQueryState } from 'nuqs';
 import { HiCode, HiColorSwatch, HiHashtag } from 'react-icons/hi';
 import { HiArrowUp } from 'react-icons/hi2';
@@ -11,7 +11,7 @@ import { useWindowScroll } from 'react-use';
 import { Swatch } from '~/components/colors/swatch';
 import { Search } from '~/components/layout/search';
 import { SegmentedControl, SegmentedControlList, SegmentedControlTrigger } from '~/components/ui/segmented-control';
-import { colors, palettes } from '~/data/colors';
+import { useColorsStore } from '~/store/use-colors';
 import { useFavoriteStore } from '~/store/use-favorite';
 import { cn } from '~/utils/cn';
 
@@ -79,7 +79,7 @@ export function Segment({ className, ...props }: SegmentProps) {
               <HiArrowUp className="size-3" />
               <span>Scroll to top</span>
             </div>
-            <span className="absolute inset-x-0 bottom-0 block h-[3px] w-0 rounded-md bg-neutral-900 transition-[width] group-hocus/top:w-full dark:bg-yellow-500" />
+            <span className="group-hocus/top:w-full absolute inset-x-0 bottom-0 block h-[3px] w-0 rounded-md bg-neutral-900 transition-[width] dark:bg-yellow-500" />
           </button>
 
           <motion.button
@@ -101,6 +101,8 @@ export function Segment({ className, ...props }: SegmentProps) {
 type HeaderProps = React.ComponentProps<'header'> & {};
 
 export function Header({ className, ...props }: HeaderProps) {
+  const { colorsLen, paletteLen } = useColorsStore();
+
   return (
     <header
       {...props}
@@ -108,18 +110,18 @@ export function Header({ className, ...props }: HeaderProps) {
     >
       <div className="mx-auto mt-5 space-y-10">
         <div className="">
-          <p className="text-center text-xl font-medium uppercase xsm:text-2xl dark:text-yellow-500">
+          <p className="xsm:text-2xl text-center text-xl font-medium uppercase dark:text-yellow-500">
             Experience a world of personalized design with an array of handpicked colors at your disposal.
           </p>
         </div>
         <div className="flex w-full flex-wrap items-center justify-around gap-x-6 gap-y-4 pb-4 text-xs font-semibold">
           {[
             {
-              description: `${colors.length} Colors`,
+              description: `${colorsLen} Colors`,
               icon: HiHashtag
             },
             {
-              description: `${palettes.length} Curated Swatches`,
+              description: `${paletteLen} Curated Swatches`,
               icon: HiColorSwatch
             },
             {
@@ -132,7 +134,7 @@ export function Header({ className, ...props }: HeaderProps) {
               className="flex shrink-0 items-center space-x-1 tracking-tight dark:text-yellow-500"
             >
               <desc.icon className="size-5" />
-              <span className="text-xs uppercase xsm:text-sm">{desc.description}</span>
+              <span className="xsm:text-sm text-xs uppercase">{desc.description}</span>
             </div>
           ))}
         </div>

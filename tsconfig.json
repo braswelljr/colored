@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -12,29 +16,51 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "baseUrl": "./",
     "paths": {
-      "~/*": ["./src/*"],
-      "@/*": ["./src/*"],
-      "lib": ["./lib/*"],
-      "scripts": ["./scripts/*"]
+      "~/*": [
+        "./src/*"
+      ],
+      "@/*": [
+        "./src/*"
+      ],
+      "lib": [
+        "./lib/*"
+      ],
+      "scripts": [
+        "./scripts/*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "index.d.ts", "scripts/**/*.ts", "scripts/**/*.mts",],
-  "exclude": ["node_modules"],
-  "files": ["index.d.ts"],
-  "ts-node": {
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "index.d.ts",
+    "scripts/**/*.ts",
+    "scripts/**/*.mts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "files": [
+    "index.d.ts"
+  ],
+  "tsx": {
     "compilerOptions": {
       "module": "esnext",
-      "moduleResolution": "nodenext",
+      "moduleResolution": "nodenext"
     },
-    "include": ["scripts/**/*.ts"]
+    "include": [
+      "scripts/**/*.ts"
+    ]
   }
 }

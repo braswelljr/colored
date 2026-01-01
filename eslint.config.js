@@ -1,25 +1,41 @@
-const { FlatCompat } = require('@eslint/eslintrc');
 const js = require('@eslint/js');
-const prettier = require('eslint-config-prettier');
+const { defineConfig } = require('eslint/config');
+const prettierConfig = require('eslint-config-prettier');
 const pluginPrettier = require('eslint-plugin-prettier');
 const react = require('eslint-plugin-react');
-const reactHooks = require('eslint-plugin-react-hooks');
+const pluginReactHooks = require('eslint-plugin-react-hooks');
 const globals = require('globals');
-const typescript = require('typescript-eslint');
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname
-});
+const tseslint = require('typescript-eslint');
+const pluginNext = require('@next/eslint-plugin-next');
+const pluginQuery = require('@tanstack/eslint-plugin-query');
 
 /** @type {import('eslint').Linter.Config[]} */
-module.exports = typescript.config(
+module.exports = defineConfig(
   js.configs.recommended,
-  typescript.configs.recommended,
-  ...compat.extends('next/core-web-vitals'),
+  ...tseslint.configs.recommended,
   {
-    ...react.configs.flat.recommended,
-    ...react.configs.flat['jsx-runtime'],
+    plugins: {
+      react
+    },
+    rules: {
+      ...react.configs.recommended.rules,
+      ...react.configs['jsx-runtime'].rules,
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
+      'react/no-unescaped-entities': 'off',
+      'react/no-unknown-property': [2, { ignore: ['jsx'] }]
+    },
+    settings: {
+      react: { version: 'detect' }
+    }
+  },
+
+  {
+    plugins: {
+      '@typescript-eslint': tseslint.plugin
+    },
     languageOptions: {
+      parser: tseslint.parser,
       globals: {
         ...globals.browser,
         ...globals.commonjs,
@@ -35,10 +51,6 @@ module.exports = typescript.config(
       }
     },
     rules: {
-      'react/react-in-jsx-scope': 'off',
-      'react/prop-types': 'off',
-      'react/no-unescaped-entities': 'off',
-      // ts overrides
       '@typescript-eslint/no-unused-vars': [
         'warn',
         {
@@ -53,9 +65,6 @@ module.exports = typescript.config(
       ],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-require-imports': 'off',
-
-      '@next/next/no-img-element': 'off',
-      '@next/next/no-html-link-for-pages': 'off',
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-console': 'off'
     },
@@ -64,23 +73,40 @@ module.exports = typescript.config(
         version: 'detect'
       },
       tailwindcss: {
-        callees: ['cn', 'cn', 'cn', 'clsx', 'ctl', 'cva', 'tv']
+        callees: ['classNames', 'className', 'classname', 'cn', 'clsx', 'ctl', 'cva', 'tv']
       }
     }
   },
+
   {
     plugins: {
-      'react-hooks': reactHooks,
-      prettier: pluginPrettier
+      '@next/next': pluginNext
+    },
+    rules: {
+      ...pluginNext.configs.recommended.rules,
+      ...pluginNext.configs['core-web-vitals'].rules,
+      '@next/next/no-img-element': 'off',
+      '@next/next/no-html-link-for-pages': 'off'
+    }
+  },
+
+  {
+    files: ['**/*.{js,jsx,ts,tsx,mjs,mts,mdx,md}'],
+    plugins: {
+      'react-hooks': pluginReactHooks,
+      prettier: pluginPrettier,
+      '@tanstack/query': pluginQuery
     },
     rules: {
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'off',
-      'prettier/prettier': 'warn'
+      'prettier/prettier': 'warn',
+      ...pluginQuery.configs.recommended.rules
     }
   },
   {
     ignores: ['node_modules/*', '.next/', '.turbo/', '.out/', '**/build', '**/coverage']
   },
-  prettier
+
+  prettierConfig
 );

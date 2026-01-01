@@ -1,8 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
 import { HiOutlineDesktopComputer, HiOutlineMoon, HiOutlineSun } from 'react-icons/hi';
 import { cn } from '~/utils/cn';
 
@@ -35,7 +35,10 @@ export default function ThemeSwitcher({ className }: { className?: string }) {
   return (
     <motion.button
       onClick={handleThemeChange}
-      className={cn('relative flex size-8 items-center justify-center rounded-lg transition-colors duration-200', className)}
+      className={cn(
+        'relative flex size-8 items-center justify-center rounded-lg transition-colors duration-200',
+        className
+      )}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       aria-label={`Switch to ${themes[(currentThemeIndex + 1) % themes.length].label} theme`}

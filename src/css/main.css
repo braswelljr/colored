@@ -8,8 +8,8 @@
 /* @import './utils.css'; */
 /*! purgecss end ignore */
 
-@plugin "tailwindcss-hocus";
-@plugin "tailwindcss-animate";
+@plugin 'tailwindcss-hocus';
+@plugin 'tailwindcss-animate';
 
 @layer base {
   * {

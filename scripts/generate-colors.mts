@@ -1,287 +1,298 @@
+import { spawn, move, Mutex, SharedJsonBuffer } from 'multithreading';
 import { colornames } from 'color-name-list';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
-import nc from 'nearest-color';
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs';
+import { parseArgs } from 'node:util';
 import path from 'path';
-// import { minify } from 'terser';
+import nc from 'nearest-color';
 
-export type ColorType = {
-  name: string;
-  hex: string;
-};
+import { colord, extend } from 'colord';
+import cmykPlugin from 'colord/plugins/cmyk';
+import labPlugin from 'colord/plugins/lab';
+import a11yPlugin from 'colord/plugins/a11y';
+import namesPlugin from 'colord/plugins/names';
 
-export type PaletteType = ColorType[];
+extend([cmykPlugin, labPlugin, a11yPlugin, namesPlugin]);
 
-// Configuration constants
-export const CONFIG = {
-  TOTAL_COLORS: 500,
-  TOTAL_PALETTES: 225,
-  MIN_COLORS_PER_PALETTE: 4,
-  MAX_COLORS_PER_PALETTE: 4
+const { values } = parseArgs({
+  args: process.argv.slice(2),
+  options: {
+    // Actions
+    colors: { type: 'boolean', short: 'c' },
+    palettes: { type: 'boolean', short: 'p' },
+    random: { type: 'boolean', short: 'r' },
+
+    // Options
+    format: { type: 'string', short: 'f', default: 'json' },
+    count: { type: 'string', default: '1000' },
+    pcount: { type: 'string', default: '500' },
+    workers: { type: 'string', short: 'w', default: '4' },
+    out: { type: 'string', short: 'o', default: 'src/data' },
+  },
+});
+
+const CONFIG = {
+  DO_COLORS: values.colors ?? false,
+  DO_PALETTES: values.palettes ?? false,
+  IS_RANDOM_SINGLE: values.random ?? false,
+  OUTPUT_FORMAT: values.format?.toLowerCase() ?? 'json',
+
+  TOTAL_COLORS: parseInt(values.count!),
+  TOTAL_PALETTES: parseInt(values.pcount!),
+  WORKER_THREADS: parseInt(values.workers!),
+  OUTPUT_DIR: path.join(process.cwd(), values.out!),
 } as const;
 
-// Initialize nearest color lookup once
-const nearest = nc.from(
-  colornames.reduce<Record<string, string>>((acc, { name, hex }) => {
-    acc[name] = hex;
-    return acc;
-  }, {})
-);
+type ColorType = { name: string; hex: string };
 
-// Cache for color lookups
-const colorCache = new Map<string, ColorType>();
-
-// Optimized: Use Set for faster hex lookups
-const colorHexSet = new Set(colornames.map((c) => c.hex.toLowerCase()));
-
-export function getColorName(hex: string): ColorType {
-  if (!hex || typeof hex !== 'string') {
-    throw new Error('Invalid hex color provided');
-  }
-
-  const normalized = hex.toLowerCase().replace(/^#/, '');
-
-  // Validate hex format
-  if (!/^[0-9a-f]{6}$/i.test(normalized)) {
-    throw new Error('Invalid hex color format');
-  }
-
-  const fullHex = `#${normalized}`;
-
-  if (colorCache.has(fullHex)) {
-    return colorCache.get(fullHex)!;
-  }
-
-  // Optimized: Check Set first before array search
-  const exact = colorHexSet.has(fullHex) ? colornames.find((c) => c.hex.toLowerCase() === fullHex) : null;
-
-  const resolved = exact?.name ?? nearest(fullHex)?.name ?? 'Unknown';
-
-  const result: ColorType = {
-    name: resolved,
-    hex: fullHex
-  };
-
-  colorCache.set(fullHex, result);
-  return result;
-}
-
-export function generateRandomHexColor(): string {
-  return (
-    '#' +
-    Math.floor(Math.random() * 0xffffff)
-      .toString(16)
-      .padStart(6, '0')
-  );
-}
-
-export function generateColorList(count: number = CONFIG.TOTAL_COLORS): ColorType[] {
-  if (count <= 0) {
-    throw new Error('Count must be positive');
-  }
-
-  const seen = new Set<string>();
-  const list: ColorType[] = [];
-  let attempts = 0;
-  const maxAttempts = count * 10; // Prevent infinite loops
-
-  while (list.length < count && attempts < maxAttempts) {
-    const hex = generateRandomHexColor();
-    if (!seen.has(hex)) {
-      seen.add(hex);
-      list.push(getColorName(hex));
-    }
-    attempts++;
-  }
-
-  if (list.length < count) {
-    console.warn(`Could only generate ${list.length} unique colors out of ${count} requested`);
-  }
-
-  return list;
-}
-
-// Optimized: More efficient object serialization
-function toTsObject(data: unknown, indent: number = 2): string {
-  if (data === null || data === undefined) return 'null';
-
-  if (typeof data === 'string') {
-    return `'${data.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n')}'`;
-  }
-
-  if (typeof data === 'number' || typeof data === 'boolean') {
-    return String(data);
-  }
-
-  if (data instanceof Date) {
-    return `new Date('${data.toISOString()}')`;
-  }
-
-  if (Array.isArray(data)) {
-    if (data.length === 0) return '[]';
-    const items = data.map((item) => ' '.repeat(indent) + toTsObject(item, indent + 2));
-    return `[\n${items.join(',\n')}\n${' '.repeat(indent - 2)}]`;
-  }
-
-  if (typeof data === 'object') {
-    const entries = Object.entries(data);
-    if (entries.length === 0) return '{}';
-    const props = entries.map(([key, value]) => `${' '.repeat(indent)}${key}: ${toTsObject(value, indent + 2)}`);
-    // return `{\n${props.join(',\n')}\n${' '.repeat(indent - 2)}}`;
-    return `{ ${props.map((p) => p.trim()).join(', ')} }`;
-  }
-
-  return 'null';
-}
-
-export function generatePalettesFromColorList(
-  colorList: ColorType[],
-  total: number,
-  minLen: number = CONFIG.MIN_COLORS_PER_PALETTE,
-  maxLen: number = CONFIG.MAX_COLORS_PER_PALETTE
-): PaletteType[] {
-  if (!colorList || colorList.length === 0) {
-    throw new Error('Color list cannot be empty');
-  }
-  if (total <= 0) {
-    throw new Error('Total must be positive');
-  }
-  if (minLen <= 0 || maxLen <= 0 || minLen > maxLen) {
-    throw new Error('Invalid palette length constraints');
-  }
-
-  const palettes: PaletteType[] = [];
-
-  for (let i = 0; i < total; i++) {
-    const length = Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen;
-    const palette = new Set<ColorType>();
-    let attempts = 0;
-    const maxAttempts = length * 10;
-
-    while (palette.size < length && attempts < maxAttempts) {
-      const randomColor = colorList[Math.floor(Math.random() * colorList.length)];
-      palette.add(randomColor);
-      attempts++;
-    }
-
-    palettes.push([...palette]);
-  }
-
-  return palettes;
-}
-
-// Improved error handling and parsing
-function parseColorsFromFile(content: string): ColorType[] {
-  try {
-    const colorsMatch = content.match(/export const colors: ColorType\[\] = (\[[\s\S]*?\]);/);
-    if (!colorsMatch) return [];
-
-    // Use safer parsing method
-    return Function(`"use strict"; return (${colorsMatch[1]});`)();
-  } catch (error) {
-    console.warn('Failed to parse existing colors:', error);
-    return [];
-  }
-}
-
-export async function generateColorsFile({
-  relativeOutputPath = '/src/data/colors.ts',
-  minifyOutput: _ = false,
-  createMinifiedCopy: __ = false,
-  reuseExisting = false
-}: {
-  relativeOutputPath?: string;
-  reuseExisting?: boolean;
-  minifyOutput?: boolean;
-  createMinifiedCopy?: boolean;
-} = {}): Promise<void> {
-  const outputPath = path.join(process.cwd(), relativeOutputPath);
-  let colors: ColorType[] = [];
-
-  // Try to reuse existing colors
-  if (reuseExisting && existsSync(outputPath)) {
-    try {
-      const existingContent = readFileSync(outputPath, 'utf-8');
-      const existingColors = parseColorsFromFile(existingContent);
-
-      if (existingColors.length > 0) {
-        console.log(`📄 Reusing ${existingColors.length} colors from ${relativeOutputPath}`);
-        colors = existingColors;
-      }
-    } catch (error) {
-      console.error('⚠️ Error reading existing file, will regenerate:', error);
-    }
-  }
-
-  // Generate new colors if needed
-  if (colors.length < 1) {
-    console.log(`🎨 Generating ${CONFIG.TOTAL_COLORS} new colors...`);
-    colors = generateColorList(CONFIG.TOTAL_COLORS);
-  }
-
-  console.log(`🎨 Generating ${CONFIG.TOTAL_PALETTES} new palettes...`);
-  const palettes = generatePalettesFromColorList(colors, CONFIG.TOTAL_PALETTES, CONFIG.MIN_COLORS_PER_PALETTE, CONFIG.MAX_COLORS_PER_PALETTE);
-
-  const tsContent = `export type ColorType = {
-  name: string;
-  hex: string;
+type DetailedColorType = ColorType & {
+  rgb: string;
+  hsl: string;
+  cmyk: string;
+  lab: string;
+  isDark: boolean;
+  contrastWhite: number;
 };
 
-export type PaletteType = ColorType[];
+type PaletteType = ColorType[];
+type DetailedPaletteType = DetailedColorType[];
 
-export const colors: ColorType[] = ${toTsObject(colors)};
+const serializedColorNames = colornames.map(c => ({
+  name: c.name,
+  hex: c.hex.toLowerCase()
+}));
 
-export const palettes: PaletteType[] = ${toTsObject(palettes)};
-`;
+// --- Helper: Formatter (Console Output - No Wrapper) ---
+function formatOutput(data: DetailedColorType | DetailedPaletteType): string {
+  const isPalette = Array.isArray(data);
+  const fmt = CONFIG.OUTPUT_FORMAT;
 
-  writeFileSync(outputPath, tsContent, 'utf-8');
-  console.log(`✅ Color file written to ${relativeOutputPath}`);
+  if (fmt === 'hex') {
+    if (isPalette) return (data as DetailedPaletteType).map(c => c.hex).join(' ');
+    return (data as DetailedColorType).hex;
+  }
 
-  // if (minifyOutput || createMinifiedCopy) {
-  //   const minPath = outputPath.replace(/\.ts$/, '.min.ts');
-  //   try {
-  //     const minified = await minify(tsContent, {
-  //       format: {
-  //         comments: false,
-  //         preamble: '// This file is generated. Do not edit manually.',
-  //         ecma: 2020
-  //       },
-  //       compress: {
-  //         defaults: true,
-  //         unused: true
-  //       },
-  //       mangle: {
-  //         keep_classnames: true,
-  //         keep_fnames: true
-  //       }
-  //     });
+  if (fmt === 'name') {
+    if (isPalette) return (data as DetailedPaletteType).map(c => c.name).join(', ');
+    return (data as DetailedColorType).name;
+  }
 
-  //     if (minified.code) {
-  //       writeFileSync(minPath, minified.code, 'utf-8');
-  //       console.log(`✅ Minified version created at ${minPath}`);
+  if (fmt === 'pretty') {
+    if (isPalette) {
+      const palette = data as DetailedPaletteType;
+      const blocks = palette.map((c, i) => {
+        return `
+  [${i + 1}] ${c.name} (${c.hex})
+      RGB:  ${c.rgb}
+      HSL:  ${c.hsl}
+      CMYK: ${c.cmyk}
+      Contrast (White): ${c.contrastWhite.toFixed(2)}:1`;
+      });
+      return `\n🎨 Random Palette Generated\n========================================${blocks.join('\n-------------------------------------------------')}\n=====================================================`;
+    }
 
-  //       // Replace original with minified if minifyOutput is true
-  //       if (minifyOutput) {
-  //         writeFileSync(outputPath, minified.code, 'utf-8');
-  //         console.log(`🔄 Replaced original with minified version`);
-  //       }
-  //     } else {
-  //       console.warn('⚠️ Terser returned empty code, skipping minification');
-  //     }
-  //   } catch (error) {
-  //     console.error('⚠️ Error creating minified version:', error);
-  //   }
-  // }
+    const c = data as DetailedColorType;
+    return `
+🎨 Color Analysis
+=====================================================
+  Name:  ${c.name}
+  Hex:   ${c.hex}
+-----------------------------------------------------
+  RGB:   ${c.rgb}
+  HSL:   ${c.hsl}
+  CMYK:  ${c.cmyk}
+  LAB:   ${c.lab}
+-----------------------------------------------------
+  Dark Mode: ${c.isDark ? 'Yes' : 'No'}
+  Contrast (on White): ${c.contrastWhite.toFixed(2)}:1
+====================================================`;
+  }
+
+  return JSON.stringify(data, null, 2);
 }
 
-// Update the call to be async
+function generateSingleColor(): DetailedColorType {
+  const hex = '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+
+  const colorMap = colornames.reduce((acc, c) => {
+    acc[c.name] = c.hex;
+    return acc;
+  }, {} as Record<string, string>);
+
+  const nearest = nc.from(colorMap);
+  const match = nearest(hex);
+  const c = colord(hex);
+
+  return {
+    name: match?.name || 'Unknown',
+    hex,
+    rgb: c.toRgbString(),
+    hsl: c.toHslString(),
+    cmyk: c.toCmykString(),
+    lab: `lab(${Math.round(c.toLab().l)}% ${Math.round(c.toLab().a)} ${Math.round(c.toLab().b)})`,
+    isDark: c.isDark(),
+    contrastWhite: c.contrast('#ffffff'),
+  };
+}
+
+async function generateColorsBulk() {
+  const countPerWorker = Math.ceil(CONFIG.TOTAL_COLORS / CONFIG.WORKER_THREADS);
+  const progressMutex = new Mutex(new SharedJsonBuffer({ count: 0 }));
+
+  const handles = Array.from({ length: CONFIG.WORKER_THREADS }, () => {
+    return spawn(
+      move(serializedColorNames, countPerWorker, progressMutex),
+      async (namesData, targetCount, progress) => {
+        const nc = await import('nearest-color');
+
+        const colorMap = namesData.reduce((acc, c) => {
+          acc[c.name] = c.hex;
+          return acc;
+        }, {} as Record<string, string>);
+
+        const nearest = nc.default.from(colorMap);
+        const results: ColorType[] = [];
+
+        for (let j = 0; j < targetCount; j++) {
+          const hex = '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+          const match = nearest(hex);
+          results.push({ name: match?.name || 'Unknown', hex });
+
+          // Manual lock management
+          if (j % 50 === 0) {
+            const guard = await progress.lock();
+            try {
+              guard.value.count += 50;
+            } finally {
+              guard.dispose();
+            }
+          }
+        }
+        return results;
+      }
+    );
+  });
+
+  const interval = setInterval(async () => {
+    try {
+      const guard = await progressMutex.lock();
+      try {
+        process.stdout.write(`\rGenerating Colors... ${guard.value.count}/${CONFIG.TOTAL_COLORS}`);
+      } finally {
+        guard.dispose();
+      }
+    } catch (e) { /* ignore */ }
+  }, 100);
+
+  const results = await Promise.all(handles.map(h => h.join()));
+  clearInterval(interval);
+
+  return results.flatMap(r => (r.ok ? r.value : [])).slice(0, CONFIG.TOTAL_COLORS);
+}
+
+async function generatePalettesBulk(baseColors: ColorType[]) {
+  const countPerWorker = Math.ceil(CONFIG.TOTAL_PALETTES / CONFIG.WORKER_THREADS);
+
+  const handles = Array.from({ length: CONFIG.WORKER_THREADS }, () => {
+    return spawn(
+      move(baseColors, countPerWorker),
+      async (colors, targetCount) => {
+        const palettes: PaletteType[] = [];
+
+        for (let i = 0; i < targetCount; i++) {
+          const p: ColorType[] = [];
+          for(let k=0; k<4; k++) {
+             p.push(colors[Math.floor(Math.random() * colors.length)]);
+          }
+          palettes.push(p);
+        }
+        return palettes;
+      }
+    );
+  });
+
+  const results = await Promise.all(handles.map(h => h.join()));
+  return results.flatMap(r => (r.ok ? r.value : [])).slice(0, CONFIG.TOTAL_PALETTES);
+}
+
 (async () => {
   try {
-    await generateColorsFile({
-      relativeOutputPath: '/src/data/colors.ts',
-      minifyOutput: true // Set to false if you don't want minification
-    });
-  } catch (error) {
-    console.error('⚠️ Error generating colors file:', error);
+    if (CONFIG.IS_RANDOM_SINGLE) {
+      if (CONFIG.DO_COLORS) {
+        const color = generateSingleColor();
+        console.log(formatOutput(color));
+        process.exit(0);
+      }
+      if (CONFIG.DO_PALETTES) {
+        const palette = Array.from({ length: 4 }, () => generateSingleColor());
+        console.log(formatOutput(palette));
+        process.exit(0);
+      }
+      console.error('❌ Error: -r must be used with -c or -p');
+      process.exit(1);
+    }
+
+    // 2. Handle Help
+    if (!CONFIG.DO_COLORS && !CONFIG.DO_PALETTES) {
+      console.log(`
+Usage: npx tsx scripts/generate-colors.ts [flags]
+
+Actions:
+  -c, --colors      Target Colors
+  -p, --palettes    Target Palettes
+
+Options:
+  -r, --random      Output single random item to console
+  -f, --format      Output format: [json, hex, name, pretty]
+
+  --count <n>       Total colors to generate (default: 1000)
+  --pcount <n>      Total palettes to generate (default: 500)
+  -w, --workers <n> Number of worker threads
+  -o, --out <path>  Output directory
+      `);
+      process.exit(0);
+    }
+
+    if (!existsSync(CONFIG.OUTPUT_DIR)) {
+      mkdirSync(CONFIG.OUTPUT_DIR, { recursive: true });
+    }
+
+    let colors: ColorType[] = [];
+    const colorsPath = path.join(CONFIG.OUTPUT_DIR, 'colors.json');
+
+    if (CONFIG.DO_COLORS) {
+      console.log(`🚀 Generating ${CONFIG.TOTAL_COLORS} colors...`);
+      colors = await generateColorsBulk();
+
+      writeFileSync(colorsPath, JSON.stringify({ data: colors }, null, 0));
+      console.log(`\n✅ Saved to ${colorsPath}`);
+    }
+    else if (CONFIG.DO_PALETTES) {
+      if (existsSync(colorsPath)) {
+        console.log(`ℹ️  Loading existing colors from ${colorsPath}...`);
+        const fileContent = JSON.parse(readFileSync(colorsPath, 'utf-8'));
+
+        colors = Array.isArray(fileContent) ? fileContent : fileContent.data;
+      } else {
+        throw new Error('colors.json not found. Run with -c first.');
+      }
+    }
+
+    if (CONFIG.DO_PALETTES) {
+      if (!colors || colors.length === 0) throw new Error('No colors available.');
+
+      console.log(`🚀 Generating ${CONFIG.TOTAL_PALETTES} palettes...`);
+      const palettes = await generatePalettesBulk(colors);
+
+      // WRAP FILE OUTPUT
+      const palettesPath = path.join(CONFIG.OUTPUT_DIR, 'palettes.json');
+      writeFileSync(palettesPath, JSON.stringify({ data: palettes }, null, 0));
+      console.log(`✅ Saved to ${palettesPath}`);
+    }
+
+    process.exit(0);
+
+  } catch (e) {
+    console.error(`\n❌ Error: ${e instanceof Error ? e.message : e}`);
     process.exit(1);
   }
 })();

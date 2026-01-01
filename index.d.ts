@@ -1,6 +1,8 @@
-declare module 'color-name-list' {
-  export const colornames: {
-    name: string;
-    hex: string;
-  }[];
-}
+// declare module 'color-name-list' {
+//   export const colornames: {
+//     name: string;
+//     hex: string;
+//   }[];
+// }
+
+declare module '*.css';

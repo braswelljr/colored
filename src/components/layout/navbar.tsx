@@ -12,7 +12,7 @@ export default function Navbar({ className }: { className?: string }) {
       <div className="flex items-center justify-between">
         <Link
           href="/"
-          className="inline-flex items-center space-x-2 font-kablammo text-2xl font-extrabold uppercase dark:text-yellow-500"
+          className="font-kablammo inline-flex items-center space-x-2 text-2xl font-extrabold uppercase dark:text-yellow-500"
         >
           <HiColorSwatch className="block h-6 w-auto" />
           <span className="uppercase">Colored</span>

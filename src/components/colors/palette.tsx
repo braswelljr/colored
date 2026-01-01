@@ -1,11 +1,11 @@
 'use client';
 
+import { memo, useMemo, useState } from 'react';
 import { colord as cord } from 'colord';
 import { HTMLMotionProps, motion, MotionStyle } from 'motion/react';
-import { memo, useMemo, useState } from 'react';
 import { Card } from '~/components/ui/card';
-import { ColorType, PaletteType } from '~/data/colors';
 import { useColorsStore } from '~/store/use-colors';
+import { ColorType, PaletteType } from '~/types/types';
 import { cn } from '~/utils/cn';
 
 const MotionCard = motion.create(Card);
@@ -31,7 +31,10 @@ export const Palette = memo(({ palette, className, ...props }: PaletteProps) => 
     <MotionCard
       data-slot="palette"
       {...props}
-      className={cn('group/palette grid h-80 grid-cols-1 gap-0 overflow-hidden rounded-lg !p-0 transition-[grid-template-rows,height]', className)}
+      className={cn(
+        'group/palette grid h-80 grid-cols-1 gap-0 overflow-hidden rounded-lg !p-0 transition-[grid-template-rows,height]',
+        className
+      )}
       style={{ gridTemplateRows: gridTemplate, ...props.style } as MotionStyle}
     >
       {palette.map((color, i) => (
@@ -73,7 +76,7 @@ function ColorPad({ colour, className, ...props }: ColorPadProps) {
         className
       )}
     >
-      <span className="flex w-4/5 flex-col gap-1 text-xs font-black uppercase sm:text-xsm">
+      <span className="sm:text-xsm flex w-4/5 flex-col gap-1 text-xs font-black uppercase">
         <span className="">{name}</span>
         <span>{color}</span>
       </span>
