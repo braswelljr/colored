@@ -24,7 +24,7 @@ export default function Page() {
 
   useEffect(() => {
     if (Array.isArray(palettes) && palettes.length) onChangePaletteLen(palettes.length);
-  }, [palettes]);
+  }, [palettes, onChangePaletteLen]);
 
   const filteredPalletes = useMemo(
     () => palettes.filter((pallete) => matchSorter(pallete, q, { keys: ['name', 'hex', 'rgb'] }).length),
@@ -33,11 +33,11 @@ export default function Page() {
 
   return (
     <main className="px-3 py-4 md:px-12 lg:px-20 xl:px-28">
-      {filteredPalletes && filteredPalletes.length ? (
+      {filteredPalletes.length > 0 ? (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-6 text-xs leading-4">
           {filteredPalletes.map((palette, i) => (
             <Palette
-              key={i}
+              key={`palette-${i}`}
               palette={palette}
             />
           ))}
@@ -56,8 +56,7 @@ export default function Page() {
         <div className="flex min-h-[50vh] w-full items-center justify-center">
           <div className="mx-auto mb-3 max-w-xl text-center text-lg leading-6 font-medium text-zinc-500">
             <p>
-              Sorry! There are no colors for “{q}” 😥 make sure the code you entered matches a valid hex color code or a
-              color name. Example “#000000” or “blue”.
+              Sorry! There are no palettes for "{q}" 😥 make sure the code you entered matches a valid palette name.
             </p>
           </div>
         </div>

@@ -23,19 +23,26 @@ type ColorProps = HTMLMotionProps<'div'> & {
   className?: string;
 };
 
-export const Color = memo(({ colour, className, ...props }: ColorProps) => {
+export const Color = memo(({ colour, className, onMouseOver, onMouseOut, ...props }: ColorProps) => {
   const { name, hex } = colour;
   const [copied, setCopied] = useState<'favorite' | 'copied'>();
   const [mouse, setMouse] = useState(false);
-  const [_, _setColorQuery] = useQueryState('q', parseAsString.withDefault(''));
-  const { isFavorite, toggleFavorite } = useFavoriteStore(useShallow((s) => s));
+  const [, _setColorQuery] = useQueryState('q', parseAsString.withDefault(''));
+  const { isFavorite, toggleFavorite } = useFavoriteStore(
+    useShallow((s) => ({ isFavorite: s.isFavorite, toggleFavorite: s.toggleFavorite }))
+  );
   const { format, convertFormat } = useColorsStore(
     useShallow((s) => ({ format: s.format, convertFormat: s.convertFormat }))
   );
 
-  const color = useMemo(() => convertFormat(hex, { format }), [hex, format, convertFormat]);
-  const inverted = useMemo(() => cord(color).invert().toHex(), [color]);
-  const dark = useMemo(() => cord(color).isDark(), [color]);
+  const colorData = useMemo(() => {
+    const formatted = convertFormat(hex, { format });
+    return {
+      color: formatted,
+      inverted: cord(formatted).invert().toHex(),
+      dark: cord(formatted).isDark()
+    };
+  }, [hex, format, convertFormat]);
 
   useEffect(() => {
     if (!copied) return;
@@ -43,69 +50,89 @@ export const Color = memo(({ colour, className, ...props }: ColorProps) => {
     return () => clearTimeout(timeout);
   }, [copied]);
 
-  const handleCopy = useCallback(async () => {
+  const toastConfig = useMemo(
+    () => ({
+      loading: (
+        <span
+          style={{ '--colored-main-color': colorData.color } as React.CSSProperties}
+          className="text-sm"
+        >
+          Copying <span className="font-semibold !text-(--colored-main-color)">{colorData.color}</span>...
+        </span>
+      ),
+      success: () => {
+        setCopied('copied');
+        return {
+          type: 'info',
+          message: '',
+          description: (
+            <span
+              style={{ '--colored-main-color': colorData.color } as React.CSSProperties}
+              className="text-sm"
+            >
+              <span className="font-semibold !text-(--colored-main-color)">{colorData.color}</span> copied successfully!
+            </span>
+          )
+        };
+      },
+      error: <span className="text-sm text-red-500">Failed to copy. Please try again.</span>
+    }),
+    [colorData.color]
+  );
+
+  const handleCopy = useCallback(() => {
     toast.promise(
       new Promise<void>((resolve, reject) => {
         setTimeout(() => {
-          copy(color).then(resolve).catch(reject);
+          copy(colorData.color).then(resolve).catch(reject);
         }, 500);
       }),
-      {
-        loading: (
-          <span
-            style={{ '--colored-main-color': color } as React.CSSProperties}
-            className="text-sm"
-          >
-            Copying <span className="font-semibold !text-(--colored-main-color)">{color}</span>...
-          </span>
-        ),
-        success: () => {
-          setCopied('copied');
-          return {
-            type: 'info',
-            message: '',
-            description: (
-              <span
-                style={{ '--colored-main-color': color } as React.CSSProperties}
-                className="text-sm"
-              >
-                <span className="font-semibold !text-(--colored-main-color)">{color}</span> copied successfully!
-              </span>
-            )
-          };
-        },
-        error: <span className="text-sm text-red-500">Failed to copy. Please try again.</span>
-      }
+      toastConfig
     );
-  }, [color]);
+  }, [colorData.color, toastConfig]);
+
+  const handleMouseOver = useCallback(
+    (e: React.MouseEvent) => {
+      onMouseOver?.(e as any);
+      setMouse(true);
+    },
+    [onMouseOver]
+  );
+
+  const handleMouseOut = useCallback(
+    (e: React.MouseEvent) => {
+      onMouseOut?.(e as any);
+      setMouse(false);
+    },
+    [onMouseOut]
+  );
+
+  const handleFavoriteToggle = useCallback(() => {
+    toggleFavorite(colour);
+    setCopied('favorite');
+  }, [colour, toggleFavorite]);
 
   return (
     <MotionCard
       {...props}
       style={
         {
-          '--colored-main-color': color,
-          '--colored-inverted-color': inverted
+          '--colored-main-color': colorData.color,
+          '--colored-inverted-color': colorData.inverted
         } as React.CSSProperties
       }
       className={cn(
         'group/color relative flex h-24 cursor-pointer items-center justify-center rounded-md text-center font-semibold',
         '!bg-(--colored-main-color)',
-        dark ? '!text-white' : '!text-neutral-950',
+        colorData.dark ? '!text-white' : '!text-neutral-950',
         className
       )}
-      onMouseOver={(e) => {
-        props?.onMouseOver?.(e);
-        setMouse(true);
-      }}
-      onMouseOut={(e) => {
-        props?.onMouseOut?.(e);
-        setMouse(false);
-      }}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
     >
       <div className="flex w-4/5 flex-col gap-2">
         <span className="sm:text-xsm text-xs font-black uppercase">{name}</span>
-        <span className="">{color}</span>
+        <span className="">{colorData.color}</span>
       </div>
 
       <motion.div
@@ -129,10 +156,7 @@ export const Color = memo(({ colour, className, ...props }: ColorProps) => {
                 layoutId={`favorite-${hex}`}
                 type="button"
                 className="inline-flex size-6 items-center justify-center"
-                onClick={() => {
-                  toggleFavorite(colour);
-                  setCopied('favorite');
-                }}
+                onClick={handleFavoriteToggle}
               >
                 <MdFavorite className={cn('size-5', isFavorite(hex) && 'text-red-500')} />
               </motion.button>
@@ -150,7 +174,7 @@ export const Color = memo(({ colour, className, ...props }: ColorProps) => {
                 className={cn(
                   'inline-flex h-6 items-center space-x-1 rounded border px-1 py-0.5 text-sm',
                   '!bg-(--colored-main-color)',
-                  dark ? 'border-white' : 'border-neutral-950'
+                  colorData.dark ? 'border-white' : 'border-neutral-950'
                 )}
                 onClick={handleCopy}
               >
@@ -165,4 +189,4 @@ export const Color = memo(({ colour, className, ...props }: ColorProps) => {
   );
 });
 
-Color.displayName = 'ColorPad';
+Color.displayName = 'Color';

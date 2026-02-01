@@ -21,15 +21,19 @@ type PaletteProps = HTMLMotionProps<'div'> & {
 
 export const Palette = memo(({ palette, className, ...props }: PaletteProps) => {
   const [active, setActive] = useState<string | undefined>(undefined);
+
   const gridTemplate = useMemo(() => {
     const activeIndex = palette.findIndex((c) => c.hex === active);
     if (activeIndex === -1) {
-      return `repeat(${palette.length ?? 1}, 1fr)`; // even heights
+      return `repeat(${palette.length ?? 1}, 1fr)`;
     }
-
     const parts = palette.map((_, idx) => (idx === activeIndex ? '3fr' : '1fr'));
     return parts.join(' ');
   }, [active, palette]);
+
+  const handleMouseOver = useCallback((hex: string) => () => setActive(hex), []);
+
+  const handleMouseOut = useCallback(() => setActive(undefined), []);
 
   return (
     <MotionCard
@@ -43,24 +47,25 @@ export const Palette = memo(({ palette, className, ...props }: PaletteProps) => 
     >
       {palette.map((color, i) => (
         <ColorPad
-          key={i}
+          key={`palette-color-${color.hex}-${i}`}
           colour={color}
-          onMouseOver={() => setActive(color?.hex)}
-          onMouseOut={() => setActive(undefined)}
-          className={cn('h-full transition-[height]')}
+          onMouseOver={handleMouseOver(color.hex)}
+          onMouseOut={handleMouseOut}
+          className="h-full transition-[height]"
         />
       ))}
     </MotionCard>
   );
 });
-Palette.displayName = 'PalletePad';
+
+Palette.displayName = 'Palette';
 
 type ColorPadProps = HTMLMotionProps<'div'> & {
   colour: ColorType;
   className?: string;
 };
 
-const ColorPad = memo(({ colour, className, ...props }: ColorPadProps) => {
+const ColorPad = memo(({ colour, className, onMouseOver, onMouseOut, ...props }: ColorPadProps) => {
   const { name, hex } = colour;
   const { format, convertFormat } = useColorsStore(
     useShallow((s) => ({ format: s.format, convertFormat: s.convertFormat }))
@@ -69,9 +74,14 @@ const ColorPad = memo(({ colour, className, ...props }: ColorPadProps) => {
   const [copied, setCopied] = useState(false);
   const [mouse, setMouse] = useState(false);
 
-  const color = useMemo(() => convertFormat(hex, { format }), [hex, format, convertFormat]);
-  const inverted = useMemo(() => cord(color).invert().toHex(), [color]);
-  const dark = useMemo(() => cord(color).isDark(), [color]);
+  const colorData = useMemo(() => {
+    const formatted = convertFormat(hex, { format });
+    return {
+      color: formatted,
+      inverted: cord(formatted).invert().toHex(),
+      dark: cord(formatted).isDark()
+    };
+  }, [hex, format, convertFormat]);
 
   useEffect(() => {
     if (!copied) return;
@@ -79,65 +89,86 @@ const ColorPad = memo(({ colour, className, ...props }: ColorPadProps) => {
     return () => clearTimeout(timeout);
   }, [copied]);
 
-  const handleCopy = useCallback(async () => {
+  const toastConfig = useMemo(
+    () => ({
+      loading: (
+        <span
+          style={{ '--colored-main-color': colorData.color } as React.CSSProperties}
+          className="text-sm"
+        >
+          Copying <span className="font-semibold !text-(--colored-main-color)">{colorData.color}</span>...
+        </span>
+      ),
+      success: () => {
+        setCopied(true);
+        return {
+          type: 'info',
+          message: '',
+          description: (
+            <span
+              style={{ '--colored-main-color': colorData.color } as React.CSSProperties}
+              className="text-sm"
+            >
+              <span className="font-semibold !text-(--colored-main-color)">{colorData.color}</span> copied successfully!
+            </span>
+          )
+        };
+      },
+      error: <span className="text-sm text-red-500">Failed to copy. Please try again.</span>
+    }),
+    [colorData.color]
+  );
+
+  const handleCopy = useCallback(() => {
     toast.promise(
       new Promise<void>((resolve, reject) => {
         setTimeout(() => {
-          copy(color).then(resolve).catch(reject);
+          copy(colorData.color).then(resolve).catch(reject);
         }, 500);
       }),
-      {
-        loading: (
-          <span
-            style={{ '--colored-main-color': color } as React.CSSProperties}
-            className="text-sm"
-          >
-            Copying <span className="font-semibold !text-(--colored-main-color)">{color}</span>...
-          </span>
-        ),
-        success: () => {
-          setCopied(true);
-          return {
-            type: 'info',
-            message: '',
-            description: (
-              <span
-                style={{ '--colored-main-color': color } as React.CSSProperties}
-                className="text-sm"
-              >
-                <span className="font-semibold !text-(--colored-main-color)">{color}</span> copied successfully!
-              </span>
-            )
-          };
-        },
-        error: <span className="text-sm text-red-500">Failed to copy. Please try again.</span>
-      }
+      toastConfig
     );
-  }, [color]);
+  }, [colorData.color, toastConfig]);
+
+  const handleMouseOver = useCallback(
+    (e: React.MouseEvent) => {
+      onMouseOver?.(e as any);
+      setMouse(true);
+    },
+    [onMouseOver]
+  );
+
+  const handleMouseOut = useCallback(
+    (e: React.MouseEvent) => {
+      onMouseOut?.(e as any);
+      setMouse(false);
+    },
+    [onMouseOut]
+  );
 
   return (
     <MotionCard
       data-slot="color-pad"
       {...props}
-      style={{ '--colored-main-color': color, '--colored-inverted-color': inverted, ...props.style } as MotionStyle}
+      style={
+        {
+          '--colored-main-color': colorData.color,
+          '--colored-inverted-color': colorData.inverted,
+          ...props.style
+        } as MotionStyle
+      }
       className={cn(
         'group/color relative flex h-auto cursor-pointer items-center justify-center rounded-none border-0 !p-0 text-center font-semibold',
         '!bg-(--colored-main-color)',
-        dark ? '!text-white' : '!text-neutral-950',
+        colorData.dark ? '!text-white' : '!text-neutral-950',
         className
       )}
-      onMouseOver={(e) => {
-        props?.onMouseOver?.(e);
-        setMouse(true);
-      }}
-      onMouseOut={(e) => {
-        props?.onMouseOut?.(e);
-        setMouse(false);
-      }}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
     >
       <span className="sm:text-xsm flex w-4/5 flex-col gap-1 text-xs font-black uppercase">
         <span className="">{name}</span>
-        <span>{color}</span>
+        <span>{colorData.color}</span>
       </span>
 
       <motion.div
@@ -158,7 +189,7 @@ const ColorPad = memo(({ colour, className, ...props }: ColorPadProps) => {
               className={cn(
                 'inline-flex h-6 items-center space-x-1 rounded border px-1 py-0.5 text-sm',
                 '!bg-(--colored-main-color)',
-                dark ? 'border-white' : 'border-neutral-950'
+                colorData.dark ? 'border-white' : 'border-neutral-950'
               )}
               onClick={handleCopy}
             >

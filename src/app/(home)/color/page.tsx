@@ -39,30 +39,31 @@ export default function Page() {
   });
 
   useEffect(() => {
-    if (colors && colors.shades) {
-      const shadeCount = Object.keys(colors.shades).length;
-      onChangeColorsLen(shadeCount);
+    if (colors?.shades) {
+      onChangeColorsLen(Object.keys(colors.shades).length);
     }
   }, [colors, onChangeColorsLen]);
 
-  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.trim();
+  const handleColorChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.trim();
 
-    if (!value) {
-      onChangeColor('');
-      return;
-    }
+      if (!value) {
+        onChangeColor('');
+        return;
+      }
 
-    if (colord(value).isValid()) {
-      const hexColor = colord(value).toHex();
-      onChangeColor(hexColor);
-    }
-  };
+      const colorInstance = colord(value);
+      if (colorInstance.isValid()) {
+        onChangeColor(colorInstance.toHex());
+      }
+    },
+    [onChangeColor]
+  );
 
   const handleRandomColor = useCallback(() => {
     setIsRandomizing(true);
-    const newColor = randomColor();
-    onChangeColor(newColor);
+    onChangeColor(randomColor());
     setTimeout(() => setIsRandomizing(false), 300);
   }, [onChangeColor]);
 
@@ -72,11 +73,15 @@ export default function Page() {
       name: String(step),
       hex: convertFormat({ color: shade.hex, format })
     }));
-  }, [colors, format]);
+  }, [colors?.shades, format]);
 
-  const c = useMemo(() => convertFormat({ color, format }), [color, format, convertFormat]);
-  const isValidColor = color && colord(c).isValid();
-  const dark = useMemo(() => colord(color).isDark(), [c]);
+  const colorValidation = useMemo(() => {
+    const instance = colord(color);
+    return {
+      isValid: color && instance.isValid(),
+      isDark: instance.isDark()
+    };
+  }, [color]);
 
   return (
     <div className="flex h-full flex-1 flex-col">
@@ -89,8 +94,8 @@ export default function Page() {
             <InputGroupInput
               placeholder="#3b82f6"
               type="color"
-              value={isValidColor ? color : '#f0b100'}
-              onChange={(e) => handleColorChange(e)}
+              value={colorValidation.isValid ? color : '#f0b100'}
+              onChange={handleColorChange}
               className="size-8 rounded border-0 p-0"
             />
           </InputGroupAddon>
@@ -98,7 +103,7 @@ export default function Page() {
           <InputGroupInput
             type="text"
             value={color}
-            onChange={(e) => handleColorChange(e)}
+            onChange={handleColorChange}
             placeholder="#3b82f6"
             className=""
           />
@@ -112,24 +117,24 @@ export default function Page() {
               onClick={handleRandomColor}
               disabled={isRandomizing}
               className={cn('size-7 rounded-md')}
-              style={{ backgroundColor: color && colord(color).isValid() ? color : '' }}
+              style={{ backgroundColor: colorValidation.isValid ? color : '' }}
             >
               {isRandomizing ? (
                 <Spinner className="size-4" />
               ) : (
-                <LuShuffle className={cn('size-4', dark ? '!text-white' : '!text-neutral-950')} />
+                <LuShuffle className={cn('size-4', colorValidation.isDark ? '!text-white' : '!text-neutral-950')} />
               )}
             </InputGroupButton>
           </InputGroupAddon>
         </InputGroup>
 
         <Swatch
-          color={isValidColor ? color : '#f0b100'}
+          color={colorValidation.isValid ? color : '#f0b100'}
           className="text-sm"
         />
       </div>
       <main className="px-3 py-4 md:px-12 lg:px-20 xl:px-28">
-        {shadeColors && shadeColors.length ? (
+        {shadeColors.length > 0 ? (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] gap-8 text-xs leading-4">
             {shadeColors.map((shade) => (
               <Color

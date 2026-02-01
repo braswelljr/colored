@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'motion/react';
@@ -9,6 +9,7 @@ import { HiCode, HiColorSwatch, HiHashtag } from 'react-icons/hi';
 import { HiArrowUp } from 'react-icons/hi2';
 import { MdFavorite } from 'react-icons/md';
 import { useWindowScroll } from 'react-use';
+import { useShallow } from 'zustand/react/shallow';
 import { Swatch } from '~/components/colors/swatch';
 import { Search } from '~/components/layout/search';
 import { SegmentedControl, SegmentedControlList, SegmentedControlTrigger } from '~/components/ui/segmented-control';
@@ -18,18 +19,36 @@ import { cn } from '~/utils/cn';
 
 const EXCLUDED_FROM_SEGMENT = ['/color'];
 
+const NAVIGATION_ITEMS = [
+  { page: 'Colors', path: '/' },
+  { page: 'Palettes', path: '/palettes' },
+  { page: 'Custom', path: '/color' }
+] as const;
+
+const FEATURES = [{ description: 'Convert Formats', icon: HiCode }] as const;
+
 type SegmentProps = React.ComponentProps<'section'> & {};
 
 export function Segment({ className, ...props }: SegmentProps) {
   const pathname = usePathname();
   const { y } = useWindowScroll();
   const [searchQuery, setSearchQuery] = useQueryState('q', parseAsString.withDefault(''));
-  const { state, onChangeState } = useFavoriteStore();
+  const { state, onChangeState } = useFavoriteStore(
+    useShallow((s) => ({ state: s.state, onChangeState: s.onChangeState }))
+  );
 
   const isExcludedFromSegment = useMemo(
-    () => EXCLUDED_FROM_SEGMENT.some((path) => path === pathname || pathname.startsWith(path), [pathname]),
+    () => EXCLUDED_FROM_SEGMENT.some((path) => path === pathname || pathname.startsWith(path)),
     [pathname]
   );
+
+  const handleScrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleToggleFavorite = useCallback(() => {
+    onChangeState((v) => !v);
+  }, [onChangeState]);
 
   return (
     <section
@@ -53,11 +72,7 @@ export function Segment({ className, ...props }: SegmentProps) {
           className="flex shrink-0 items-center justify-center space-x-4"
         >
           <SegmentedControlList classNames={{ indicator: '!bg-yellow-500 !rounded' }}>
-            {[
-              { page: 'Colors', path: '/' },
-              { page: 'Palettes', path: '/palettes' },
-              { page: 'Custom', path: '/color' }
-            ].map(({ page, path }) => (
+            {NAVIGATION_ITEMS.map(({ page, path }) => (
               <SegmentedControlTrigger
                 key={path}
                 value={path}
@@ -84,7 +99,7 @@ export function Segment({ className, ...props }: SegmentProps) {
               'group/top relative cursor-pointer px-1 py-0.5 text-neutral-950 focus:outline-hidden focus:outline-none dark:text-yellow-500',
               y < 50 && 'opacity-0'
             )}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={handleScrollToTop}
           >
             <div className="relative inline-flex items-center space-x-2">
               <HiArrowUp className="size-3" />
@@ -95,7 +110,7 @@ export function Segment({ className, ...props }: SegmentProps) {
 
           <motion.button
             type="button"
-            onClick={() => onChangeState((v) => !v)}
+            onClick={handleToggleFavorite}
             className={cn('relative cursor-pointer focus:outline-hidden')}
             whileTap={{ scale: 0.8 }}
             whileHover={{ scale: 1.5 }}
@@ -112,7 +127,18 @@ export function Segment({ className, ...props }: SegmentProps) {
 type HeaderProps = React.ComponentProps<'header'> & {};
 
 export function Header({ className, ...props }: HeaderProps) {
-  const { colorsLen, paletteLen } = useColorsStore();
+  const { colorsLen, paletteLen } = useColorsStore(
+    useShallow((s) => ({ colorsLen: s.colorsLen, paletteLen: s.paletteLen }))
+  );
+
+  const featureItems = useMemo(
+    () => [
+      { description: `${colorsLen} Colors`, icon: HiHashtag },
+      { description: `${paletteLen} Curated Swatches`, icon: HiColorSwatch },
+      ...FEATURES
+    ],
+    [colorsLen, paletteLen]
+  );
 
   return (
     <header
@@ -126,20 +152,7 @@ export function Header({ className, ...props }: HeaderProps) {
           </p>
         </div>
         <div className="flex w-full flex-wrap items-center justify-around gap-x-6 gap-y-4 pb-4 text-xs font-semibold">
-          {[
-            {
-              description: `${colorsLen} Colors`,
-              icon: HiHashtag
-            },
-            {
-              description: `${paletteLen} Curated Swatches`,
-              icon: HiColorSwatch
-            },
-            {
-              description: 'Convert Formats',
-              icon: HiCode
-            }
-          ].map((desc, i) => (
+          {featureItems.map((desc, i) => (
             <div
               key={i}
               className="flex shrink-0 items-center space-x-1 tracking-tight dark:text-yellow-500"
