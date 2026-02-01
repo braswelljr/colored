@@ -20,7 +20,9 @@ export function Swatch({
 }: Omit<React.ComponentProps<typeof SelectTrigger>, 'color'> & {
   color?: string;
 }) {
-  const { format, onChangeFormat } = useColorsStore(useShallow((s) => s));
+  const { format, onChangeFormat } = useColorsStore(
+    useShallow((s) => ({ format: s.format, onChangeFormat: s.onChangeFormat }))
+  );
 
   return (
     <Suspense fallback={<ColorFormatSelectorSkeleton />}>
@@ -30,7 +32,7 @@ export function Swatch({
       >
         <SelectTrigger
           className={cn(
-            'h-7 w-auto gap-1.5 rounded border-neutral-900 pr-2 text-sm font-medium dark:border-neutral-500',
+            'h-7 w-auto gap-1.5 rounded border-neutral-900 text-xs font-bold uppercase dark:border-neutral-500',
             className
           )}
           {...props}
@@ -47,7 +49,7 @@ export function Swatch({
               key={value}
               value={value}
               className={cn(
-                'gap-2 rounded-lg [&>span]:flex [&>span]:items-center [&>span]:gap-2',
+                'gap-2 rounded-lg text-xs [&>span]:flex [&>span]:items-center [&>span]:gap-2',
                 value === format &&
                   'hocus:bg-yellow-100 dark:hocus:bg-yellow-100/20 bg-yellow-100 dark:bg-yellow-100/20'
               )}

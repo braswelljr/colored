@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { colord as cord } from 'colord';
 import { HTMLMotionProps, motion } from 'motion/react';
@@ -27,11 +27,13 @@ export const Color = memo(({ colour, className, ...props }: ColorProps) => {
   const { name, hex } = colour;
   const [copied, setCopied] = useState<'favorite' | 'copied'>();
   const [mouse, setMouse] = useState(false);
-  const [_, _setColorQuery] = useQueryState('color', parseAsString.withDefault(''));
+  const [_, _setColorQuery] = useQueryState('q', parseAsString.withDefault(''));
   const { isFavorite, toggleFavorite } = useFavoriteStore(useShallow((s) => s));
-  const { format, convertFormat } = useColorsStore();
-  const color = convertFormat(hex, { format });
+  const { format, convertFormat } = useColorsStore(
+    useShallow((s) => ({ format: s.format, convertFormat: s.convertFormat }))
+  );
 
+  const color = useMemo(() => convertFormat(hex, { format }), [hex, format, convertFormat]);
   const inverted = useMemo(() => cord(color).invert().toHex(), [color]);
   const dark = useMemo(() => cord(color).isDark(), [color]);
 
@@ -41,7 +43,7 @@ export const Color = memo(({ colour, className, ...props }: ColorProps) => {
     return () => clearTimeout(timeout);
   }, [copied]);
 
-  const handleCopy = async () => {
+  const handleCopy = useCallback(async () => {
     toast.promise(
       new Promise<void>((resolve, reject) => {
         setTimeout(() => {
@@ -75,7 +77,7 @@ export const Color = memo(({ colour, className, ...props }: ColorProps) => {
         error: <span className="text-sm text-red-500">Failed to copy. Please try again.</span>
       }
     );
-  };
+  }, [color]);
 
   return (
     <MotionCard
@@ -137,7 +139,7 @@ export const Color = memo(({ colour, className, ...props }: ColorProps) => {
             </div>
             <div className="flex items-end justify-between">
               <Link
-                href={`/color?color=${encodeURIComponent(hex)}`}
+                href={`/color?q=${encodeURIComponent(hex)}`}
                 className="inline-flex size-6 items-center justify-center rounded"
               >
                 <HiExternalLink className="size-5" />

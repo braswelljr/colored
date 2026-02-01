@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'motion/react';
@@ -15,6 +16,8 @@ import { useColorsStore } from '~/store/use-colors';
 import { useFavoriteStore } from '~/store/use-favorite';
 import { cn } from '~/utils/cn';
 
+const EXCLUDED_FROM_SEGMENT = ['/color'];
+
 type SegmentProps = React.ComponentProps<'section'> & {};
 
 export function Segment({ className, ...props }: SegmentProps) {
@@ -23,20 +26,27 @@ export function Segment({ className, ...props }: SegmentProps) {
   const [searchQuery, setSearchQuery] = useQueryState('q', parseAsString.withDefault(''));
   const { state, onChangeState } = useFavoriteStore();
 
+  const isExcludedFromSegment = useMemo(
+    () => EXCLUDED_FROM_SEGMENT.some((path) => path === pathname || pathname.startsWith(path), [pathname]),
+    [pathname]
+  );
+
   return (
     <section
       {...props}
       className={cn('sticky inset-x-0 top-0 z-10 w-full', className)}
     >
-      <div className="flex gap-2 bg-yellow-100/95 px-3 py-4 backdrop-blur-sm md:px-12 lg:px-20 xl:px-28 dark:bg-neutral-800/95">
-        <Search
-          query={searchQuery}
-          onChangeQuery={setSearchQuery}
-          className="w-full grow"
-          placeholder={`Search ${searchQuery && `"${searchQuery}"`}`}
-        />
-        <Swatch className="" />
-      </div>
+      {isExcludedFromSegment ? null : (
+        <div className="flex gap-2 bg-yellow-100/95 px-3 py-4 backdrop-blur-sm md:px-12 lg:px-20 xl:px-28 dark:bg-neutral-800/95">
+          <Search
+            query={searchQuery}
+            onChangeQuery={setSearchQuery}
+            className="w-full grow"
+            placeholder={`Search ${searchQuery && `"${searchQuery}"`}`}
+          />
+          <Swatch className="" />
+        </div>
+      )}
       <div className="-mt-1 flex w-full justify-between gap-10 overflow-x-auto bg-yellow-200/90 px-3 py-2 whitespace-nowrap backdrop-blur md:px-12 lg:px-20 xl:px-28 dark:bg-neutral-900/90">
         <SegmentedControl
           value={pathname}
@@ -45,7 +55,8 @@ export function Segment({ className, ...props }: SegmentProps) {
           <SegmentedControlList classNames={{ indicator: '!bg-yellow-500 !rounded' }}>
             {[
               { page: 'Colors', path: '/' },
-              { page: 'Palettes', path: '/palettes' }
+              { page: 'Palettes', path: '/palettes' },
+              { page: 'Custom', path: '/color' }
             ].map(({ page, path }) => (
               <SegmentedControlTrigger
                 key={path}

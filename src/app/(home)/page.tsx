@@ -4,10 +4,10 @@ import { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { matchSorter } from 'match-sorter';
-import { useMedia } from 'react-use';
 import { useShallow } from 'zustand/react/shallow';
 import { Color } from '~/components/colors/color';
 import { Skeleton } from '~/components/ui/skeleton';
+import { useMediaQueries, useSkeletonCount } from '~/hooks/use-media-queries';
 import { useColorsStore } from '~/store/use-colors';
 import { useFavoriteStore } from '~/store/use-favorite';
 import type { ColorType } from '~/types/types';
@@ -26,24 +26,8 @@ export default function Page() {
     if (Array.isArray(colors) && colors.length) onChangeColorsLen(colors.length);
   }, [colors]);
 
-  const isXs = useMedia('(max-width: 325px)');
-  const isSm = useMedia('(max-width: 640px)');
-  const isMd = useMedia('(max-width: 768px)');
-  const isLg = useMedia('(max-width: 1024px)');
-  const isXl = useMedia('(max-width: 1280px)');
-  const is2xl = useMedia('(max-width: 1536px)');
-  const is3xl = useMedia('(max-width: 1920px)');
-
-  const numberOfSketons = useMemo(() => {
-    if (isXs) return 6;
-    if (isSm) return 10;
-    if (isMd) return 14;
-    if (isLg) return 20;
-    if (isXl) return 30;
-    if (is2xl) return 30;
-    if (is3xl) return 40;
-    return 20;
-  }, [isXs, isSm, isMd, isLg, isXl, is2xl, is3xl]);
+  const mediaQueries = useMediaQueries();
+  const numberOfSketons = useSkeletonCount(mediaQueries);
 
   const filteredColors = useMemo(() => {
     let result = colors;

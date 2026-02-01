@@ -17,7 +17,7 @@ export default function BaseProvider({ children }: BaseProviderProps) {
       <NuqsAdapter>
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
         <Toaster
-          position="top-right"
+          position="bottom-right"
           richColors
           closeButton
           visibleToasts={5}
