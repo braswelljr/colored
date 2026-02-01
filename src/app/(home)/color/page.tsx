@@ -1,15 +1,19 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { colord } from 'colord';
 import { parseAsString, useQueryState } from 'nuqs';
+import { LuShuffle } from 'react-icons/lu';
 import { Color } from '~/components/colors/color';
 import { Swatch } from '~/components/colors/swatch';
-import { Input } from '~/components/ui/input';
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '~/components/ui/input-group';
 import { Skeleton } from '~/components/ui/skeleton';
+import { Spinner } from '~/components/ui/spinner';
 import { useColorsStore } from '~/store/use-colors';
+import { cn } from '~/utils/cn';
 import { convertFormat } from '~/utils/colors';
+import { randomColor } from '~/utils/random';
 import { generateShades, type ShadeScale } from '~/utils/shades';
 
 type GenerateShadesResult = {
@@ -25,6 +29,8 @@ async function fetchShades(color: string): Promise<GenerateShadesResult> {
 export default function Page() {
   const { format, onChangeColorsLen } = useColorsStore();
   const [color, onChangeColor] = useQueryState('q', parseAsString.withDefault('#f0b100'));
+  const [isRandomizing, setIsRandomizing] = useState(false);
+
   const { data: colors, isLoading } = useQuery({
     queryKey: ['shades', color],
     queryFn: () => fetchShades(color),
@@ -40,16 +46,25 @@ export default function Page() {
   }, [colors, onChangeColorsLen]);
 
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let newColor = e.target.value;
+    const value = e.target.value.trim();
 
-    if (newColor.startsWith('#')) {
-      onChangeColor(newColor);
+    if (!value) {
+      onChangeColor('');
       return;
     }
 
-    newColor = colord(newColor).toHex();
-    onChangeColor(newColor);
+    if (colord(value).isValid()) {
+      const hexColor = colord(value).toHex();
+      onChangeColor(hexColor);
+    }
   };
+
+  const handleRandomColor = useCallback(() => {
+    setIsRandomizing(true);
+    const newColor = randomColor();
+    onChangeColor(newColor);
+    setTimeout(() => setIsRandomizing(false), 300);
+  }, [onChangeColor]);
 
   const shadeColors = useMemo(() => {
     if (!colors?.shades) return [];
@@ -59,28 +74,57 @@ export default function Page() {
     }));
   }, [colors, format]);
 
+  const c = useMemo(() => convertFormat({ color, format }), [color, format, convertFormat]);
+  const isValidColor = color && colord(c).isValid();
+  const dark = useMemo(() => colord(color).isDark(), [c]);
+
   return (
     <div className="flex h-full flex-1 flex-col">
       <div className="flex items-center gap-2 px-3 md:px-12 lg:px-20 xl:px-28">
-        <div className="flex h-full grow gap-1">
-          <Input
-            placeholder="#3b82f6"
-            type="color"
-            value={color}
-            onChange={(e) => handleColorChange(e)}
-            className="size-9 rounded border-0 p-0"
-          />
+        <InputGroup>
+          <InputGroupAddon
+            align="inline-start"
+            className="rounded-2xl p-1"
+          >
+            <InputGroupInput
+              placeholder="#3b82f6"
+              type="color"
+              value={isValidColor ? color : '#f0b100'}
+              onChange={(e) => handleColorChange(e)}
+              className="size-8 rounded border-0 p-0"
+            />
+          </InputGroupAddon>
 
-          <Input
+          <InputGroupInput
             type="text"
             value={color}
             onChange={(e) => handleColorChange(e)}
             placeholder="#3b82f6"
             className=""
           />
-        </div>
+
+          <InputGroupAddon
+            align="inline-end"
+            className="rounded-2xl p-3"
+          >
+            <InputGroupButton
+              variant="default"
+              onClick={handleRandomColor}
+              disabled={isRandomizing}
+              className={cn('size-7 rounded-md')}
+              style={{ backgroundColor: color && colord(color).isValid() ? color : '' }}
+            >
+              {isRandomizing ? (
+                <Spinner className="size-4" />
+              ) : (
+                <LuShuffle className={cn('size-4', dark ? '!text-white' : '!text-neutral-950')} />
+              )}
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
+
         <Swatch
-          color={color}
+          color={isValidColor ? color : '#f0b100'}
           className="text-sm"
         />
       </div>
@@ -107,7 +151,10 @@ export default function Page() {
         ) : (
           <div className="flex min-h-[50vh] w-full items-center justify-center">
             <div className="mx-auto mb-3 max-w-xl text-center text-lg leading-6 font-medium text-zinc-500">
-              <p>Invalid color format. Please enter a valid hex color code. Example "#3b82f6" or "blue".</p>
+              <p>
+                Invalid color format. Please enter a valid hex color code or click the shuffle button for a random
+                color.
+              </p>
             </div>
           </div>
         )}
