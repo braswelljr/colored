@@ -1,15 +1,14 @@
-import { spawn, move, Mutex, SharedJsonBuffer } from 'multithreading';
-import { colornames } from 'color-name-list';
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { parseArgs } from 'node:util';
 import path from 'path';
-import nc from 'nearest-color';
-
+import { colornames } from 'color-name-list';
 import { colord, extend } from 'colord';
+import a11yPlugin from 'colord/plugins/a11y';
 import cmykPlugin from 'colord/plugins/cmyk';
 import labPlugin from 'colord/plugins/lab';
-import a11yPlugin from 'colord/plugins/a11y';
 import namesPlugin from 'colord/plugins/names';
+import { move, Mutex, SharedJsonBuffer, spawn } from 'multithreading';
+import nc from 'nearest-color';
 
 extend([cmykPlugin, labPlugin, a11yPlugin, namesPlugin]);
 
@@ -26,8 +25,8 @@ const { values } = parseArgs({
     count: { type: 'string', default: '1000' },
     pcount: { type: 'string', default: '500' },
     workers: { type: 'string', short: 'w', default: '4' },
-    out: { type: 'string', short: 'o', default: 'src/data' },
-  },
+    out: { type: 'string', short: 'o', default: 'src/data' }
+  }
 });
 
 const CONFIG = {
@@ -39,7 +38,7 @@ const CONFIG = {
   TOTAL_COLORS: parseInt(values.count!),
   TOTAL_PALETTES: parseInt(values.pcount!),
   WORKER_THREADS: parseInt(values.workers!),
-  OUTPUT_DIR: path.join(process.cwd(), values.out!),
+  OUTPUT_DIR: path.join(process.cwd(), values.out!)
 } as const;
 
 type ColorType = { name: string; hex: string };
@@ -56,7 +55,7 @@ type DetailedColorType = ColorType & {
 type PaletteType = ColorType[];
 type DetailedPaletteType = DetailedColorType[];
 
-const serializedColorNames = colornames.map(c => ({
+const serializedColorNames = colornames.map((c) => ({
   name: c.name,
   hex: c.hex.toLowerCase()
 }));
@@ -67,12 +66,12 @@ function formatOutput(data: DetailedColorType | DetailedPaletteType): string {
   const fmt = CONFIG.OUTPUT_FORMAT;
 
   if (fmt === 'hex') {
-    if (isPalette) return (data as DetailedPaletteType).map(c => c.hex).join(' ');
+    if (isPalette) return (data as DetailedPaletteType).map((c) => c.hex).join(' ');
     return (data as DetailedColorType).hex;
   }
 
   if (fmt === 'name') {
-    if (isPalette) return (data as DetailedPaletteType).map(c => c.name).join(', ');
+    if (isPalette) return (data as DetailedPaletteType).map((c) => c.name).join(', ');
     return (data as DetailedColorType).name;
   }
 
@@ -111,12 +110,19 @@ function formatOutput(data: DetailedColorType | DetailedPaletteType): string {
 }
 
 function generateSingleColor(): DetailedColorType {
-  const hex = '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+  const hex =
+    '#' +
+    Math.floor(Math.random() * 0xffffff)
+      .toString(16)
+      .padStart(6, '0');
 
-  const colorMap = colornames.reduce((acc, c) => {
-    acc[c.name] = c.hex;
-    return acc;
-  }, {} as Record<string, string>);
+  const colorMap = colornames.reduce(
+    (acc, c) => {
+      acc[c.name] = c.hex;
+      return acc;
+    },
+    {} as Record<string, string>
+  );
 
   const nearest = nc.from(colorMap);
   const match = nearest(hex);
@@ -130,7 +136,7 @@ function generateSingleColor(): DetailedColorType {
     cmyk: c.toCmykString(),
     lab: `lab(${Math.round(c.toLab().l)}% ${Math.round(c.toLab().a)} ${Math.round(c.toLab().b)})`,
     isDark: c.isDark(),
-    contrastWhite: c.contrast('#ffffff'),
+    contrastWhite: c.contrast('#ffffff')
   };
 }
 
@@ -144,16 +150,23 @@ async function generateColorsBulk() {
       async (namesData, targetCount, progress) => {
         const nc = await import('nearest-color');
 
-        const colorMap = namesData.reduce((acc, c) => {
-          acc[c.name] = c.hex;
-          return acc;
-        }, {} as Record<string, string>);
+        const colorMap = namesData.reduce(
+          (acc, c) => {
+            acc[c.name] = c.hex;
+            return acc;
+          },
+          {} as Record<string, string>
+        );
 
         const nearest = nc.default.from(colorMap);
         const results: ColorType[] = [];
 
         for (let j = 0; j < targetCount; j++) {
-          const hex = '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+          const hex =
+            '#' +
+            Math.floor(Math.random() * 0xffffff)
+              .toString(16)
+              .padStart(6, '0');
           const match = nearest(hex);
           results.push({ name: match?.name || 'Unknown', hex });
 
@@ -180,38 +193,37 @@ async function generateColorsBulk() {
       } finally {
         guard.dispose();
       }
-    } catch (e) { /* ignore */ }
+    } catch (_) {
+      /* ignore */
+    }
   }, 100);
 
-  const results = await Promise.all(handles.map(h => h.join()));
+  const results = await Promise.all(handles.map((h) => h.join()));
   clearInterval(interval);
 
-  return results.flatMap(r => (r.ok ? r.value : [])).slice(0, CONFIG.TOTAL_COLORS);
+  return results.flatMap((r) => (r.ok ? r.value : [])).slice(0, CONFIG.TOTAL_COLORS);
 }
 
 async function generatePalettesBulk(baseColors: ColorType[]) {
   const countPerWorker = Math.ceil(CONFIG.TOTAL_PALETTES / CONFIG.WORKER_THREADS);
 
   const handles = Array.from({ length: CONFIG.WORKER_THREADS }, () => {
-    return spawn(
-      move(baseColors, countPerWorker),
-      async (colors, targetCount) => {
-        const palettes: PaletteType[] = [];
+    return spawn(move(baseColors, countPerWorker), async (colors, targetCount) => {
+      const palettes: PaletteType[] = [];
 
-        for (let i = 0; i < targetCount; i++) {
-          const p: ColorType[] = [];
-          for(let k=0; k<4; k++) {
-             p.push(colors[Math.floor(Math.random() * colors.length)]);
-          }
-          palettes.push(p);
+      for (let i = 0; i < targetCount; i++) {
+        const p: ColorType[] = [];
+        for (let k = 0; k < 4; k++) {
+          p.push(colors[Math.floor(Math.random() * colors.length)]);
         }
-        return palettes;
+        palettes.push(p);
       }
-    );
+      return palettes;
+    });
   });
 
-  const results = await Promise.all(handles.map(h => h.join()));
-  return results.flatMap(r => (r.ok ? r.value : [])).slice(0, CONFIG.TOTAL_PALETTES);
+  const results = await Promise.all(handles.map((h) => h.join()));
+  return results.flatMap((r) => (r.ok ? r.value : [])).slice(0, CONFIG.TOTAL_PALETTES);
 }
 
 (async () => {
@@ -265,8 +277,7 @@ Options:
 
       writeFileSync(colorsPath, JSON.stringify({ data: colors }, null, 0));
       console.log(`\n✅ Saved to ${colorsPath}`);
-    }
-    else if (CONFIG.DO_PALETTES) {
+    } else if (CONFIG.DO_PALETTES) {
       if (existsSync(colorsPath)) {
         console.log(`ℹ️  Loading existing colors from ${colorsPath}...`);
         const fileContent = JSON.parse(readFileSync(colorsPath, 'utf-8'));
@@ -290,7 +301,6 @@ Options:
     }
 
     process.exit(0);
-
   } catch (e) {
     console.error(`\n❌ Error: ${e instanceof Error ? e.message : e}`);
     process.exit(1);

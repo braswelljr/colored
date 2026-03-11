@@ -9,7 +9,7 @@
     "lint": "next lint",
     "lint:fix": "npx eslint ./**/*.{js,ts,jsx,tsx} --quiet --fix",
     "lint:style": "stylelint \"**/*.{css,scss,sass,html,vue}\" --ignore-path .gitignore",
-    "format": "prettier --write ./**/*.{js,ts,jsx,tsx,css}",
+    "format": "prettier --write \"**/*.{js,ts,jsx,tsx,css}\"",
     "prepare": "husky",
     "gen:colors": "npx tsx ./scripts/generate-colors.mts"
   },
