@@ -1,6 +1,6 @@
-import { Header, Segment } from '~/components/layout/home/sections';
-import Navbar from '~/components/layout/navbar';
-import { circuit } from '~/utils/backgrounds';
+import { Header, Segment } from '@/components/layout/home/sections';
+import Navbar from '@/components/layout/navbar';
+import { circuit } from '@/utils/backgrounds';
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
   return (

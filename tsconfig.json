@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -24,18 +20,9 @@
       }
     ],
     "paths": {
-      "~/*": [
-        "./src/*"
-      ],
-      "@/*": [
-        "./src/*"
-      ],
-      "lib": [
-        "./lib/*"
-      ],
-      "scripts": [
-        "./scripts/*"
-      ]
+      "@/*": ["./src/*"],
+      "lib": ["./lib/*"],
+      "scripts": ["./scripts/*"]
     }
   },
   "include": [
@@ -48,19 +35,13 @@
     "scripts/**/*.mts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ],
-  "files": [
-    "index.d.ts"
-  ],
+  "exclude": ["node_modules"],
+  "files": ["index.d.ts"],
   "tsx": {
     "compilerOptions": {
       "module": "esnext",
       "moduleResolution": "nodenext"
     },
-    "include": [
-      "scripts/**/*.ts"
-    ]
+    "include": ["scripts/**/*.ts"]
   }
 }

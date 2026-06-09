@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTheme } from 'next-themes';
 import { HiOutlineDesktopComputer, HiOutlineMoon, HiOutlineSun } from 'react-icons/hi';
-import { cn } from '~/utils/cn';
+import { cn } from '@/utils/cn';
 
 const themes = [
   { name: 'system', icon: HiOutlineDesktopComputer, label: 'System' },
@@ -14,15 +13,6 @@ const themes = [
 
 export default function ThemeSwitcher({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return <div className={cn('size-8 animate-pulse rounded-xl bg-neutral-950 dark:bg-neutral-50', className)} />;
-  }
 
   const currentThemeIndex = themes.findIndex((t) => t.name === theme);
   const currentTheme = themes[currentThemeIndex] || themes[0];

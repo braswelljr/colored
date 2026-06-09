@@ -1,8 +1,8 @@
 import LocalFont from 'next/font/local';
-import BaseProvider from '~/components/providers/base';
-import { siteConfig } from '~/config/site';
-import '~/css/main.css';
-import { cn } from '~/utils/cn';
+import BaseProvider from '@/components/providers/base';
+import { siteConfig } from '@/config/site';
+import '@/styles/main.css';
+import { cn } from '@/utils/cn';
 
 export const metadata = {
   title: 'colored',
@@ -52,7 +52,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         JetbrainsMono.variable
       )}
     >
-      <body className={cn('min-h-dvh bg-white text-neutral-950 dark:bg-neutral-950 dark:text-white')}>
+      <body
+        className={cn('min-h-dvh bg-white text-neutral-950 dark:bg-neutral-950 dark:text-white')}
+      >
         <BaseProvider>{children}</BaseProvider>
       </body>
     </html>

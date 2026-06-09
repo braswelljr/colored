@@ -1,37 +1,43 @@
 'use client';
 
-import * as React from 'react';
-import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
-import { CircleIcon } from 'lucide-react';
-import { cn } from '~/utils/cn';
+import { Radio as RadioPrimitive } from '@base-ui/react/radio';
+import { RadioGroup as RadioGroupPrimitive } from '@base-ui/react/radio-group';
+import { cn } from '@/utils/cn';
 
-function RadioGroup({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
+function RadioGroup({ className, ...props }: RadioGroupPrimitive.Props) {
   return (
-    <RadioGroupPrimitive.Root
+    <RadioGroupPrimitive
       data-slot="radio-group"
-      className={cn('grid gap-3', className)}
+      className={cn('grid w-full gap-2', className)}
       {...props}
     />
   );
 }
 
-function RadioGroupItem({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Item>) {
+function RadioGroupItem({ className, ...props }: RadioPrimitive.Root.Props) {
   return (
-    <RadioGroupPrimitive.Item
+    <RadioPrimitive.Root
       data-slot="radio-group-item"
       className={cn(
-        'aspect-square size-4 shrink-0 rounded-full border border-neutral-200 text-neutral-900 shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-neutral-950 focus-visible:ring-[3px] focus-visible:ring-neutral-950/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-red-500 aria-invalid:ring-red-500/20 dark:border-neutral-800 dark:bg-neutral-200/30 dark:dark:bg-neutral-800/30 dark:text-neutral-50 dark:focus-visible:border-neutral-300 dark:focus-visible:ring-neutral-300/50 dark:aria-invalid:border-red-900 dark:aria-invalid:ring-red-500/40 dark:aria-invalid:ring-red-900/20 dark:dark:aria-invalid:ring-red-900/40',
+        'group/radio-group-item peer relative flex aspect-square size-4 shrink-0 rounded-full border transition-all outline-none',
+        'after:absolute after:-inset-x-3 after:-inset-y-2',
+        'border-neutral-300 bg-white dark:border-neutral-700 dark:bg-neutral-950',
+        'focus-visible:border-neutral-950 focus-visible:ring-2 focus-visible:ring-neutral-950/20 dark:focus-visible:border-white dark:focus-visible:ring-white/20',
+        'data-checked:border-neutral-900 data-checked:bg-neutral-900 dark:data-checked:border-neutral-50 dark:data-checked:bg-neutral-50',
+        'disabled:cursor-not-allowed disabled:opacity-50',
+        'aria-invalid:border-red-500 aria-invalid:ring-2 aria-invalid:ring-red-500/20',
         className
       )}
       {...props}
     >
-      <RadioGroupPrimitive.Indicator
+      <RadioPrimitive.Indicator
         data-slot="radio-group-indicator"
-        className="relative flex items-center justify-center"
+        className="flex size-full items-center justify-center"
       >
-        <CircleIcon className="fill-primary absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2" />
-      </RadioGroupPrimitive.Indicator>
-    </RadioGroupPrimitive.Item>
+        {/* The Dot: High contrast relative to the background */}
+        <span className="size-1.5 rounded-full bg-white dark:bg-neutral-950" />
+      </RadioPrimitive.Indicator>
+    </RadioPrimitive.Root>
   );
 }
 

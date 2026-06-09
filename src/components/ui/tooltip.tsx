@@ -1,61 +1,101 @@
 'use client';
 
-import * as React from 'react';
-import * as TooltipPrimitive from '@radix-ui/react-tooltip';
-import { cn } from '~/utils/cn';
+import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip';
+import { cn } from '@/utils/cn';
 
-function TooltipProvider({ delayDuration = 0, ...props }: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
+/**
+ * TooltipProvider: Wraps the application or a section to manage tooltip delays.
+ */
+function TooltipProvider({ delay = 0, ...props }: TooltipPrimitive.Provider.Props) {
   return (
     <TooltipPrimitive.Provider
       data-slot="tooltip-provider"
-      delayDuration={delayDuration}
+      delay={delay}
       {...props}
     />
   );
 }
 
-function Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
+/**
+ * Tooltip: The root state manager for an individual tooltip.
+ */
+function Tooltip({ ...props }: TooltipPrimitive.Root.Props) {
   return (
-    <TooltipProvider>
-      <TooltipPrimitive.Root
-        data-slot="tooltip"
-        {...props}
-      />
-    </TooltipProvider>
+    <TooltipPrimitive.Root
+      data-slot="tooltip"
+      {...props}
+    />
   );
 }
 
-function TooltipTrigger({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
+/**
+ * TooltipTrigger: The element that triggers the tooltip.
+ * Uses the 'render' pattern to inject event listeners into the sidebar buttons.
+ */
+function TooltipTrigger({ render, ...props }: TooltipPrimitive.Trigger.Props) {
   return (
     <TooltipPrimitive.Trigger
       data-slot="tooltip-trigger"
+      render={render}
       {...props}
     />
   );
 }
 
+/**
+ * TooltipContent: The actual popup balloon.
+ * Updated to use the Zinc 950/50 high-contrast palette.
+ */
 function TooltipContent({
   className,
-  sideOffset = 0,
+  side = 'top',
+  sideOffset = 4,
+  align = 'center',
+  alignOffset = 0,
   children,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+}: TooltipPrimitive.Popup.Props &
+  Pick<TooltipPrimitive.Positioner.Props, 'align' | 'alignOffset' | 'side' | 'sideOffset'>) {
   return (
     <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Content
-        data-slot="tooltip-content"
+      <TooltipPrimitive.Positioner
+        align={align}
+        alignOffset={alignOffset}
+        side={side}
         sideOffset={sideOffset}
-        className={cn(
-          'animate-in fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md bg-neutral-900 px-3 py-1.5 text-xs text-balance text-neutral-50 dark:bg-neutral-50 dark:text-neutral-900',
-          className
-        )}
-        {...props}
+        className="isolate z-50"
       >
-        {children}
-        <TooltipPrimitive.Arrow className="fill-primary z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-neutral-900 dark:bg-neutral-50" />
-      </TooltipPrimitive.Content>
+        <TooltipPrimitive.Popup
+          data-slot="tooltip-content"
+          className={cn(
+            // Layout & Typography
+            'z-50 inline-flex w-fit max-w-xs origin-(--transform-origin) items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium shadow-md outline-none',
+            // Zinc Colors: High contrast Zinc 950 in light mode, Zinc 50 in dark mode
+            'bg-neutral-950 text-neutral-50 dark:bg-neutral-50 dark:text-neutral-950',
+            // Handling for KBD components inside tooltips
+            'has-data-[slot=kbd]:pr-1.5',
+            // Animations
+            'data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+            'data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95',
+            'data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+            // Internal state animations
+            'data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95',
+            className
+          )}
+          {...props}
+        >
+          {children}
+          <TooltipPrimitive.Arrow
+            className={cn(
+              'z-50 size-2.5 translate-y-[calc(-50%-2px)] rotate-45 rounded-xs',
+              'bg-neutral-950 dark:bg-neutral-50',
+              'data-[side=bottom]:top-1 data-[side=inline-end]:top-1/2! data-[side=inline-end]:-left-1 data-[side=inline-end]:-translate-y-1/2 data-[side=inline-start]:top-1/2! data-[side=inline-start]:-right-1 data-[side=inline-start]:-translate-y-1/2 data-[side=left]:top-1/2! data-[side=left]:-right-1 data-[side=left]:-translate-y-1/2 data-[side=right]:top-1/2! data-[side=right]:-left-1 data-[side=right]:-translate-y-1/2 data-[side=top]:-bottom-2.5'
+            )}
+          />
+        </TooltipPrimitive.Popup>
+      </TooltipPrimitive.Positioner>
     </TooltipPrimitive.Portal>
   );
 }
 
-export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger };
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };

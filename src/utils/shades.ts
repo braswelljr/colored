@@ -38,7 +38,7 @@ export async function generateShades(baseColor: string): Promise<ShadeScale> {
     '200': { name: 200, hex: adjustLightness(hsl, 0.8) },
     '300': { name: 300, hex: adjustLightness(hsl, 0.7) },
     '400': { name: 400, hex: adjustLightness(hsl, 0.6) },
-    '500': { name: 500, hex: adjustLightness(hsl, 0.6) },
+    '500': { name: 500, hex: adjustLightness(hsl, 0.5) },
     '600': { name: 600, hex: adjustLightness(hsl, 0.4) },
     '700': { name: 700, hex: adjustLightness(hsl, 0.3) },
     '800': { name: 800, hex: adjustLightness(hsl, 0.2) },

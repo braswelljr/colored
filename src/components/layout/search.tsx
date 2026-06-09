@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { HiSearch } from 'react-icons/hi';
-import { Spinner } from '~/components/ui/spinner';
-import { cn } from '~/utils/cn';
+import { Spinner } from '@/components/ui/spinner';
+import { cn } from '@/utils/cn';
 
 type SearchBarProps = {
   className?: string;

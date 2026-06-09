@@ -4,11 +4,11 @@ import { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { matchSorter } from 'match-sorter';
-import { Palette } from '~/components/colors/palette';
-import { Skeleton } from '~/components/ui/skeleton';
-import { useMediaQueries, usePaletteSkeletonCount } from '~/hooks/use-media-queries';
-import { useColorsStore } from '~/store/use-colors';
-import { PaletteType } from '~/types/types';
+import { Palette } from '@/components/colors/palette';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useMediaQueries, usePaletteSkeletonCount } from '@/hooks/use-media-queries';
+import { useColorsStore } from '@/store/use-colors';
+import { PaletteType } from '@/types/types';
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -27,7 +27,10 @@ export default function Page() {
   }, [palettes, onChangePaletteLen]);
 
   const filteredPalletes = useMemo(
-    () => palettes.filter((pallete) => matchSorter(pallete, q, { keys: ['name', 'hex', 'rgb'] }).length),
+    () =>
+      palettes.filter(
+        (pallete) => matchSorter(pallete, q, { keys: ['name', 'hex', 'rgb'] }).length
+      ),
     [q, palettes]
   );
 
@@ -56,7 +59,8 @@ export default function Page() {
         <div className="flex min-h-[50vh] w-full items-center justify-center">
           <div className="mx-auto mb-3 max-w-xl text-center text-lg leading-6 font-medium text-zinc-500">
             <p>
-              Sorry! There are no palettes for "{q}" 😥 make sure the code you entered matches a valid palette name.
+              Sorry! There are no palettes for "{q}" 😥 make sure the code you entered matches a
+              valid palette name.
             </p>
           </div>
         </div>

@@ -1,9 +1,14 @@
 import { FaGithub } from 'react-icons/fa';
-import { cn } from '~/utils/cn';
+import { cn } from '@/utils/cn';
 
 export default function Footer({ className }: { className?: string }) {
   return (
-    <nav className={cn('flex items-center justify-between px-3 py-4 md:px-12 lg:px-20 xl:px-28', className)}>
+    <nav
+      className={cn(
+        'flex items-center justify-between px-3 py-4 md:px-12 lg:px-20 xl:px-28',
+        className
+      )}
+    >
       {/* home link */}
       <a
         href="https://github.com/braswelljr"

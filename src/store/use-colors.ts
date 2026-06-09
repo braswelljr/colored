@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { ColorFormatType, convertFormat } from '~/utils/colors';
+import { ColorFormatType, convertFormat } from '@/utils/colors';
 
 type ColorStoreState = {
   format: ColorFormatType;
@@ -9,7 +9,9 @@ type ColorStoreState = {
 };
 
 type ColorStoreActions = {
-  onChangeFormat: (value: ColorFormatType | ((prevState: ColorFormatType) => ColorFormatType)) => void;
+  onChangeFormat: (
+    value: ColorFormatType | ((prevState: ColorFormatType) => ColorFormatType)
+  ) => void;
   convertFormat: (color: string, options?: { format: ColorFormatType }) => string;
   onChangeColorsLen: (value: number | ((prevState: number) => number)) => void;
   onChangePaletteLen: (value: number | ((prevState: number) => number)) => void;

@@ -10,12 +10,12 @@ import { HiArrowUp } from 'react-icons/hi2';
 import { MdFavorite } from 'react-icons/md';
 import { useWindowScroll } from 'react-use';
 import { useShallow } from 'zustand/react/shallow';
-import { Swatch } from '~/components/colors/swatch';
-import { Search } from '~/components/layout/search';
-import { SegmentedControl, SegmentedControlList, SegmentedControlTrigger } from '~/components/ui/segmented-control';
-import { useColorsStore } from '~/store/use-colors';
-import { useFavoriteStore } from '~/store/use-favorite';
-import { cn } from '~/utils/cn';
+import { Swatch } from '@/components/colors/swatch';
+import { Search } from '@/components/layout/search';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useColorsStore } from '@/store/use-colors';
+import { useFavoriteStore } from '@/store/use-favorite';
+import { cn } from '@/utils/cn';
 
 const EXCLUDED_FROM_SEGMENT = ['/color'];
 
@@ -67,30 +67,32 @@ export function Segment({ className, ...props }: SegmentProps) {
         </div>
       )}
       <div className="-mt-1 flex w-full justify-between gap-10 overflow-x-auto bg-yellow-200/90 px-3 py-2 whitespace-nowrap backdrop-blur md:px-12 lg:px-20 xl:px-28 dark:bg-neutral-900/90">
-        <SegmentedControl
+        <Tabs
           value={pathname}
-          className="flex shrink-0 items-center justify-center space-x-4"
+          className="flex shrink-0 items-center justify-center"
         >
-          <SegmentedControlList classNames={{ indicator: '!bg-yellow-500 !rounded' }}>
+          <TabsList indicatorClassName="bg-yellow-500!">
             {NAVIGATION_ITEMS.map(({ page, path }) => (
-              <SegmentedControlTrigger
+              <TabsTrigger
                 key={path}
                 value={path}
-                asChild
-              >
-                <Link
-                  href={path}
-                  className={cn(
-                    'relative px-2 py-0.5 text-xs font-bold uppercase focus:outline-none sm:text-sm',
-                    path === pathname ? '!text-neutral-950' : 'dark:!text-yellow-500'
-                  )}
-                >
-                  {page}
-                </Link>
-              </SegmentedControlTrigger>
+                nativeButton={false}
+                render={(tabProps) => (
+                  <Link
+                    {...tabProps}
+                    href={path}
+                    className={cn(
+                      'relative px-3 py-2 font-kablammo font-bold uppercase focus:outline-none sm:text-sm',
+                      path === pathname ? 'text-neutral-950!' : 'dark:text-yellow-500!'
+                    )}
+                  >
+                    {page}
+                  </Link>
+                )}
+              />
             ))}
-          </SegmentedControlList>
-        </SegmentedControl>
+          </TabsList>
+        </Tabs>
 
         <div className="flex items-center gap-2">
           <button
@@ -105,7 +107,7 @@ export function Segment({ className, ...props }: SegmentProps) {
               <HiArrowUp className="size-3" />
               <span>Scroll to top</span>
             </div>
-            <span className="group-hocus/top:w-full absolute inset-x-0 bottom-0 block h-[3px] w-0 rounded-md bg-neutral-900 transition-[width] dark:bg-yellow-500" />
+            <span className="absolute inset-x-0 bottom-0 block h-0.75 w-0 rounded-md bg-neutral-900 transition-[width] group-hocus/top:w-full dark:bg-yellow-500" />
           </button>
 
           <motion.button
@@ -147,8 +149,9 @@ export function Header({ className, ...props }: HeaderProps) {
     >
       <div className="mx-auto mt-5 space-y-10">
         <div className="">
-          <p className="xsm:text-2xl text-center text-xl font-medium uppercase dark:text-yellow-500">
-            Experience a world of personalized design with an array of handpicked colors at your disposal.
+          <p className="text-center font-kablammo text-xl font-medium uppercase xsm:text-2xl dark:text-yellow-500">
+            Experience a world of personalized design with an array of handpicked colors at your
+            disposal.
           </p>
         </div>
         <div className="flex w-full flex-wrap items-center justify-around gap-x-6 gap-y-4 pb-4 text-xs font-semibold">
@@ -158,7 +161,7 @@ export function Header({ className, ...props }: HeaderProps) {
               className="flex shrink-0 items-center space-x-1 tracking-tight dark:text-yellow-500"
             >
               <desc.icon className="size-5" />
-              <span className="xsm:text-sm text-xs uppercase">{desc.description}</span>
+              <span className="text-xs uppercase xsm:text-sm">{desc.description}</span>
             </div>
           ))}
         </div>

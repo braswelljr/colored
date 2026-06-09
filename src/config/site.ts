@@ -7,5 +7,6 @@ type SiteConfig = {
 export const siteConfig: SiteConfig = {
   name: 'CP 🎨',
   url: '#',
-  description: 'CP🎨. Experience a world of personalized design with an array of handpicked colors at your disposal.'
+  description:
+    'CP🎨. Experience a world of personalized design with an array of handpicked colors at your disposal.'
 };

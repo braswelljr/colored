@@ -20,7 +20,10 @@ export function useMediaQueries(): MediaQueryBreakpoints {
   const is2xl = useMedia('(max-width: 1536px)');
   const is3xl = useMedia('(max-width: 1920px)');
 
-  return useMemo(() => ({ isXs, isSm, isMd, isLg, isXl, is2xl, is3xl }), [isXs, isSm, isMd, isLg, isXl, is2xl, is3xl]);
+  return useMemo(
+    () => ({ isXs, isSm, isMd, isLg, isXl, is2xl, is3xl }),
+    [isXs, isSm, isMd, isLg, isXl, is2xl, is3xl]
+  );
 }
 
 export function useSkeletonCount(mediaQueries: MediaQueryBreakpoints): number {

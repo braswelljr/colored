@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { NextResponse } from 'next/server';
-import type { PaletteType } from '~/types/types';
+import type { PaletteType } from '@/types/types';
 
 export async function GET() {
   try {

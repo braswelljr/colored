@@ -2,8 +2,8 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { ThemeProvider } from '~/components/providers/theme';
-import { Toaster } from '~/components/ui/sonner';
+import { ThemeProvider } from '@/components/providers/theme';
+import { Sonner } from '@/components/ui/sonner';
 
 type BaseProviderProps = {
   children?: React.ReactNode;
@@ -16,7 +16,7 @@ export default function BaseProvider({ children }: BaseProviderProps) {
     <ThemeProvider>
       <NuqsAdapter>
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-        <Toaster
+        <Sonner
           position="bottom-right"
           richColors
           closeButton

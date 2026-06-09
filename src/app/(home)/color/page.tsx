@@ -3,22 +3,35 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { colord } from 'colord';
-import { Check, Copy, Shuffle } from 'lucide-react';
+import { motion } from 'motion/react';
 import { parseAsString, useQueryState } from 'nuqs';
-import { Color } from '~/components/colors/color';
-import { Swatch } from '~/components/colors/swatch';
-import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input';
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '~/components/ui/input-group';
-import { Label } from '~/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select';
-import { Skeleton } from '~/components/ui/skeleton';
-import { Spinner } from '~/components/ui/spinner';
-import { useColorsStore } from '~/store/use-colors';
-import { cn } from '~/utils/cn';
-import { convertFormat, type ColorFormatType } from '~/utils/colors';
-import { randomColor } from '~/utils/random';
-import { generateShades, type ShadeScale } from '~/utils/shades';
+import { HiViewGridAdd } from 'react-icons/hi';
+import { TbRefresh } from 'react-icons/tb';
+import { useInView } from 'react-intersection-observer';
+import { Color } from '@/components/colors/color';
+import { Swatch } from '@/components/colors/swatch';
+import { cardVariants, containerVariants, itemVariants } from '@/components/shared/motion';
+import {
+  Alert,
+  AlertContent,
+  AlertDescription,
+  AlertMedia,
+  AlertTitle
+} from '@/components/ui/alert';
+import { CodeEditor } from '@/components/ui/code-editor';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput
+} from '@/components/ui/input-group';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Spinner } from '@/components/ui/spinner';
+import { useColorsStore } from '@/store/use-colors';
+import { cn } from '@/utils/cn';
+import { convertFormat, type ColorFormatType } from '@/utils/colors';
+import { randomColor } from '@/utils/random';
+import { generateShades, type ShadeScale } from '@/utils/shades';
 
 type GenerateShadesResult = {
   shades: ShadeScale;
@@ -29,6 +42,8 @@ type ExportFormat = {
   id: string;
   name: string;
   description: string;
+  lang: string;
+  filename: string;
   generate: (colorName: string, shades: ShadeScale, colorFormat: ColorFormatType) => string;
 };
 
@@ -42,28 +57,25 @@ const formats: ExportFormat[] = [
     id: 'tailwind-v3',
     name: 'Tailwind v3',
     description: 'JS config for tailwind.config.js',
+    lang: 'javascript',
+    filename: 'tailwind.config.js',
     generate: (colorName, shades, colorFormat) => {
       const entries = Object.entries(shades)
         .filter(([step]) => step !== 'primary')
-        .map(([step, shade]) => `           '${step}': '${convertFormat({ color: shade.hex, format: colorFormat })}',`)
+        .map(
+          ([step, shade]) =>
+            `           '${step}': '${convertFormat({ color: shade.hex, format: colorFormat })}',`
+        )
         .join('\n');
-      return `module.exports = {
-  theme: {
-    extend: {
-      colors: {
-        '${colorName}': {
-${entries}
-        },
-      },
-    },
-  },
-};`;
+      return `module.exports = {\n  theme: {\n    extend: {\n      colors: {\n        '${colorName}': {\n${entries}\n        },\n      },\n    },\n  },\n};`;
     }
   },
   {
     id: 'tailwind-v4',
     name: 'Tailwind v4',
     description: 'CSS variables for @theme',
+    lang: 'css',
+    filename: 'globals.css',
     generate: (colorName, shades, colorFormat) => {
       const primaryColor = convertFormat({ color: shades.primary?.hex ?? '', format: colorFormat });
       const entries = Object.entries(shades)
@@ -80,6 +92,8 @@ ${entries}
     id: 'css-variables',
     name: 'CSS Variables',
     description: 'Standard CSS custom properties',
+    lang: 'css',
+    filename: 'variables.css',
     generate: (colorName, shades, colorFormat) => {
       const primaryColor = convertFormat({ color: shades.primary?.hex ?? '', format: colorFormat });
       const entries = Object.entries(shades)
@@ -96,12 +110,15 @@ ${entries}
     id: 'scss',
     name: 'SCSS Variables',
     description: 'SASS/SCSS variables',
+    lang: 'scss',
+    filename: 'variables.scss',
     generate: (colorName, shades, colorFormat) => {
       const primaryColor = convertFormat({ color: shades.primary?.hex ?? '', format: colorFormat });
       const entries = Object.entries(shades)
         .filter(([step]) => step !== 'primary')
         .map(
-          ([step, shade]) => `$color-${colorName}-${step}: ${convertFormat({ color: shade.hex, format: colorFormat })};`
+          ([step, shade]) =>
+            `$color-${colorName}-${step}: ${convertFormat({ color: shade.hex, format: colorFormat })};`
         )
         .join('\n');
       return `$color-${colorName}: ${primaryColor};\n${entries}`;
@@ -115,7 +132,8 @@ export default function Page() {
   const [colorName, setColorName] = useState('primary');
   const [selectedFormat, setSelectedFormat] = useState(formats[0].id);
   const [isRandomizing, setIsRandomizing] = useState(false);
-  const [copied, setCopied] = useState(false);
+
+  const [gridRef, gridInView] = useInView({ threshold: 0.05 });
 
   const { data: colors, isLoading } = useQuery({
     queryKey: ['shades', color],
@@ -143,23 +161,13 @@ export default function Page() {
     setTimeout(() => setIsRandomizing(false), 300);
   }, [onChangeColor]);
 
-  const handleCopy = useCallback(() => {
-    const selectedFormatObj = formats.find((f) => f.id === selectedFormat);
-    if (selectedFormatObj && colors?.shades) {
-      const code = selectedFormatObj.generate(colorName, colors.shades, format);
-      navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  }, [colorName, colors?.shades, selectedFormat, format]);
-
   const shadeColors = useMemo(() => {
     if (!colors?.shades) return [];
     return Object.entries(colors.shades).map(([step, shade]) => ({
       name: String(step),
-      hex: convertFormat({ color: shade.hex, format })
+      hex: shade.hex
     }));
-  }, [colors?.shades, format]);
+  }, [colors]);
 
   const colorValidation = useMemo(() => {
     const instance = colord(color);
@@ -169,17 +177,27 @@ export default function Page() {
     };
   }, [color]);
 
+  const activeFormat = useMemo(
+    () => formats.find((f) => f.id === selectedFormat) ?? formats[0],
+    [selectedFormat]
+  );
+
   const generatedCode = useMemo(() => {
-    const selectedFormatObj = formats.find((f) => f.id === selectedFormat);
-    if (selectedFormatObj && colors?.shades) {
-      return selectedFormatObj.generate(colorName, colors.shades, format);
+    if (activeFormat && colors?.shades) {
+      return activeFormat.generate(colorName, colors.shades, format);
     }
     return '';
-  }, [colorName, colors?.shades, selectedFormat, format]);
+  }, [colorName, colors, activeFormat, format]);
 
   return (
     <div className="flex h-full flex-1 flex-col">
-      <div className="flex items-center gap-2 px-3 md:px-12 lg:px-20 xl:px-28">
+      {/* ── Color picker bar ── */}
+      <motion.div
+        variants={itemVariants}
+        initial="hidden"
+        animate="visible"
+        className="flex items-center gap-2 px-3 md:px-12 lg:px-20 xl:px-28"
+      >
         <InputGroup>
           <InputGroupAddon
             align="inline-start"
@@ -199,7 +217,6 @@ export default function Page() {
             value={color}
             onChange={(e) => onChangeColor(e.target.value)}
             placeholder="#3b82f6"
-            className=""
           />
 
           <InputGroupAddon
@@ -211,12 +228,11 @@ export default function Page() {
               onClick={handleRandomColor}
               disabled={isRandomizing}
               className={cn('size-7 rounded-md')}
-              style={{ backgroundColor: colorValidation.isValid ? color : '' }}
             >
               {isRandomizing ? (
                 <Spinner className="size-4" />
               ) : (
-                <Shuffle className={cn('size-4', colorValidation.isDark ? '!text-white' : '!text-neutral-950')} />
+                <TbRefresh className={cn('size-4', 'text-neutral-950!')} />
               )}
             </InputGroupButton>
           </InputGroupAddon>
@@ -226,129 +242,93 @@ export default function Page() {
           color={colorValidation.isValid ? color : '#f0b100'}
           className="text-sm"
         />
-      </div>
+      </motion.div>
 
+      {/* ── Main content ── */}
       <main className="px-3 py-4 md:px-12 lg:px-20 xl:px-28">
         {shadeColors.length > 0 ? (
-          <div>
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] gap-8 text-xs leading-4">
+          <div className="space-y-8">
+            {/* Shade grid */}
+            <motion.div
+              ref={gridRef}
+              variants={containerVariants}
+              initial="hidden"
+              animate={gridInView ? 'visible' : 'hidden'}
+              className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] gap-6 text-xs leading-4"
+            >
               {shadeColors.map((shade) => (
                 <Color
                   key={`color-step-${shade.name}`}
                   colour={shade}
+                  variants={cardVariants}
                 />
               ))}
-            </div>
+            </motion.div>
 
-            {/* Export Code Block */}
-            <div className="mt-8 rounded-lg border border-neutral-300 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900">
-              {/* Header */}
-              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-300 px-4 py-3 dark:border-neutral-700">
-                <div className="flex flex-wrap items-center gap-4">
-                  {/* Color Name Input */}
-                  <div className="flex items-center gap-2">
-                    <Label
-                      htmlFor="color-name"
-                      className="text-sm font-medium whitespace-nowrap"
-                    >
-                      Color name:
-                    </Label>
-                    <Input
-                      id="color-name"
-                      type="text"
-                      value={colorName}
-                      onChange={(e) => setColorName(e.target.value)}
-                      placeholder="primary"
-                      className="h-8 rounded-md border border-neutral-300 bg-neutral-50 px-2 text-sm dark:border-neutral-600 dark:bg-neutral-800"
-                    />
-                  </div>
-
-                  {/* Format Selector */}
-                  <div className="flex items-center gap-2">
-                    <Label className="text-sm font-medium">Format:</Label>
-                    <Select
-                      value={selectedFormat}
-                      onValueChange={setSelectedFormat}
-                    >
-                      <SelectTrigger className="h-8 w-[140px]">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {formats.map((fmt) => (
-                          <SelectItem
-                            key={fmt.id}
-                            value={fmt.id}
-                          >
-                            {fmt.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Copy Button */}
-              </div>
-
-              {/* Format Description */}
-              <div className="flex items-center justify-between border-b border-neutral-300 px-4 py-2 dark:border-neutral-700">
-                <p className="text-sm">{formats.find((f) => f.id === selectedFormat)?.description}</p>
-
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={handleCopy}
-                  className="h-7"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="size-4 text-green-500" />
-                      Copied!
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="size-4" />
-                      Copy
-                    </>
-                  )}
-                </Button>
-              </div>
-
-              {/* Code Block */}
-              <div className="overflow-x-auto p-4">
-                <pre className="text-sm">
-                  <code className="font-mono text-neutral-800 dark:text-neutral-200">{generatedCode}</code>
-                </pre>
-              </div>
-            </div>
+            <CodeEditor
+              code={generatedCode}
+              language={activeFormat.lang}
+              filename={activeFormat.filename}
+              tabs={formats.map((f) => ({
+                id: f.id,
+                label: f.filename,
+                name: f.name,
+                lang: f.lang,
+                description: f.description
+              }))}
+              activeTab={selectedFormat}
+              onTabChange={setSelectedFormat}
+              colorName={colorName}
+              onColorNameChange={setColorName}
+            />
           </div>
         ) : isLoading ? (
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] gap-8 text-xs leading-4">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-[repeat(auto-fill,minmax(132px,1fr))] gap-8 text-xs leading-4"
+          >
             {Array.from({ length: 12 }).map((_, i) => (
-              <Skeleton
+              <motion.div
                 key={i}
-                className="h-24 w-full rounded-md"
-                style={{ animationDelay: `${i + 1}00ms` }}
-              />
+                variants={cardVariants}
+              >
+                <Skeleton className="h-24 w-full rounded-md" />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         ) : (
-          <div className="flex min-h-[50vh] w-full items-center justify-center">
-            <div className="mx-auto mb-3 max-w-xl text-center text-lg leading-6 font-medium text-zinc-500">
-              <p>
-                Invalid color format. Please enter a valid hex color code or click the shuffle button for a random
-                color.
-              </p>
-            </div>
-          </div>
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
+            className="flex min-h-[50vh] w-full items-center justify-center"
+          >
+            <p className="mx-auto mb-3 max-w-xl text-center text-lg leading-6 font-medium text-zinc-500">
+              Invalid color format. Please enter a valid hex color code or click the shuffle button
+              for a random color.
+            </p>
+          </motion.div>
         )}
 
-        {/* Info */}
-        <div className="mt-8 rounded-lg border border-neutral-300 bg-neutral-100 p-4 text-center text-sm dark:border-neutral-700 dark:bg-neutral-800">
-          <p className="text-neutral-600 dark:text-neutral-400">
-            Click any shade to copy it in your selected format ({format})
-          </p>
-        </div>
+        <Alert
+          variant="info"
+          className="mt-8"
+        >
+          <AlertMedia
+            variant="info"
+            className="size-12"
+          >
+            <HiViewGridAdd className="size-5" />
+          </AlertMedia>
+          <AlertContent className="font-mono">
+            <AlertTitle className="font-kablammo font-bold">Heads up!</AlertTitle>
+            <AlertDescription>
+              You can click on any shade to copy it in your selected format.
+            </AlertDescription>
+          </AlertContent>
+        </Alert>
       </main>
     </div>
   );

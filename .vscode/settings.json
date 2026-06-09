@@ -7,12 +7,20 @@
   },
   "editor.formatOnSave": true,
   "eslint.options": {},
-  "eslint.validate": ["javascript", "mdx", "markdown", "typescript", "html", "vue", "javascriptreact", "typescriptreact"],
+  "eslint.validate": [
+    "javascript",
+    "mdx",
+    "markdown",
+    "typescript",
+    "html",
+    "vue",
+    "javascriptreact",
+    "typescriptreact"
+  ],
   "emmet.includeLanguages": {
     "javascript": "javascriptreact",
     "typescript": "typescriptreact"
   },
-  "prettier.stylelintIntegration": true,
   "diffEditor.wordWrap": "on",
   "editor.quickSuggestions": {
     "strings": true

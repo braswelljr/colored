@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { ColorType } from '~/types/types';
+import { ColorType } from '@/types/types';
 
 type FavoriteStoreState = {
   favorites: Array<ColorType>;

@@ -8,7 +8,13 @@ export type ColorFormatType = (typeof COLOR_FORMAT)[number];
 
 extend([cmykPlugin, lchPlugin]);
 
-export function convertFormat({ color, format = 'hex' }: { color: string; format?: ColorFormatType }) {
+export function convertFormat({
+  color,
+  format = 'hex'
+}: {
+  color: string;
+  format?: ColorFormatType;
+}) {
   let x = color ?? '';
 
   if (format === 'hex') {
